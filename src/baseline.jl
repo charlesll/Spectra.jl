@@ -13,12 +13,14 @@
 #
 #############################################################################
 
-function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::String,p::Array{Float64})
+using JuMP
+using Ipopt
+
+function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64})
     # First we grab the good roi
-    for i = 1:size(roi)[1]
-        if i == 1
-            interest_index = find(roi[i,1] .<= x[:,1] .<= roi[i,2])
-        else
+    interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
+    if size(roi)[1] > 1
+        for i = 2:size(roi)[1]
             interest_index = vcat(interest_index,  find(roi[i,1] .<= x[:,1] .<= roi[i,2]))
         end
     end
@@ -26,9 +28,27 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     interest_y = y[interest_index,1]
     
     if basetype == "constant"
-        return y[:] - minimum(interest_y)
+        return y[:] - minimum(interest_y) # TODO: we can improve smoothing for that by implementing a mean calculation
     elseif basetype == "poly"
-            return y - poly(p,x) # To be continued... Fitting procedure to add there.
+        # The model for fitting baseline to roi signal
+        mod = Model(solver=IpoptSolver(print_level=0))
+        n::Int = size(p)[1] # number of coefficients
+        m::Int = size(interest_x)[1] # number of data
+
+        @defVar(mod,p_val[i=1:n])
+        for i = 1:n
+            setValue(p_val[i], p[i])
+        end
+        @defNLExpr(y_model[j=1:m],sum{p_val[i]*interest_x[j]^(i-1), i in 1:n})
+        @setNLObjective(mod,Min,sum{(y_model[j] - interest_y[j])^2, j=1:n})
+        status = solve(mod)
+        println("Solver status: ", status)
+        best_p::Vector{Float64} = p
+        for i = 1:n
+            best_p[i] = getValue(p_val[i])
+        end
+        
+        return y - poly(best_p,x) # To be continued... Fitting procedure to add there.
     end
 end
 

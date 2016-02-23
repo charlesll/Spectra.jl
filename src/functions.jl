@@ -15,7 +15,7 @@
 #############################################################################
 
 function poly(p::Vector{Float64},x::Array{Float64})
-    segments = zeros(size(y)[1],size(p))
+    segments = zeros(size(x)[1],size(p))
     for i = 1:size(p)
         segments[:,i] = p[i].*x[i].^(i-1)
     end
