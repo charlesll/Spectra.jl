@@ -9,6 +9,6 @@ export peak_diffusion, model, IRdataprep, trapz
 
 export poly
 
-export constant_b, poly_b
+export baseline
 
 end # module

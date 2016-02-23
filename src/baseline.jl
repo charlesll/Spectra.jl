@@ -13,8 +13,24 @@
 #
 #############################################################################
 
-constant_b(p::Float64,y::Array{Float64}) = y[:] + p
+function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::String,p::Array{Float64})
+    # First we grab the good roi
+    for i = 1:size(roi)[1]
+        if i == 1
+            interest_index = find(roi[i,1] .<= x[:,1] .<= roi[i,2])
+        else
+            interest_index = vcat(interest_index,  find(roi[i,1] .<= x[:,1] .<= roi[i,2]))
+        end
+    end
+    interest_x = x[interest_index,1]
+    interest_y = y[interest_index,1]
+    
+    if basetype == "constant"
+        return y[:] - minimum(interest_y)
+    elseif basetype == "poly"
+            return y - poly(p,x) # To be continued... Fitting procedure to add there.
+    end
+end
 
-poly_b(p::Vector{Float64},y::Array{Float64},x::Array{Float64}) = y - poly(p,x)
     
         
