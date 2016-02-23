@@ -14,6 +14,8 @@ Examples will be included as notebooks.
 
 Package under construction, any help welcome!
 
+Last modified 23/02/2016
+
 
 
 
