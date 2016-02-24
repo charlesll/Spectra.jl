@@ -29,6 +29,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     
     if basetype == "constant"
         return y[:] - minimum(interest_y) # TODO: we can improve smoothing for that by implementing a mean calculation
+    
     elseif basetype == "poly"
         # The model for fitting baseline to roi signal
         mod = Model(solver=IpoptSolver(print_level=0))
@@ -36,19 +37,13 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
         m::Int = size(interest_x)[1] # number of data
 
         @defVar(mod,p_val[i=1:n])
-        for i = 1:n
-            setValue(p_val[i], p[i])
-        end
-        @defNLExpr(y_model[j=1:m],sum{p_val[i]*interest_x[j]^(i-1), i in 1:n})
-        @setNLObjective(mod,Min,sum{(y_model[j] - interest_y[j])^2, j=1:n})
+        setValue(p_val[i=1:n], p[i])
+        @setNLObjective(mod,Min,sum{( sum{p_val[i]*interest_x[j]^(i-1), i=1:n} - interest_y[j])^2, j=1:m})
         status = solve(mod)
         println("Solver status: ", status)
-        best_p::Vector{Float64} = p
-        for i = 1:n
-            best_p[i] = getValue(p_val[i])
-        end
-        
-        return y - poly(best_p,x) # To be continued... Fitting procedure to add there.
+        best_p::Vector{Float64} = getValue(p_val)
+        y_calc::Array{Float64,2} = poly(best_p,x)
+        return y[:,1] - y_calc, y_calc# To be continued... Fitting procedure to add there.
     end
 end
 

@@ -15,9 +15,27 @@
 #############################################################################
 
 function poly(p::Vector{Float64},x::Array{Float64})
-    segments = zeros(size(x)[1],size(p))
-    for i = 1:size(p)
-        segments[:,i] = p[i].*x[i].^(i-1)
+    segments = zeros(size(x)[1],size(p)[1])
+    for i = 1:size(p)[1]
+        segments[:,i] = p[i].*x[:].^(i-1)
     end
-    return sum(segments,1)
+    return sum(segments,2)
+end
+
+#For Gaussian peaks in spectra:
+function gaussiennes(g_amplitudes::Array{Float64},g_frequency::Array{Float64},g_hwhm::Array{Float64},x::Array{Float64})
+    segments = zeros(size(x)[1],size(g_amplitudes)[1])
+    for i = 1:size(g_amplitudes)[1]
+        segments[:,i] = g_amplitudes[i] .*exp(-log(2) .* ((x[:,1]-g_frequency[i])./g_hwhm[i]).^2)
+    end
+    return sum(segments,2), segments
+end
+
+#The real normal distribution / gaussian function
+function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
+    segments = zeros(size(x)[1],size(nd_amplitudes)[1])
+    for i = 1:size(nd_amplitudes)[1]
+        segments[:,i] = nd_amplitudes[i]./(nd_sigmas[i].*sqrt(2*pi))  .*  exp(- (x[:,1]-nd_centres[i]).^2 ./ (2.*nd_sigmas[i].^2))
+    end
+    return sum(segments,2), segments
 end
