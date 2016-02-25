@@ -1,0 +1,8 @@
+step
+time
+start_spectra
+stop_spectra
+low_x
+high_x
+first_bound_norm
+second_bound_norm

@@ -27,10 +27,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     interest_x = x[interest_index,1]
     interest_y = y[interest_index,1]
     
-    if basetype == "constant"
-        return y[:] - minimum(interest_y) # TODO: we can improve smoothing for that by implementing a mean calculation
-    
-    elseif basetype == "poly"
+    if basetype == "poly"
         # The model for fitting baseline to roi signal
         mod = Model(solver=IpoptSolver(print_level=0))
         n::Int = size(p)[1] # number of coefficients
@@ -44,6 +41,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
         best_p::Vector{Float64} = getValue(p_val)
         y_calc::Array{Float64,2} = poly(best_p,x)
         return y[:,1] - y_calc, y_calc# To be continued... Fitting procedure to add there.
+    else
+        error("Not implemented, choose between poly and [to come]")
     end
 end
 
