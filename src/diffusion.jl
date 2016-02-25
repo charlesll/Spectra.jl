@@ -32,7 +32,7 @@ Normalisation to the area between the norm_low_x and norm_high_x frequency is al
 The code returns the x and the y arrays, plus arrays for optimisation: x_input_fit contains the frequency-distance couples and y_input_fit their corresponding y values.
 """
 
-function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,stop_sp::Int,low_x::Float64,high_x::Float64,norm_low_x::Float64,norm_high_x::Float64)
+function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,stop_sp::Int,low_x::Float64,high_x::Float64,norm_low_x::Float64,norm_high_x::Float64,ese_low_x::Float64,ese_high_x::Float64)
    start_sp = start_sp+1
    stop_sp = stop_sp+1
    
@@ -42,19 +42,27 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
    
    x::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),1]
    x_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),1]
-
+ 
    if (start_sp+stop_sp) .> size(x)[1]
-      y::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),start_sp:end]
-      y_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:end]
+        y::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),start_sp:end]
+        y_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:end]
+        ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:end],1) #relative error
+        y_ese_r::Array{Float64} = ese[1,:]./y[:,:]
+        
+        
    else
-      y = data[find(low_x .< data[:,1] .< high_x),start_sp:start_sp+stop_sp]
-      y_sili = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:start_sp+stop_sp]
+        y = data[find(low_x .< data[:,1] .< high_x),start_sp:start_sp+stop_sp]
+        y_sili = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:start_sp+stop_sp]
+        ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:start_sp+stop_sp],1) #relative error
+        y_ese_r = ese[1,:]./y[:,:]
+        
    end
 
    # constructing the good distance vector + x and Y associated values
    steps::Float64 = 0.0
    x_input_fit::Array{Float64} = zeros(length(x),2)
    y_input_fit::Array{Float64} = zeros(length(x),1)
+   ese_input_fit::Array{Float64} = zeros(length(x),1)
    for i = 1:size(y)[2]
       x_temp::Array{Float64} = zeros(length(x),2)
       if i == 1
@@ -62,6 +70,7 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
          x_input_fit[:,2] = x
          y[:,i] = y[:,i]/trapz(x_sili[:,1],y_sili[:,i]) # integration of silicate bands for normalisatio
          y_input_fit[:,1] = y[:,i]
+         ese_input_fit[:,1]  = y[:,i] .* y_ese_r[:,i]
       else
          x_temp[:,1] = steps
          x_temp[:,2] = x
@@ -69,36 +78,38 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
         
          x_input_fit = vcat(x_input_fit,x_temp)
          y_input_fit = vcat(y_input_fit,y[:,i])
-   end
+         ese_input_fit = vcat(ese_input_fit,y[:,i] .* y_ese_r[:,i])
+      end
    steps = steps + distance_step
    end
    
-   return x, y, x_input_fit, y_input_fit
+    return x, y, y_ese_r, x_input_fit, y_input_fit, ese_input_fit
 end
 
 """
-The `peak_diffusion` function allows to define a gaussian peak for which the amplitude is defined by a 1D diffusion law
+The `peak_diffusion` function allows to fit/plot gaussian peaks for which the amplitude is defined by a 1D diffusion law
 Call as:
-    peak_diffusion(distance,temps,w,c0,c1,diffusion,w0,hwhm)
+    peak_diffusion(g_c0::Array{Float64,1},g_c1::Array{Float64,1},g_D::Array{Float64,1}, g_freq::Array{Float64,1}, g_hwhm::Array{Float64,1},x::Array{Float64,2},time::Float64)
 
 where:
-C1 is the concentration imposed, at the diffusive bondary (a.u., float64 number);
-C0 is the initial concentration in the host (a.u., float64 number);
-Distance is the distance in metre from the diffusive bondary (Vector float 64);
-temps is the diffusive time in seconds (float64 number);
-w is the measured frequency (Vector float 64);
-w0 is the peak centre frequency (float64 number);
-hwhm is the peak half-width at middle height (float64 number).
+g_c0 is the vector of concentration imposed, at the diffusive bondary (a.u., float64 number);
+g_c1 is the vector of initial concentration in the host (a.u., float64 number);
+g_D is the vector of diffusivity coefficient, in log units
+g_freq is the vector containing the frequencies fo the peaks
+g_hwhm is the vector containing the hwhm of the peaks
+x is an array containing the distances and associated frequencies
+time is the duration of the run in seconds
 
 The function returns a vector of the values of the peak intensity at the input frequencies.
 
 The current version assumes the peak being a Gaussian peak. Updates will integrate Lorentzian and Pseudo-Voigt peaks.
 """
-function peak_diffusion(distance::Array{Float64,1},temps::Float64,w::Array{Float64,1},c0::Float64,c1::Float64,diffusion::Float64,w0::Float64,hwhm::Float64)
-    amplitude::Array{Float64,1} = (c1 - c0) * erfc(distance[:,1] ./ (2. * sqrt( 10^diffusion * temps))) + c0
-    gaussienne::Array{Float64,1} = exp(-log(2) .* ( (w[:,1]-w0) ./ hwhm ).^2)
-    diff_gauss =amplitude .* gaussienne
-    return diff_gauss
+function peak_diffusion(g_c0::Array{Float64,1},g_c1::Array{Float64,1},g_D::Array{Float64,1}, g_freq::Array{Float64,1}, g_hwhm::Array{Float64,1},x::Array{Float64,2},time::Float64)
+    segments = zeros(size(x)[1],size(g_c0)[1])
+    for i = 1:size(g_c0)[1]
+        segments[:,i] = ((g_c1[i] - g_c0[i]) .* erfc(x[:,1]./(2. .* sqrt( 10.^g_D[i] .* time))) + g_c0[i]) .*exp(-log(2) .* ((x[:,2]-g_freq[i])./g_hwhm[i]).^2)
+    end
+    return sum(segments,2), segments
 end
 
 """
