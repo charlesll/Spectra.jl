@@ -2,19 +2,23 @@
 
 Copyright (c) 2016 Charles Le Losq
 
+email: charles.lelosq@anu.edu.au
+
 Licence MIT: see LICENCE.md
 
-This is a collection of functions in Julia to treat IR/Raman/XANES spectra.
+SpectraJu is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia.
 
-It is particularly focused on large datasets because of the high speed of Julia's, for performing peak fitting along Infrared diffusion profiles for instance.
+It's aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding.
 
-It has access to excellent optimisation algorithms too, and the JuMP interface combined with Ipopt offers a very robust and usefull modelling package.
+It is particularly focused on large datasets because of the high speed of Julia's, e.g. for performing peak fitting along Infrared diffusion profiles.
 
-Examples will be included as notebooks.
+For peak fitting, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with top-notch solvers such as Ipopt.
 
-Package under construction, any help welcome!
+Examples are included as notebooks.
 
-Last modified 23/02/2016
+Package is under construction, any help welcome!
+
+Last modified 26/02/2016
 
 
 
