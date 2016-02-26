@@ -1,4 +1,4 @@
-# SpectraJu
+# Spectra
 
 Copyright (c) 2016 Charles Le Losq
 
