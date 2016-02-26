@@ -8,7 +8,7 @@ include("baseline.jl")
 export peak_diffusion, model, IRdataprep, trapz
 
 #From functions.jl
-export poly, gaussiennes, normal_dist
+export poly, gaussiennes, normal_dist, bootstrap
 
 export baseline
 
