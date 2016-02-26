@@ -1,0 +1,21 @@
+module SpectraJu
+
+using Lib
+
+using BigLib: thing1, thing2
+
+import Base.show
+
+importall OtherLib
+
+export MyTyp
+type MyType
+    x
+end
+
+bar(x) = 2x
+foo(a::MyType) = bar(a.x) + 1
+
+show(io, a::MyType) = print(io, "MyType $(a.x)# package code goes here
+
+end # module
