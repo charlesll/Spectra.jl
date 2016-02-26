@@ -1,4 +1,4 @@
-using SpectraJu
+using Spectra
 using Base.Test
 
 # write your own tests here
