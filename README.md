@@ -6,7 +6,7 @@ email: charles.lelosq@anu.edu.au
 
 Licence MIT: see LICENCE.md
 
-SpectraJu is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia.
+Spectra is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia.
 
 It's aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding.
 
@@ -29,11 +29,11 @@ A common problem is baseline subtraction and peak fitting when dealing with spec
 	using JuMP
 	using PyPlot
 	using Ipopt
-	using SpectraJu
+	using Spectra
 	inputsp = readdlm("./examples/data/LS4.txt", '\t') # we import the spectra
 	
 
-We can remove a baseline with the SpectraJu function "baseline" in two lines:
+We can remove a baseline with the Spectra function "baseline" in two lines:
 
 	roi = [[860.0 870.0]; [1300.0 1400.0]] # the frequencies of the region where we want to fit the baseline
 	y_corr, y_bas = baseline(inputsp[:,1],inputsp[:,2],roi,"poly",[1.0,1.0,1.0]) # the last vector indicates the coefficients of the baseline k0 + k1 * x + k2 * x^2
