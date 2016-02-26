@@ -20,7 +20,7 @@ Bootstrap function
 
 Bootstrap of Raman spectra. We generate new datapoints with the basis of existing data and their standard deviation
 """
-function bootstrap(data::Array{Float64}, ese::Array{Float64},nbsample::Int64):
+function bootstrap(data::Array{Float64}, ese::Array{Float64},nbsample::Int64)
     bootsamples = zeros(size(data)[1],nbsample)
     for i = 1:nbsample
         randn!(bootsamples[:,i]) .* ese[:] + data[:]
