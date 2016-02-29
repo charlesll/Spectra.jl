@@ -1,11 +1,13 @@
-c Delivery-Date:  8 November 1991 16:31 mst
-c Delivery-By:  Network_Server.Daemon (LISTSERV@HEARN.BITNET@UNCANVE)
-c Date:  Friday, 8 November 1991 10:19 mst
-c From:  LISTSERV at HEARN
-c To:  BOGERT at UNCAMULT
 c
 c GCVSPL.FOR, 1986-05-12
-c
+c (C) COPYRIGHT 1985, 1986: H.J. Woltring
+c See gcvspl.licence for the licence disclosure of this code.
+c ####
+c Note of Charles Le Losq:
+c Code initially published in:
+c Woltring, 1986, A FORTRAN package for generalized, cross-validatory spline smoothing and differentiation. Adv. Eng. Softw. 8:104-113. 
+c Initial code available on www.netlib.org, other versions are available on https://isbweb.org/software/sigproc.html
+c This is a Fortran 77 version downloaded on https://isbweb.org/software/sigproc.html
 c***********************************************************************
 c
 c SUBROUTINE GCVSPL (REAL*8)
@@ -251,9 +253,6 @@ c
 c
       subroutine gcvspl(x, y, ny, wx, wy, m, n, k, md, val, c, nc, wk, 
      &ier)
-cf2py intent(out) :: C
-cf2py intent(out) :: WK
-cf2py intent(out) :: IER
       implicit double precision (o-z, a-h)
       parameter (ratio = 2d0, tau = 1.618033983d0, ibwe = 7, zero = 0d0
      &, half = 5d-1, one = 1d0, tol = 1d-6, eps = 1d-15, epsinv = one / 
