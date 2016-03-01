@@ -35,15 +35,26 @@ function poly(p::Vector{Float64},x::Array{Float64})
     end
     return sum(segments,2)
 end
-
-#For Gaussian peaks in spectra:
-function gaussiennes(g_amplitudes::Array{Float64},g_frequency::Array{Float64},g_hwhm::Array{Float64},x::Array{Float64})
+"""
+For Gaussian peaks in spectra
+	gaussiennes(g_amplitudes::Array{Float64},g_frequency::Array{Float64},g_hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
+"""
+function gaussiennes(g_amplitudes::Array{Float64},g_frequency::Array{Float64},g_hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
     segments = zeros(size(x)[1],size(g_amplitudes)[1])
-    for i = 1:size(g_amplitudes)[1]
-        segments[:,i] = g_amplitudes[i] .*exp(-log(2) .* ((x[:,1]-g_frequency[i])./g_hwhm[i]).^2)
+    if style == "None"
+        for i = 1:size(g_amplitudes)[1]
+            segments[:,i] = g_amplitudes[i] .*exp(-log(2) .* ((x[:,1]-g_frequency[i])./g_hwhm[i]).^2)
+        end
+    elseif style == "poly"
+        for i = 1:size(g_amplitudes)[1]
+            segments[:,i] = poly(squeeze(g_amplitudes[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(g_frequency[i,:],1),x[:,2])))./poly(squeeze(g_hwhm[i,:],1),x[:,2])).^2)
+        end	    	
+    else
+        error("Not implemented, see documentation")
     end
     return sum(segments,2), segments
 end
+
 
 #The real normal distribution / gaussian function
 function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
