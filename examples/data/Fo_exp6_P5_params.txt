@@ -1,7 +1,7 @@
 step (metre)	5.0e-6
 time (hours)	20.0
 start_spectra	22
-stop_spectra	82
+stop_spectra	200
 low_x (cm-1)	3560
 high_x (cm-1)	3630
 first_bound_norm (cm-1)	1625
@@ -9,8 +9,8 @@ second_bound_norm (cm-1)	2150
 first_bound_err (cm-1)	3560
 last_bound_err (cm-1)	3550
 number_peaks	5
-c0	0.00001,0.00001,0.00001,0.00001,0.00001
-c1	0.00003,0.0001,0.00007,0.0003,0.00004
+c0	0.1,0.1,0.1,0.1,0.1
+c1	1.0,1.0,1.0,1.0,1.0
 D	-13.5,-13.5,-11.5,-13.5,-11.5
 frequencies	3566.0,3579.0,3591.0,3612.5,3624.0
 hwhm	2.5,2.5,2.5,2.5,2.5

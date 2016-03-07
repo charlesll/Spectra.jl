@@ -33,8 +33,6 @@ The code returns the x and the y arrays, plus arrays for optimisation: x_input_f
 """
 
 function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,stop_sp::Int,low_x::Float64,high_x::Float64,norm_low_x::Float64,norm_high_x::Float64,ese_low_x::Float64,ese_high_x::Float64)
-   start_sp = start_sp+1
-   stop_sp = stop_sp+1
    
    if data[end,1] <= data[1,1]
       data=data[end:-1:1,:]
@@ -43,19 +41,21 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
    x::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),1]
    x_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),1]
  
-   if (start_sp+stop_sp) .> size(x)[1]
+   if stop_sp .>= size(x)[1]
         y::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),start_sp:end]
         y_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:end]
-        ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:end],1) #relative error
-        y_ese_r::Array{Float64} = ese[1,:]./y[:,:]
-        
-        
+        ese::Array{Float64} =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:end],1) #relative error
+        y_ese_r::Array{Float64} = ese[1,:]./y[:,:]  
    else
-        y = data[find(low_x .< data[:,1] .< high_x),start_sp:start_sp+stop_sp]
-        y_sili = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:start_sp+stop_sp]
-        ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:start_sp+stop_sp],1) #relative error
+        y = data[find(low_x .< data[:,1] .< high_x),start_sp:stop_sp]
+        y_sili = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:stop_sp]
+        ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:stop_sp],1) #relative error
         y_ese_r = ese[1,:]./y[:,:]
         
+   end
+   
+   for i = 1:size(y)[2]
+       y[:,i] = y[:,i]/trapz(x_sili[:,1],y_sili[:,i]); # integration of silicate bands for normalisation
    end
 
    # constructing the good distance vector + x and Y associated values
@@ -68,13 +68,11 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
       if i == 1
          x_input_fit[:,1] = steps
          x_input_fit[:,2] = x
-         y[:,i] = y[:,i]/trapz(x_sili[:,1],y_sili[:,i]) # integration of silicate bands for normalisatio
          y_input_fit[:,1] = y[:,i]
          ese_input_fit[:,1]  = y[:,i] .* y_ese_r[:,i]
       else
          x_temp[:,1] = steps
          x_temp[:,2] = x
-         y[:,i] = y[:,i]/trapz(x_sili[:,1],y_sili[:,i]) # integration of silicate bands for normalisatio
         
          x_input_fit = vcat(x_input_fit,x_temp)
          y_input_fit = vcat(y_input_fit,y[:,i])
