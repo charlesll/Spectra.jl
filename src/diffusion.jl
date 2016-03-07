@@ -36,6 +36,7 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
    
    if data[end,1] <= data[1,1]
       data=data[end:-1:1,:]
+      data[data[:,:] .== 0]= 1e-20# to avoid pure 0 values
    end
    
    x::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),1]

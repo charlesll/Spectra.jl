@@ -23,7 +23,7 @@ Bootstrap of Raman spectra. We generate new datapoints with the basis of existin
 function bootstrap(data::Array{Float64}, ese::Array{Float64},nbsample::Int64)
     bootsamples = zeros(size(data)[1],nbsample)
     for i = 1:nbsample
-        randn!(bootsamples[:,i]) .* ese[:] + data[:]
+        bootsamples[:,i] = randn!(bootsamples[:,i]) .* ese[:] + data[:]
     end
     return bootsamples
 end
