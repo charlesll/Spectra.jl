@@ -16,16 +16,22 @@
 
 """
 Bootstrap function
-    bootstrap(data::Array{Float64}, ese::Array{Float64},nbsample::Int64)
+bootstrap(x::Array{Float64}, y::Array{Float64},nbsample::Int64)
 
-Bootstrap of Raman spectra. We generate new datapoints with the basis of existing data and their standard deviation
+Non-parametric nootstrap of data. We generate new datapoints with the basis of existing data. 
+
+TODO: some parametric boostrapping with the normal distribution?
 """
-function bootstrap(data::Array{Float64}, ese::Array{Float64},nbsample::Int64)
-    bootsamples = zeros(size(data)[1],nbsample)
-    for i = 1:nbsample
-        bootsamples[:,i] = randn!(bootsamples[:,i]) .* ese[:] + data[:]
-    end
-    return bootsamples
+function bootsample(x::Array{Float64}, y::Array{Float64},nbsample::Int64)
+    vect = collect(1:size(x)[1]) # for real bootstrapping
+    idx = sample(vect,size(vect)[1],replace=true) #resampling data with replacement...
+    b_x_f = x[idx,:] # we pick the right x
+    b_y_f = y[idx,:] # we pick the right y
+    # for the future: parametric bootstrap
+    #for i = 1:nbsample
+    #    bootsamples[:,i] = randn!(bootsamples[:,i]) .* ese[:] + data[:]
+    #end
+    return b_x_f, b_y_f
 end
 
 function poly(p::Vector{Float64},x::Array{Float64})

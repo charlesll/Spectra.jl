@@ -33,10 +33,20 @@ function trapz{Tx<:Number, Ty<:Number}(x::Vector{Tx}, y::Vector{Ty})
     return trapz_int
 end
 
-#function trapz(y, x)
-#    r = 0
-#    for i = 1:(length(x)-1)
-#        r += 0.5 .* (x[i+1]-x[i]).*(y[i+1] + y[i])          
-#    end
-#    return r
-#end
+"""
+    function gaussianarea(Amplitude::Array{Float64},HWHM::Array{Float64}; eseAmplitude::Array{Float64} = 0, eseHWHM::Array{Float64} = 0)
+Return the integrated itnensity (area) of a gaussian with inputed amplitude and HWHM.
+Options are eseAmplitude (0 by default) and eseHWHM (0 by default).
+
+If Amplitude and HWHM are arrays, outputs will be arrays.
+"""
+function gaussianarea(Amplitude::Array{Float64},HWHM::Array{Float64}; eseAmplitude::Array{Float64} = 0, eseHWHM::Array{Float64} = 0)
+    
+    area::Array{Float64} = sqrt(pi./log(2)).*Amplitude.*HWHM
+    if (eseAmplitude == 0) && (eseHWHM == 0)
+        esearea::Array{Float64} = 0
+    else
+        esearea = sqrt((pi./log(2).*HWHM).^2 .* eseAmplitude.^2 + (pi./log(2).*Amplitude).^2 .* eseHWHM.^2)
+    end
+    return area, esearea
+end
