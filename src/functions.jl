@@ -16,21 +16,35 @@
 
 """
 Bootstrap function
-bootstrap(x::Array{Float64}, y::Array{Float64},nbsample::Int64)
+bootstrap(x::Array{Float64}, y::Array{Float64};boottype = "np")
 
-Non-parametric nootstrap of data. We generate new datapoints with the basis of existing data. 
+Bootstrap of data. We generate new datapoints with the basis of existing data. Two options: non-parametric and parametric bootstrapping.
 
-TODO: some parametric boostrapping with the normal distribution?
+type = "np": Non-parametric bootstrap is made by re-sampling with replacement the data.
+
+type = "p": Parametric bootstrapping is made by re-sampling the data from randowmly picking new values in their probability density distribution.
+For now, only normal PDF are supported.
+
+TODO: proposing other error PDF for parametric bootstrapping.
+
 """
-function bootsample(x::Array{Float64}, y::Array{Float64},nbsample::Int64)
-    vect = collect(1:size(x)[1]) # for real bootstrapping
-    idx = sample(vect,size(vect)[1],replace=true) #resampling data with replacement...
-    b_x_f = x[idx,:] # we pick the right x
-    b_y_f = y[idx,:] # we pick the right y
-    # for the future: parametric bootstrap
-    #for i = 1:nbsample
-    #    bootsamples[:,i] = randn!(bootsamples[:,i]) .* ese[:] + data[:]
-    #end
+function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::ASCIIString = "np", ese::Array{Float64} = 0.0)
+    testx = size(ese)[1]
+    testy = size(ese)[1]
+    teste = size(ese)[1]
+    if boottype == "np" && testx == testy
+        vect = collect(1:size(x)[1]) # for real bootstrapping
+        idx = sample(vect,size(vect)[1],replace=true) #resampling data with replacement...
+        b_x_f = x[idx,:] # we pick the right x
+        b_y_f = y[idx,:] # we pick the right y
+    elseif boottype == "p" && testx == testy && testx == teste
+	b_x_f = x
+	b_y_f = ones(size(y))
+	b_y_f = randn!(b_y_f[:,:]) .* ese[:,:] + y[:,:]
+    else 
+	error("Something is wrong. Check size of x, y and ese as well as the boottype (either p or np). Providing an ese array is mandatory for parametric bootstrapping")
+    end
+    
     return b_x_f, b_y_f
 end
 
