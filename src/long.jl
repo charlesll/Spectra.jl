@@ -29,21 +29,21 @@ function long(data::Array{Float64},temp::Float64,wave::Float64)
     nu0::Float64 = 1.0./wave*1e9     # nu0 laser is in m-1
     T::Float64 = temp + 273.15    # K temperature
 
-    x::Float64 = data[]:,1]
-    y::Float64 = data[:,2]
+    x::Array{Float64} = data[:,1]
+    y::Array{Float64} = data[:,2]
 
     # Calculate the error on data as sqrt(y). If y <= 0, then error = abs(y).
-    ese::Float64 = sqrt(abs(y))./abs(y) # relative errors
+    ese::Array{Float64} = sqrt(abs(y))./abs(y) # relative errors
 
     # then we proceed to the correction (Neuville and Mysen, 1996; Le Losq et al., 2012)
-    nu::Float64 = 100.0.*x # cm-1 -> m-1 Raman shift
-    t0::Float64 = nu0.^3.*nu./(nu0-nu)
-    t1::Float64 = 1 - exp(-h.*c.*nu./(k.*T)) # c in m/s  : t1 dimensionless
-    long::Float64 = y.*t0.*t1;% pour les y
+    nu::Array{Float64} = 100.0.*x # cm-1 -> m-1 Raman shift
+    t0::Array{Float64} = nu0.^3.*nu./(nu0-nu)
+    t1::Array{Float64} = 1 - exp(-h.*c.*nu./(k.*T)) # c in m/s  : t1 dimensionless
+    long::Array{Float64} = y.*t0.*t1; # pour les y
     
     long = long./trapz(x,long) # area normalisation
 
-    eselong::Float64 = ese.*long # error calculation
+    eselong::Array{Float64} = ese.*long # error calculation
     
     return x, long, eselong
-
+end
