@@ -20,6 +20,7 @@ include("integrale.jl")
 include("functions.jl")
 include("baseline.jl")
 include("bootstrap.jl")
+include("long.jl")
 
 #From integrale.jl
 export trapz, gaussianarea
@@ -35,5 +36,8 @@ export baseline
 
 #From bootstrap
 export bootsample, bootperf
+
+#From long
+export long
 
 end # module
