@@ -56,7 +56,7 @@ bootperf: reading the bootstrap parameter array for peak fitting
 
     bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", parameter::Int64 = 0, feature::Int64 = 0, histogram_step::Int64 = 100, savefigures::ASCIIString = "False", save_bootrecord::ASCIIString = "Boot_record.pdf", save_histogram::ASCIIString = "Boot_histogram.pdf")
 
-params_boot[i,j,k]: array with i the bootstrrap experiment, j the parameter and k the feature being calculated (e.g., a peak during peak fitting)
+params_boot[i,j] or [i,j,k]: array with i the bootstrrap experiment, j the parameter and k the feature being calculated (e.g., a peak during peak fitting)
 
 plotting: switch to plotting mode ("True") or not ("False"). If true, parameter and feature must be provided, otherwise an error message is returned. 
 
@@ -78,72 +78,146 @@ function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", p
         error("Error: plotting should be set to True or False")
     end
     
-    # bootstrap performance recorders
     nb_boot::Int64 = size(params_boot)[1]
-    mean_record::Array{Float64} = zeros(size(params_boot))
-    std_record::Array{Float64} = zeros(size(params_boot))
-    for k = 1:nb_boot
-        for j = 1:size(params_boot)[2]
-	    for i = 1:size(params_boot)[3]
-	        if k == 1
-	            mean_record[k,j,i] = params_boot[k,j,i]
-		    std_record[k,j,i] = 0
-	        else
-	            mean_record[k,j,i] = sum(mean(params_boot[1:k,j,i],1))
-		    std_record[k,j,i] = sum(std(params_boot[1:k,j,i],1))
-	        end
-	    end
-	end
-    end
+    nb_param::Int64 = size(params_boot)[2]
     
-    if plotting == "True" # Graphics
-        # tests:
-        if savefigures != "True" && savefigures != "False"
-            error("savefigure should be set to True or False.")
-        end
-        if isa(save_bootrecord ,ASCIIString) != true
-            error("Error: save_bootrecord is not a valid savename. Check it is a string of characters.")
-        end
-        if isa(save_bootrecord ,ASCIIString) != true
-            error("Error: save_histogram is not a valid savename. Check it is a string of characters.")
-        end
+   if ndims(params_boot) == 2 #### TWO DIMENSIONS PARAMS_BOOT
+	   
+       mean_record::Array{Float64} = zeros(size(params_boot))
+       std_record::Array{Float64} = zeros(size(params_boot))
+       for k = 1:nb_boot
+           for j = 1:size(params_boot)[2]
+       	        if k == 1
+       	            mean_record[k,j] = params_boot[k,j]
+       		    std_record[k,j] = 0
+       	        else
+       	            mean_record[k,j] = sum(mean(params_boot[1:k,j],1))
+       		    std_record[k,j] = sum(std(params_boot[1:k,j],1))
+       	        end
+       	    end
+       	end
         
-        if parameter == 0 || feature == 0 || histogram_step == 0
-            error("parameter, feature or histogram_step appear to have been set to 0...") 
-        elseif parameter > size(params_boot)[2]
-            error("Value entered for parameter is too high.")
-        elseif feature > size(params_boot)[3]
-	    error("Value entered for feature is too high.")	
-        end   
+    
+       if plotting == "True" # Graphics
+           # tests:
+           if savefigures != "True" && savefigures != "False"
+               error("savefigure should be set to True or False.")
+           end
+           if isa(save_bootrecord ,ASCIIString) != true
+               error("Error: save_bootrecord is not a valid savename. Check it is a string of characters.")
+           end
+           if isa(save_bootrecord ,ASCIIString) != true
+               error("Error: save_histogram is not a valid savename. Check it is a string of characters.")
+           end
+        
+           if parameter == 0 || histogram_step == 0
+               error("parameter or histogram_step appear to have been set to 0...") 
+           elseif parameter > size(params_boot)[2]
+               error("Value entered for parameter is too high.")
+           end   
             
 	        
-        fig = figure()
-        #title("Mean and Std of parameter $(parameter), feature $(feature)",fontsize = 10, fontweight = "bold", fontname="Arial")
-        subplot(121)
-        plot(1:nb_boot, mean_record[:,parameter,feature],label="Mean")
-        xlabel("Number of iterations during bootstrap",fontsize = 10, fontweight = "bold", fontname="Arial")
-        ylabel("Mean value",fontsize = 10, fontweight = "bold", fontname="Arial")
+           fig = figure()
+           #title("Mean and Std of parameter $(parameter), feature $(feature)",fontsize = 10, fontweight = "bold", fontname="Arial")
+           subplot(121)
+           plot(1:nb_boot, mean_record[:,parameter],label="Mean")
+           xlabel("Number of iterations during bootstrap",fontsize = 10, fontweight = "bold", fontname="Arial")
+           ylabel("Mean value",fontsize = 10, fontweight = "bold", fontname="Arial")
 
-        subplot(122)
-        plot(1:nb_boot, std_record[:,parameter,feature],label="Std")
-        xlabel("Number of iterations during bootstrap",fontsize = 10, fontweight = "bold", fontname="Arial")
-        ylabel("Standard deviation",fontsize = 10, fontweight = "bold", fontname="Arial")
+           subplot(122)
+           plot(1:nb_boot, std_record[:,parameter],label="Std")
+           xlabel("Number of iterations during bootstrap",fontsize = 10, fontweight = "bold", fontname="Arial")
+           ylabel("Standard deviation",fontsize = 10, fontweight = "bold", fontname="Arial")
 
-        if savefigures == "True"
-            savefig(save_bootrecord)
-        end
+           if savefigures == "True"
+               savefig(save_bootrecord)
+           end
         
-        fig2= figure()
-        h = plt[:hist](params_boot[:,parameter,feature],100)   
-        #title("Histogram of parameter $(parameter), feature $(feature)",fontsize = 10, fontweight = "bold", fontname="Arial")
-        xlabel("Parameter value",fontsize = 10, fontweight = "bold", fontname="Arial")
-        ylabel("Number of bootstrap values",fontsize = 10, fontweight = "bold", fontname="Arial")
+           fig2= figure()
+           h = plt[:hist](params_boot[:,parameter],100)   
+           #title("Histogram of parameter $(parameter), feature $(feature)",fontsize = 10, fontweight = "bold", fontname="Arial")
+           xlabel("Parameter value",fontsize = 10, fontweight = "bold", fontname="Arial")
+           ylabel("Number of bootstrap values",fontsize = 10, fontweight = "bold", fontname="Arial")
 		
-        if savefigures == "True"
-            savefig(save_histogram)
-	end	
+           if savefigures == "True"
+               savefig(save_histogram)
+       	   end	
 	
-    end # end if plotting
+       end # end if plotting
     
-    return mean_record, std_record
+       return mean_record, std_record	
+       
+       
+   elseif ndims(params_boot) == 3 #### THREE DIMENSIONS PARAMS_BOOT
+       mean_record = zeros(size(params_boot))
+       std_record = zeros(size(params_boot))
+       for k = 1:nb_boot
+           for j = 1:size(params_boot)[2]
+   	    for i = 1:size(params_boot)[3]
+   	        if k == 1
+   	            mean_record[k,j,i] = params_boot[k,j,i]
+   		    std_record[k,j,i] = 0
+   	        else
+   	            mean_record[k,j,i] = sum(mean(params_boot[1:k,j,i],1))
+   		    std_record[k,j,i] = sum(std(params_boot[1:k,j,i],1))
+   	        end
+   	    end
+   	end
+       end
+    
+       if plotting == "True" # Graphics
+           # tests:
+           if savefigures != "True" && savefigures != "False"
+               error("savefigure should be set to True or False.")
+           end
+           if isa(save_bootrecord ,ASCIIString) != true
+               error("Error: save_bootrecord is not a valid savename. Check it is a string of characters.")
+           end
+           if isa(save_bootrecord ,ASCIIString) != true
+               error("Error: save_histogram is not a valid savename. Check it is a string of characters.")
+           end
+        
+           if parameter == 0 || feature == 0 || histogram_step == 0
+               error("parameter, feature or histogram_step appear to have been set to 0...") 
+           elseif parameter > size(params_boot)[2]
+               error("Value entered for parameter is too high.")
+           elseif feature > size(params_boot)[3]
+   	    error("Value entered for feature is too high.")	
+           end   
+            
+	        
+           fig = figure()
+           #title("Mean and Std of parameter $(parameter), feature $(feature)",fontsize = 10, fontweight = "bold", fontname="Arial")
+           subplot(121)
+           plot(1:nb_boot, mean_record[:,parameter,feature],label="Mean")
+           xlabel("Number of iterations during bootstrap",fontsize = 10, fontweight = "bold", fontname="Arial")
+           ylabel("Mean value",fontsize = 10, fontweight = "bold", fontname="Arial")
+
+           subplot(122)
+           plot(1:nb_boot, std_record[:,parameter,feature],label="Std")
+           xlabel("Number of iterations during bootstrap",fontsize = 10, fontweight = "bold", fontname="Arial")
+           ylabel("Standard deviation",fontsize = 10, fontweight = "bold", fontname="Arial")
+
+           if savefigures == "True"
+               savefig(save_bootrecord)
+           end
+        
+           fig2= figure()
+           h = plt[:hist](params_boot[:,parameter,feature],100)   
+           #title("Histogram of parameter $(parameter), feature $(feature)",fontsize = 10, fontweight = "bold", fontname="Arial")
+           xlabel("Parameter value",fontsize = 10, fontweight = "bold", fontname="Arial")
+           ylabel("Number of bootstrap values",fontsize = 10, fontweight = "bold", fontname="Arial")
+		
+           if savefigures == "True"
+               savefig(save_histogram)
+   	end	
+	
+       end # end if plotting
+    
+       return mean_record, std_record
+        
+    elseif ndims(params_boot) > 3
+	error("Not implemented, params_boot should have 3 dimensions, maximum.")
+    end
+      
 end # end function    
