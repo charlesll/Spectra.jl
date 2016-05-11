@@ -29,7 +29,7 @@ export trapz, gaussianarea
 export peak_diffusion, model, IRdataprep 
 
 #From functions.jl
-export poly, gaussiennes, normal_dist 
+export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist 
 
 #From baseline.jl
 export baseline

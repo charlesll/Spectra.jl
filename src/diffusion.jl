@@ -42,7 +42,7 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,st
    x::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),1]
    x_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),1]
  
-   if stop_sp .>= size(x)[1]
+   if stop_sp .>= size(data)[2]
         y::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),start_sp:end]
         y_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:end]
         ese::Array{Float64} =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:end],1) #relative error

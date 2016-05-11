@@ -23,23 +23,76 @@ function poly(p::Vector{Float64},x::Array{Float64})
 end
 """
 For Gaussian peaks in spectra
-	gaussiennes(g_amplitudes::Array{Float64},g_frequency::Array{Float64},g_hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
+	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
 """
-function gaussiennes(g_amplitudes::Array{Float64},g_frequency::Array{Float64},g_hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
-    segments = zeros(size(x)[1],size(g_amplitudes)[1])
+function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+    segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"
-        for i = 1:size(g_amplitudes)[1]
-            segments[:,i] = g_amplitudes[i] .*exp(-log(2) .* ((x[:,1]-g_frequency[i])./g_hwhm[i]).^2)
+        for i = 1:size(amplitude)[1]
+            segments[:,i] = amplitude[i] .*exp(-log(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2)
         end
     elseif style == "poly"
-        for i = 1:size(g_amplitudes)[1]
-            segments[:,i] = poly(squeeze(g_amplitudes[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(g_frequency[i,:],1),x[:,2])))./poly(squeeze(g_hwhm[i,:],1),x[:,2])).^2)
+        for i = 1:size(amplitude)[1]
+            segments[:,i] = poly(squeeze(amplitude[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2)
         end	    	
     else
         error("Not implemented, see documentation")
     end
     return sum(segments,2), segments
 end
+
+function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+    segments = zeros(size(x)[1],size(amplitude)[1])
+    if style == "None"
+        for i = 1:size(amplitude)[1]
+            segments[:,i] = amplitude[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2)
+        end
+    elseif style == "poly"
+        for i = 1:size(amplitude)[1]
+            segments[:,i] = poly(squeeze(amplitude[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2)
+        end	    	
+    else
+        error("Not implemented, see documentation")
+    end
+    return sum(segments,2), segments
+end
+
+function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+    segments = zeros(size(x)[1],size(a1)[1])
+    if style == "None"
+        for i = 1:size(a1)[1]
+            segments[:,i] = a1[i] ./ (1 + ((x[:,1]-a2[i])./a3[i]).^2 .* (2.0.^(1./a4[i]) - 1.0))
+        end
+    elseif style == "poly"
+        for i = 1:size(a1)[1]
+            segments[:,i] = poly(squeeze(a1[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(a2[i,:],1),x[:,2])))./poly(squeeze(a3[i,:],1),x[:,2])).^2 .* (2.0.^(1./squeeze(a4[i,:],1)) - 1.0))
+        end	    	
+    else
+        error("Not implemented, see documentation")
+    end
+    return sum(segments,2), segments
+end
+
+function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},ps_fraction::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+    segments = zeros(size(x)[1],size(amplitude)[1])
+	test1 = find(ps_fraction .<0.0)
+	test2 = find(ps_fraction .>1.0)
+    if size(test1)[1] != 0 || size(test2)[1] != 0
+		error("ps_fraction should be comprised between 0 and 1")
+	end
+	if style == "None"
+		for i = 1:size(amplitude)[1]
+			segments[:,i] =  ps_fraction[i].* ( amplitude[i] .*exp(-log(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2) )   + (1- ps_fraction) .* amplitude[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2)
+        end
+    elseif style == "poly"
+        for i = 1:size(amplitude)[1]
+			segments[:,i] =  squeeze(ps_fraction[i,:]) .* (poly(squeeze(amplitude[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2))     +      (1- squeeze(ps_fraction[i,:])) .* poly(squeeze(amplitude[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2) 
+        end	    	
+    else
+        error("Not implemented, see documentation") 
+	end
+    return sum(segments,2), segments
+end	
 
 
 #The real normal distribution / gaussian function
