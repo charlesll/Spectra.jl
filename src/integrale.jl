@@ -40,11 +40,11 @@ Options are eseAmplitude (0 by default) and eseHWHM (0 by default).
 
 If Amplitude and HWHM are arrays, outputs will be arrays.
 """
-function gaussianarea(Amplitude::Array{Float64},HWHM::Array{Float64}; eseAmplitude::Array{Float64} = 0, eseHWHM::Array{Float64} = 0)
+function gaussianarea(Amplitude::Array{Float64},HWHM::Array{Float64}; eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
     
     area::Array{Float64} = sqrt(pi./log(2)).*Amplitude.*HWHM
-    if (eseAmplitude == 0) && (eseHWHM == 0)
-        esearea::Array{Float64} = 0
+    if (eseAmplitude == 0.0) && (eseHWHM == 0.0)
+        esearea::Array{Float64} = 0.0
     else
         esearea = sqrt((pi./log(2).*HWHM).^2 .* eseAmplitude.^2 + (pi./log(2).*Amplitude).^2 .* eseHWHM.^2)
     end
