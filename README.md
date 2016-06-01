@@ -4,6 +4,8 @@ Copyright (c) 2016 Charles Le Losq
 
 email: charles.lelosq@anu.edu.au
 
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.53940.svg)](http://dx.doi.org/10.5281/zenodo.53940)
+
 Licence MIT: see LICENCE.md
 
 Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia.
@@ -27,13 +29,13 @@ Last modified 19/03/2016
 
 A common problem is baseline subtraction and peak fitting when dealing with spectra. After calling the libraries and importing a spectrum like:
 
-	
+
 	using JuMP
 	using PyPlot
 	using Ipopt
 	using Spectra
 	inputsp = readdlm("./examples/data/LS4.txt", '\t') # we import the spectra
-	
+
 
 We can remove a baseline with the Spectra function "baseline" in two lines:
 
@@ -41,7 +43,7 @@ We can remove a baseline with the Spectra function "baseline" in two lines:
 	y_corr, y_bas = baseline(inputsp[:,1],inputsp[:,2],roi,"poly",[1.0,1.0,1.0]) # the last vector indicates the coefficients of the baseline k0 + k1 * x + k2 * x^2
 
 A model for fitting gaussian peaks to the spectrum can be easily built with JuMP (https://jump.readthedocs.org/en/latest/):
-	
+
 	mod = Model(solver=IpoptSolver(print_level=0)) # we build a model, initialising the optimiser to Ipopt (https://projects.coin-or.org/Ipopt)
 	n = size(x)[1] # number of data
 	m = 5 #number of peaks, can be modified!
@@ -54,12 +56,12 @@ A model for fitting gaussian peaks to the spectrum can be easily built with JuMP
 	setValue(g_hwhm[i=1:m],[30,30,30,30,30])
 	#We write the model expression that is a sum of Gaussian peaks, and then the objective function that is the least-square deviation function:
 	@defNLExpr(g_mod[j=1:n],sum{g_amplitudes[i] *exp(-log(2) * ((x[j]-g_frequency[i])/g_hwhm[i])^2), i = 1:m})
-	@setNLObjective(mod,Min,sum{(g_mod[j] - y[j])^2, j=1:n}) 
+	@setNLObjective(mod,Min,sum{(g_mod[j] - y[j])^2, j=1:n})
 	#And we ask to solve it:
 	status = solve(mod)
-	
 
-The "gaussiennes" function allows to get the values fo the peaks after the fit for instance: 
+
+The "gaussiennes" function allows to get the values fo the peaks after the fit for instance:
 
 	model_peaks, peaks = gaussiennes(amplitudes,frequency,hwhm,x) # we construct the model representation and the individual peaks
 
