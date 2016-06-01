@@ -27,6 +27,10 @@ Everything shoul install without trouble. Requirements in Spectra.jl are extensi
 
     Pkg.add("Spectra.jl")
 
+In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Therefore, a good thing will be to install it before installing Julia. Anaconda Python provides a nice, fully-featured Python distribution with MatplotLib, SciPy and Numpy. Follow installation instructions here:
+
+https://www.continuum.io/downloads
+
 Before Starting
 ==================
 
