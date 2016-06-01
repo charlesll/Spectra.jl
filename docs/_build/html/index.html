@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to Spectra.jl’s documentation! &mdash; Spectra.jl 0.0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Spectra.jl 0.0.5 documentation" href="#" />
+    <link rel="next" title="Baseline subtraction" href="Baselines.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-spectra-jl-s-documentation">
+<h1>Welcome to Spectra.jl&#8217;s documentation!<a class="headerlink" href="#welcome-to-spectra-jl-s-documentation" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment written with the Julia programming language (<a class="reference external" href="http://julialang.org/">http://julialang.org/</a>). It&#8217;s aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding. Therefore, Spectra.jl is aimed to be used explicitly with other packages like JuMP for building models (see <a class="reference external" href="http://www.juliaopt.org/">http://www.juliaopt.org/</a> for further details on optimisation under Julia). The key is to provide functions for simplifying the life of the spectroscopist, while still leaving him all the freedom offered by treating data with a performant computer language.</p>
+<p>Spectra.jl is particularly focused on large datasets because of the high speed of Julia&#8217;s, e.g. for performing peak fitting along Infrared diffusion profiles. For peak fitting for instance, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with solvers such as Ipopt or NLopt.</p>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>Two ways of using Spectra.jl: [1] with using a cloud-computing approach and [2] with installing everything on your computer.</p>
+<p>[1] JuliaBox (<a class="reference external" href="https://www.juliabox.org/">https://www.juliabox.org/</a>) allows you to run Julia in your browser. You still need to add Spectra.jl. To do so, run a notebook, and in the first instance, type</p>
+<blockquote>
+<div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
+<p>Everything shoul install without trouble. Requirements in Spectra.jl are extensive and will provide you all the packages needed by Spectra.jl&#8217;s functions and examples.</p>
+<p>[2] You can download the current version of Julia and follow the installation instruction here: <a class="reference external" href="http://julialang.org/downloads/">http://julialang.org/downloads/</a> . Then, run</p>
+<blockquote>
+<div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
+</div>
+<div class="section" id="before-starting">
+<h1>Before Starting<a class="headerlink" href="#before-starting" title="Permalink to this headline">¶</a></h1>
+<p>Using Julia and Spectra.jl for processing your data is quite similar to Matlab, with the flexibility offered by the open-source and free character of Julia. Reading the docs is strongly recommended. A good start will be to read the docs of Julia itself:</p>
+<p><a class="reference external" href="http://docs.julialang.org/en/release-0.4/">http://docs.julialang.org/en/release-0.4/</a></p>
+<p>Programming can be done locally using your browser and the IJulia notebooks, very similar to the IPython ones. Please follow the instructions there to do so:</p>
+<p><a class="reference external" href="https://github.com/JuliaLang/IJulia.jl">https://github.com/JuliaLang/IJulia.jl</a></p>
+<p>For a Matlab-like interface, you can use Atom with Juno. Follow all the instructions at this link to install this interactive developing environment:</p>
+<p><a class="reference external" href="http://junolab.org/">http://junolab.org/</a></p>
+<p>For maintaining your packages up-to-date, something critical with the fast evolution of Julia packages, I suggest running each day of Julia use the update command:</p>
+<blockquote>
+<div>Pkg.update()</div></blockquote>
+<p>For further information about installing packages, please have a read at:</p>
+<p><a class="reference external" href="http://docs.julialang.org/en/release-0.4/manual/packages/">http://docs.julialang.org/en/release-0.4/manual/packages/</a></p>
+<p>Any help developing and maintaining this Spectra.jl package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra.jl are not exhaustive, and a little help to add new ones will be more that welcome.</p>
+</div>
+<div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Baselines.html">Baseline subtraction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Baselines.html#baseline-subtraction-function">Baseline subtraction function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Baselines.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Baselines.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Baselines.html#to-do">To Do</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Integration.html">Integration functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Integration.html#to-do">To Do</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Functions.html">Available Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Functions.html#function-poly">Function poly</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Functions.html#function-gaussiennes">Function gaussiennes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Functions.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Functions.html#functions-lorentziennes-pseudovoigts-pearson7-normal-dist">Functions lorentziennes, pseudovoigts, pearson7, normal_dist:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="PeakFitting.html">Peak fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to Spectra.jl&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#before-starting">Before Starting</a></li>
+<li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="Baselines.html" title="next chapter">Baseline subtraction</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Charles Le Losq.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
