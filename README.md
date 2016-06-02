@@ -1,6 +1,6 @@
 # Spectra.jl
 
-Copyright (c) 2016 Charles Le Losq
+Copyright (c) 2016 Dr. Charles Le Losq
 
 email: charles.lelosq@anu.edu.au
 
@@ -8,24 +8,15 @@ email: charles.lelosq@anu.edu.au
 
 Licence MIT: see LICENCE.md
 
-Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia.
+Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia. Spectra.jl aim is to provide the simplest way to perform actions like baseline fitting and removal, or peak fitting for instance, while respecting the freedom offered by data treatment through using a computer code instead of a Graphic User Interface.
 
-See the github wiki for further information.
-
-Spectra.jl aim is to provide the simplest way to perform actions like baseline fitting and removal, or peak fitting for instance, while respecting the freedom offered by data treatment through using a computer code instead of a Graphic User Interface.
-
-It is particularly focused on large datasets because of the high speed of Julia's, e.g. for performing peak fitting along Infrared diffusion profiles.
-
-For peak fitting, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with top-notch solvers such as Ipopt.
-
-Examples are included as notebooks.
+Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ .
 
 Package is under construction, any help welcome!
 
-Last modified 19/03/2016
+Last modified 2/06/2016
 
-
-# Usage Examples
+# Quick Usage Examples
 
 A common problem is baseline subtraction and peak fitting when dealing with spectra. After calling the libraries and importing a spectrum like:
 
