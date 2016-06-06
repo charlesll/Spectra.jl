@@ -40,10 +40,10 @@ function long(data::Array{Float64},temp::Float64,wave::Float64)
     t0::Array{Float64} = nu0.^3.*nu./(nu0-nu)
     t1::Array{Float64} = 1 - exp(-h.*c.*nu./(k.*T)) # c in m/s  : t1 dimensionless
     long::Array{Float64} = y.*t0.*t1; # pour les y
-    
+
     long = long./trapz(x,long) # area normalisation
 
     eselong::Array{Float64} = ese.*long # error calculation
-    
+
     return x, long, eselong
 end
