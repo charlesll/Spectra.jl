@@ -62,7 +62,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   Baselines
+   PreProcessing
    Integration
    Functions
    PeakFitting

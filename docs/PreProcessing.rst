@@ -1,6 +1,28 @@
 **************
- Baseline subtraction
+ Pre-Processing Spectra
 **************
+
+----------
+"Long" correction for glass Raman data
+----------
+
+The correction of glasses Raman spectra from temperature and excitation line effects (see REF TO ADD) can be done using the function:
+
+    x, long, eselong = long(data::Array{Float64},temp::Float64,wave::Float64)
+
+INPUTS:
+
+data:
+temp:
+wave:
+
+OUTPUTS:
+
+(are combined in one array if only one output name is given)
+
+x: array{Float64} containing the x values;
+long: array{Float64} containing the corrected y values;
+eselong: array{Float64} containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
 
 ----------
 Baseline subtraction function
@@ -9,6 +31,8 @@ Baseline subtraction function
 Baseline subtraction can be made with using the baseline function:
 
     y_corr, bass = baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64})
+
+INPUTS:
 
 x: array{Float64} containing the x values;
 y: array{Float64} containing the y values;
@@ -21,7 +45,12 @@ basetype: the type of baseline that you want to use. For now, polynomial and cub
 Polynomial baseline: enter "poly" for basetype, then the polynomial degree as p.
 Cubic spline baseline: enter "spline" for basetype, then the smoothing degree as p.
 
-outputs: y_corr and bass are respectively the spectrum corrected from its baseline, and the baseline.
+OUTPUTS:
+
+(are combined in one array if only one output variable is provided)
+
+y_corr: array{Float64}, the spectrum corrected from its baseline;
+bass: array{Float64}, the baseline.
 
 ----------
 Examples
