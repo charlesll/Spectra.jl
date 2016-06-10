@@ -17,6 +17,8 @@ using JuMP
 using Ipopt
 using Dierckx
 
+include("../Dependencies/gcvspline/gcvspline.jl")
+
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64})
     # First we grab the good roi
     interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
@@ -42,9 +44,12 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
         best_p::Vector{Float64} = getvalue(p_val)
         y_calc::Array{Float64} = poly(best_p,x)
         return y[:,1] - y_calc, y_calc
-	elseif basetype == "spline"
+	elseif basetype == "Dspline" #Dierckx spline
 		spl = Spline1D(interest_x,interest_y,s=p[1])
 		y_calc = evaluate(spl,x[:,1])
+		return y[:,1] - y_calc, y_calc# To be continued... Fitting procedure to add there.
+	elseif basetype == "GCVspline" #GCV spline
+		y_calc = Gspline(interest_x,interest_y,ones(size(interest_y,1)),x[:,1],s=p[1]) # we give no errors
 		return y[:,1] - y_calc, y_calc# To be continued... Fitting procedure to add there.
 	else
         error("Not implemented, choose between poly and [to come]")

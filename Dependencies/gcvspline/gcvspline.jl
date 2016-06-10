@@ -1,5 +1,5 @@
 using PyCall
-unshift!(PyVector(pyimport("sys")["path"]), "")
+unshift!(PyVector(pyimport("sys")["path"]), "/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline")
 
 @pyimport gcvspline
 
