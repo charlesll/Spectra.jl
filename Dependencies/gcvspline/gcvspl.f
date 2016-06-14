@@ -262,9 +262,6 @@ c
 c
       subroutine gcvspl(x, y, ny, wx, wy, m, n, k, md, val, c, nc, wk, 
      &ier)
-cf2py intent(out) :: C
-cf2py intent(out) :: WK
-cf2py intent(out) :: IER
       implicit double precision (o-z, a-h)
       parameter (ratio = 2d0, tau = 1.618033983d0, ibwe = 7, zero = 0d0
      &, half = 5d-1, one = 1d0, tol = 1d-6, eps = 1d-15, epsinv = one / 

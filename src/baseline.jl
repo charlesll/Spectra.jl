@@ -17,10 +17,8 @@ using JuMP
 using Ipopt
 using Dierckx
 
-include("../Dependencies/gcvspline/gcvspline.jl")
-
-function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64})
-    # First we grab the good roi
+function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64};SplOrder=3)
+    #### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
     interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
     if size(roi)[1] > 1
         for i = 2:size(roi)[1]
@@ -30,7 +28,10 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     interest_x = x[interest_index,1]
     interest_y = y[interest_index,1]
     
-    if basetype == "poly"
+	#### THEN WE GO TO THE RIGHT METHOD FOR BASELINE CALCULATION
+    
+	######## POLYNOMIAL BASELINE
+	if basetype == "poly"
         # The model for fitting baseline to roi signal
         mod = Model(solver=IpoptSolver(print_level=0))
         n::Int = size(p)[1] # number of coefficients
@@ -44,17 +45,138 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
         best_p::Vector{Float64} = getvalue(p_val)
         y_calc::Array{Float64} = poly(best_p,x)
         return y[:,1] - y_calc, y_calc
-	elseif basetype == "Dspline" #Dierckx spline
-		spl = Spline1D(interest_x,interest_y,s=p[1])
+	
+	######## DIERCKX SPLINE BASELINE
+	elseif basetype == "Dspline"
+		spl = Spline1D(interest_x,interest_y,s=p[1],bc="extrapolate",k=SplOrder)
 		y_calc = evaluate(spl,x[:,1])
-		return y[:,1] - y_calc, y_calc# To be continued... Fitting procedure to add there.
-	elseif basetype == "GCVspline" #GCV spline
-		y_calc = Gspline(interest_x,interest_y,ones(size(interest_y,1)),x[:,1],s=p[1]) # we give no errors
-		return y[:,1] - y_calc, y_calc# To be continued... Fitting procedure to add there.
+		return y[:,1] - y_calc, y_calc
+		
+	######## GCV SPLINE BASELINE
+	elseif basetype == "gcvspline"
+		ese_y = sqrt(abs(y)) # we assume errors as sqrt(y)
+		c, WK, IER = gcvspl(interest_x,interest_y,ese_y,p[1];SplineOrder = SplOrder-1) # with cubic spline as the default
+		y_calc = splderivative(x[:,1],interest_x,c,SplineOrder= SplOrder-1)
+		return y[:,1] - y_calc, y_calc
+		
+	######## RAISING ERROR IF NOT THE GOOD CHOICE
 	else
         error("Not implemented, choose between poly and [to come]")
     end
 end
 
+function gcvspl(x::Array{Float64},y::Array{Float64},ese::Array{Float64},SplineSmooth::Float64;SplineOrder::Int32 = 2,SplineMode::Int32 = 3)
+	"""
+    
+    c, wk, ier = gcvspline(x,y,ese,SplineSmooth,SplineOrder,SplineMode)
+
+    INPUTS:
+	
+    x: Float64 Array, the independent variables
+    y: Float64 Array, the observations (we assume here that you want to use this spline only on 1 dataset... see gcvspl.f if not)
+    ese: Float64 Array, the errors on y
+    SplineSmooth: Float64, the smoothing factor
+    SplineOrder (M parameter in gcvspl.f): Int32, the half order of the required B-splines. default: splorder = 2 (cubic)
+    SplineOrder = 1,2,3,4 correspond to linear, cubic, quintic, and heptic splines, respectively. 
+    SplineMode (MD parameter in gcvspl.f) is the Optimization mode switch:
+	    default:   SplineMode = 2 (General Cross Validated)
+	               SplineMode = 1: Prior given value for p in VAL
+	                         (VAL.ge.ZERO). This is the fastest
+	                         use of GCVSPL, since no iteration
+	                         is performed in p.
+	               SplineMode = 2: Generalized cross validation.
+	               SplineMode = 3: True predicted mean-squared error,
+	                         with prior given variance in VAL.
+	               SplineMode = 4: Prior given number of degrees of
+	                         freedom in VAL (ZERO.le.VAL.le.N-M).
+	               SplineMode  < 0: It is assumed that the contents of
+	                         X, W, M, N, and WK have not been
+	                         modified since the previous invoca-
+	                         tion of GCVSPL. If MD < -1, WK(4)
+	                         is used as an initial estimate for
+	                         the smoothing parameter p.  At the
+	                         first call to GCVSPL, MD must be > 0.
+	               Other values for |MD|, and inappropriate values
+	               for VAL will result in an error condition, or
+	               cause a default value for VAL to be selected.
+	               After return from MD.ne.1, the same number of
+	               degrees of freedom can be obtained, for identical
+	               weight factors and knot positions, by selecting
+	               |MD|=1, and by copying the value of p from WK(4)
+	               into VAL. In this way, no iterative optimization
+	               is required when processing other data in Y. 
+
+    OUPUTS:
+	
+		c: the spline coefficients
+		WK: work vector, see gcvspl.f
+		IER: error parameter. 
+		IER = 0: Normal exit 
+		IER = 1: M.le.0 .or. N.lt.2*M
+		IER = 2: Knot sequence is not strictly
+		increasing, or some weight
+		factor is not positive.
+		IER = 3: Wrong mode parameter or value.
+		
+    SEE gcvspl.f FOR MORE INFORMATION
+	
+	"""
+	if size(y,2)>1
+		error('This function does not accept multiple dataset. Please provide only one dataset at a time.')
+	elseif size(x,1) != size(y,1) || size(ese,1) != size(y,1) || size(x,1) != size(ese,1)
+		error('This function only accepts x, y and ese arrays of the same lengths.')
+	end
+	
+	WX = 1. ./(ese.^2) # relative variance of observations
+	WY = zeros([1])+1. # systematic errors... not used so put them to 1
+	VAL = ese.^2
+
+	# M = SplineOrder # No need to redefine but just this comment to keep record
+	N = length(x) #same as length(y)
+	K = 1 # number of y columns
+	# MD = SplineMode # No need to redefine but just this comment to keep record
+	NC = length(y)
+
+	c = ones(N,NC)
+	WK = ones(6*(N*M+1)+N,1)
+	IER=Int32[1]
+	ccall( (:gcvspl_, "../Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,wx,wy,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
+	return c, WK, IER
+end
+
+function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = 2, L = 1, IDER = 0)
+    """
+    Wrapper to the SPLDER function of gcvspl.f, for interpolation purpose
+    
+	INPUTS:
+	
+	    xfull: Float64 Array, contains the entire x range where the spline has to be evaluated
+	    xparse: Float64 Array, contains the x values of interpolation regions   
+	    WARNING!!! => xparse[0] <= xfull[0] <= xparse[n] 
+	    cparse: Float64 Array, is the evaluated spline coefficients returned by gcvspl for xparse
+    
+    OPTIONS:    
+	
+        splineorder (integer): is the spline order, 
+        default: splineorder = 2 (cubic)
+        L (integer): see gcvspl.f for details, default: L = 1
+        IDER: the Derivative order required, with 0.le.IDER 
+        and IDER.le.2*M. If IDER.eq.0, the function
+        value is returned; otherwise, the IDER-th
+        derivative of the spline is returned.
+        
+    SEE gcvspl.f FOR MORE INFORMATION
+    """   
+	# Note: In the following t, x and c in the fortran code are renamed  xfull, xparse and cparse for clarity
+    N = size(xparse,1)    
+    q = zeros(2*SplineOrder,1)  # working array
+    ycalc::Array{Float64} = zeros(size(xfull,1),1) # Output array
+    
+    # we loop other xfull to create the output values
+	for i =1:size(y_calc,1)
+	    y_calc[i] = ccall( (:splder_, "../Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &M, &N, &x[i], x, c, &l, q)
+	end
+	return y_calc
+end
     
         

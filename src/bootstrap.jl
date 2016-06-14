@@ -106,7 +106,7 @@ function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", p
            if isa(save_bootrecord ,ASCIIString) != true
                error("Error: save_bootrecord is not a valid savename. Check it is a string of characters.")
            end
-           if isa(save_bootrecord ,ASCIIString) != true
+           if isa(save_histogram ,ASCIIString) != true
                error("Error: save_histogram is not a valid savename. Check it is a string of characters.")
            end
         

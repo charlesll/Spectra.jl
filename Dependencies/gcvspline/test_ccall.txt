@@ -1,1 +1,0 @@
-ccall( (:gcvspl_, "./libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Cdouble},Ptr{Cint},Ptr{Cdouble},Ref{Cint}),x,y,&NN,wx,wy,&M,&N,&K,&MD,VAL,c,&NC,WK,IER)
