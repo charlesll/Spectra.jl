@@ -17,7 +17,7 @@ using JuMP
 using Ipopt
 using Dierckx
 
-function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1};SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
+function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},SmoothSpline::Float64;SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
 	"""
     
     c, wk, ier = gcvspline(x,y,ese,SplineSmooth,SplineOrder,SplineMode)
@@ -81,7 +81,7 @@ function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1};Sp
 	
 	WX = 1. ./(ese.^2) # relative variance of observations
 	WY = zeros([1])+1. # systematic errors... not used so put them to 1
-	VAL = ese.^2
+	VAL = (SmoothSpline.*ese).^2
 
 	# M = SplineOrder # No need to redefine but just this comment to keep record
 	N = size(x,1) #same as length(y)
@@ -92,7 +92,7 @@ function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1};Sp
 	c = ones(N,NC)
 	WK = ones(6*(N*SplineOrder+1)+N,1)
 	IER=Int32[1]
-	ccall( (:gcvspl_, "../Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
+	ccall( (:gcvspl_, "/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
 	return c, WK, IER
 end
 
@@ -126,7 +126,7 @@ function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Arra
     
     # we loop other xfull to create the output values
 	for i =1:size(y_calc,1)
-	    y_calc[i] = ccall( (:splder_, "../Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &SplineOrder, &N, &xfull[i], xparse, cparse, &L, q)
+	    y_calc[i] = ccall( (:splder_, "/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &SplineOrder, &N, &xfull[i], xparse, cparse, &L, q)
 	end
 	return y_calc
 end
@@ -169,7 +169,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
 		ese_y = sqrt(abs(y)) # we assume errors as sqrt(y)
-		c, WK, IER = gcvspl(interest_x[:,1],interest_y[:,1],ese_y[:,1].*p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
+		c, WK, IER = gcvspl(interest_x[:,1],interest_y[:,1],ese_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
 		y_calc = splderivative(x[:,1],interest_x,c,SplineOrder= Int32(SplOrder-1))
 		return y[:,1] - y_calc, y_calc
 		

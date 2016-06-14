@@ -43,7 +43,11 @@ roi: an array containing the "region of interest", i.e. the places where you wan
 basetype: the type of baseline that you want to use. For now, polynomial and cubic spline baselines are available. Indicate the type you want as:
 
 Polynomial baseline: enter "poly" for basetype, then the polynomial degree as p.
-Cubic spline baseline: enter "spline" for basetype, then the smoothing degree as p.
+
+Dierckx cubic spline baseline: enter "Dspline" for basetype, then the smoothing degree as p.
+
+Generalised Cross-Validated baseline: enter "gsvspline" for basetype, then the smoothing degree as p. 
+Errors on measurenements are automatically provided as sqrt(y) in gcvspline. For further options, please use the gcvspl and splderivative functions that directly call the GCVSPL and SPLDER function of the gcvspl.f program (Holtring, 1986).
 
 OUTPUTS:
 
@@ -86,13 +90,11 @@ with the last coefficient will be the one in front of x^2. This can continue as 
 For a cubic spline baseline fitting the basis of a peak centered at 1100 cm$^{-1}$ and with basis at 900 and 1250 cm^{-1}:
 
     roi = [[890. 910.]; [1250. 1300.]]
-    basetype = "spline"
+    basetype = "Dspline"
     s = [0.01]
     bas = baseline(x,y,roi,basetype,s)
 
 s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
-
-It gives pretty good results, but in the future I will wrap the GCVSPL spline, that may be more robust for very noisy data from my experience under using both algorithms under Python. GCVSPL is already available in RamPy if you really needs it. Another solution would be to wrap the csaps function of Matlab that gives pretty good results too on noisy data.
 
 ----------
 Tips
@@ -105,5 +107,12 @@ For the spline, do not hesitate to test a broad range in term of order of magnit
 ----------
 To Do
 ----------
-For now, x and y should contain only one column (one dataset at a time). In the futur, an option allowing to fit entire dataset will be provided.
-GCV splines are also going to be added. The Fortran code is already provided with Spectra.jl. I just need to wrap it to provide this functionality.
+
+- For now, x and y should contain only one column (one dataset at a time). In the futur, an option allowing to fit entire dataset may be provided?
+- Adding access to the SMOOTH spline library, used by the csaps Matlab function.
+
+----------
+References
+----------
+
+Woltring, 1986, A FORTRAN package for generalized, cross-validatory spline smoothing and differentiation. Adv. Eng. Softw. 8:104-113. 
