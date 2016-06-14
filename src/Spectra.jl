@@ -34,6 +34,9 @@ export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
 #From baseline.jl
 export baseline
 
+#From gcvspl.jl
+export gcvspl, splderivative
+
 #From bootstrap
 export bootsample, bootperf
 

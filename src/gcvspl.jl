@@ -11,135 +11,116 @@
 #
 #############################################################################
 
-# This is a wrapper for the fortran program GCVSPLINE from Woltrin (1986), available on the Netlib.
-# Wrapper originally written in Python and wrapped with f2py, translated since to Julia
+function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},SmoothSpline::Float64;SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
+	"""
+    
+    c, wk, ier = gcvspline(x,y,ese,SplineSmooth,SplineOrder,SplineMode)
 
-function gcvspline(x::Array{Float64},y::Array{Float64},ese::Array{Float64},VAL::Array{Float64};splorder::Int64 = 2; splmode::Int64 = 2; NC::Int64 = size(x)[1]):
+    INPUTS:
+	
+    x: Float64 Array, the independent variables
+    y: Float64 Array, the observations (we assume here that you want to use this spline only on 1 dataset... see gcvspl.f if not)
+    ese: Float64 Array, the errors on y
+    SplineSmooth: Float64, the smoothing factor
+    SplineOrder (M parameter in gcvspl.f): Int32, the half order of the required B-splines. default: splorder = 2 (cubic)
+    SplineOrder = 1,2,3,4 correspond to linear, cubic, quintic, and heptic splines, respectively. 
+    SplineMode (MD parameter in gcvspl.f) is the Optimization mode switch:
+	    default:   SplineMode = 2 (General Cross Validated)
+	               SplineMode = 1: Prior given value for p in VAL
+	                         (VAL.ge.ZERO). This is the fastest
+	                         use of GCVSPL, since no iteration
+	                         is performed in p.
+	               SplineMode = 2: Generalized cross validation.
+	               SplineMode = 3: True predicted mean-squared error,
+	                         with prior given variance in VAL.
+	               SplineMode = 4: Prior given number of degrees of
+	                         freedom in VAL (ZERO.le.VAL.le.N-M).
+	               SplineMode  < 0: It is assumed that the contents of
+	                         X, W, M, N, and WK have not been
+	                         modified since the previous invoca-
+	                         tion of GCVSPL. If MD < -1, WK(4)
+	                         is used as an initial estimate for
+	                         the smoothing parameter p.  At the
+	                         first call to GCVSPL, MD must be > 0.
+	               Other values for |MD|, and inappropriate values
+	               for VAL will result in an error condition, or
+	               cause a default value for VAL to be selected.
+	               After return from MD.ne.1, the same number of
+	               degrees of freedom can be obtained, for identical
+	               weight factors and knot positions, by selecting
+	               |MD|=1, and by copying the value of p from WK(4)
+	               into VAL. In this way, no iterative optimization
+	               is required when processing other data in Y. 
+
+    OUPUTS:
+	
+		c: the spline coefficients
+		WK: work vector, see gcvspl.f
+		IER: error parameter. 
+		IER = 0: Normal exit 
+		IER = 1: M.le.0 .or. N.lt.2*M
+		IER = 2: Knot sequence is not strictly
+		increasing, or some weight
+		factor is not positive.
+		IER = 3: Wrong mode parameter or value.
+		
+    SEE gcvspl.f FOR MORE INFORMATION
+	
+	"""
+	if size(y,2)>1
+		error("This function does not accept multiple dataset. Please provide only one dataset at a time.")
+		#elseif size(x,1) != size(y,1) || size(ese,1) != size(y,1) || size(x,1) != size(ese,1)
+		#error("This function only accepts x, y and ese arrays of the same lengths.")
+	end
+	
+	WX = 1. ./(ese.^2) # relative variance of observations
+	WY = zeros([1])+1. # systematic errors... not used so put them to 1
+	VAL = (SmoothSpline.*ese).^2
+
+	# M = SplineOrder # No need to redefine but just this comment to keep record
+	N = size(x,1) #same as length(y)
+	K = 1 # number of y columns
+	# MD = SplineMode # No need to redefine but just this comment to keep record
+	NC = length(y)
+
+	c = ones(N,NC)
+	WK = ones(6*(N*SplineOrder+1)+N,1)
+	IER=Int32[1]
+	ccall( (:gcvspl_, "/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
+	return c, WK, IER
+end
+
+function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = Int32(2), L::Int32 = Int32(1), IDER::Int32 = Int32(0))
     """
+    Wrapper to the SPLDER function of gcvspl.f, for interpolation purpose
     
-    c, wk, ier = gcvspline(x,y,f,**options)
+	INPUTS:
+	
+	    xfull: Float64 Array, contains the entire x range where the spline has to be evaluated
+	    xparse: Float64 Array, contains the x values of interpolation regions   
+	    WARNING!!! => xparse[0] <= xfull[0] <= xparse[n] 
+	    cparse: Float64 Array, is the evaluated spline coefficients returned by gcvspl for xparse
     
-    Function for using the wrapper of gcvspl.f
-    Input:
-    x (1D array) are the independent variables
-    y (2D array as (len(x),1)) are the observations
-    (we assume here that you want to use this 
-    spline only on 1 dataset... see gcvspl.f if not)
-    ese are the errors on y
-    VAL (double) depends on the mode, see gcvspl.f for details (=ese**2 for mode3)
-    options:
-    NC is the number of output spline coefficients, NC >= len(y) 
-        default: NC = len(y)
-    splorder is the half order of the required B-splines. The values 
-    splorder = 1,2,3,4 correspond to linear, cubic, quintic, and 
-    heptic splines, respectively.
-        default: splorder = 2 (cubic) 
-    splmode is the Optimization mode switch:
-        default: splmode = 2 (General Cross Validated)
-                       splmode = 1: Prior given value for p in VAL
-                                 (VAL.ge.ZERO). This is the fastest
-                                 use of GCVSPL, since no iteration
-                                 is performed in p.
-                       splmode = 2: Generalized cross validation.
-                       splmode = 3: True predicted mean-squared error,
-                                 with prior given variance in VAL.
-                       splmode = 4: Prior given number of degrees of
-                                 freedom in VAL (ZERO.le.VAL.le.N-M).
-                       splmode  < 0: It is assumed that the contents of
-                                 X, W, M, N, and WK have not been
-                                 modified since the previous invoca-
-                                 tion of GCVSPL. If MD < -1, WK(4)
-                                 is used as an initial estimate for
-                                 the smoothing parameter p.  At the
-                                 first call to GCVSPL, MD must be > 0.
-                       Other values for |MD|, and inappropriate values
-                       for VAL will result in an error condition, or
-                       cause a default value for VAL to be selected.
-                       After return from MD.ne.1, the same number of
-                       degrees of freedom can be obtained, for identical
-                       weight factors and knot positions, by selecting
-                       |MD|=1, and by copying the value of p from WK(4)
-                       into VAL. In this way, no iterative optimization
-                       is required when processing other data in Y.     
-   
-    see gcvspl.f for more info about the two last parameter
-    
-    Output:
-    c: the spline
-    wk: work vector, see gcvspl.f
-    ier: error parameter. 
-        ier = 0: Normal exit 
-        ier = 1: M.le.0 .or. N.lt.2*M
-        ier = 2: Knot sequence is not strictly
-                 increasing, or some weight
-                 factor is not positive.
-        ier = 3: Wrong mode parameter or value.
-    
-    Wrapped by C. Le Losq. with using f2py. See the howto associated for wrapping.
-    
-    """
-    # We will do the effort in the following to keep the same name as in gcvspl.f    
-    # The following stuffs are useless since gcvspl will handle that
-    # by itself. However the wrapper assumes the following statement:
-    # dimensions = shape(y)
-    # K = dimensions[1] # number of dataset, always 1 for our case
-    # N = dimensions[0] # number of independent variable
-    # NY = N # Number of observation, N = NY
-
-    wx = 1./(ese.^2) # relative variance of observations
-    wy = zeros((1))+1 # systematic errors... not used so put them to 1
-         
-
-    c, wk, ier = gcvspl.gcvspl(x,y,wx,wy,splorder,splmode,VAL,NC)
-    
-    return c, wk, ier
-    
-    def splderivative(xfull,xparse,cparse,**options):
-        """
-        Wrapper to the SPLDER function of gcvspl.f
-        Powerful for interpolation purpose
-    
-        xfull (1D array) contains the entire x range where the spline has 
-        to be evaluated
-        xparse (1D array) contains the x values of interpolation regions   
-        WARNING xparse[0] <= xfull[0] <= xparse[n] 
-        cparse (1D array) is the evaluated spline coefficients returned by gcvspl
-        for xparse
-    
-        options:    
-            splineorder (integer): is the spline order, 
-            default: splineorder = 2 (cubic)
-            L (integer): see gcvspl.f for details, default: L = 1
-            IDER: the Derivative order required, with 0.le.IDER 
-            and IDER.le.2*M. If IDER.eq.0, the function
-            value is returned; otherwise, the IDER-th
-            derivative of the spline is returned.
+    OPTIONS:    
+	
+        splineorder (integer): is the spline order, 
+        default: splineorder = 2 (cubic)
+        L (integer): see gcvspl.f for details, default: L = 1
+        IDER: the Derivative order required, with 0.le.IDER 
+        and IDER.le.2*M. If IDER.eq.0, the function
+        value is returned; otherwise, the IDER-th
+        derivative of the spline is returned.
         
-        see the splder function in gcvspl.f for more information
-        """    
-   
-        # Default values
-        if options.get("splineorder") == None:
-            splineorder = 2
-        else:
-            splineorder = options.get("splineorder")
-        
-        if options.get("L") == None:
-            L = 1
-        else:
-            L = options.get("L")
-        
-        if options.get("IDER") == None:
-            IDER = 0
-        else:
-            IDER = options.get("IDER")
-        
-        q = np.zeros((2*splineorder))  # working array
-        ycalc = np.zeros((len(xfull))) # Output array
+    SEE gcvspl.f FOR MORE INFORMATION
+    """   
+	# Note: In the following t, x and c in the fortran code are renamed  xfull, xparse and cparse for clarity
+    N = Int32(size(xparse,1))    
+    q = zeros(2*SplineOrder,1)  # working array
+    y_calc::Array{Float64} = zeros(size(xfull,1),1) # Output array
     
-        # we loop other xfull to create the output values
-        for i in range(len(xfull)):
-            ycalc[i] = gcvspl.splder(IDER,splineorder,xfull[i],xparse,cparse,L)
-    
-        return ycalc
-
+    # we loop other xfull to create the output values
+	for i =1:size(y_calc,1)
+	    y_calc[i] = ccall( (:splder_, "/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &SplineOrder, &N, &xfull[i], xparse, cparse, &L, q)
+	end
+	return y_calc
+end
