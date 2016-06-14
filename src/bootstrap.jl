@@ -31,10 +31,10 @@ RETURN: b_x_f, b_y_f, the arrays with bootstrapped x and y values.
 TODO: proposing other error PDF for parametric bootstrapping.
 
 """
-function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::ASCIIString = "np", ese::Array{Float64} = 0.0)
-    testx = size(ese)[1]
-    testy = size(ese)[1]
-    teste = size(ese)[1]
+function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::ASCIIString = "np", ese::Array{Float64} = [0.0])
+    testx = size(x,1)
+    testy = size(y,1)
+    teste = size(ese,1)
     if boottype == "np" && testx == testy
         vect = collect(1:size(x)[1]) # for real bootstrapping
         idx = sample(vect,size(vect)[1],replace=true) #resampling data with replacement...

@@ -17,55 +17,7 @@ using JuMP
 using Ipopt
 using Dierckx
 
-function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64};SplOrder=3)
-    #### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
-    interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
-    if size(roi)[1] > 1
-        for i = 2:size(roi)[1]
-            interest_index = vcat(interest_index,  find(roi[i,1] .<= x[:,1] .<= roi[i,2]))
-        end
-    end
-    interest_x = x[interest_index,1]
-    interest_y = y[interest_index,1]
-    
-	#### THEN WE GO TO THE RIGHT METHOD FOR BASELINE CALCULATION
-    
-	######## POLYNOMIAL BASELINE
-	if basetype == "poly"
-        # The model for fitting baseline to roi signal
-        mod = Model(solver=IpoptSolver(print_level=0))
-        n::Int = size(p)[1] # number of coefficients
-        m::Int = size(interest_x)[1] # number of data
-
-        @variable(mod,p_val[i=1:n])
-        setvalue(p_val[i=1:n], p[i])
-        @NLobjective(mod,Min,sum{( sum{p_val[i]*interest_x[j]^(i-1), i=1:n} - interest_y[j])^2, j=1:m})
-        status = solve(mod)
-        println("Solver status: ", status)
-        best_p::Vector{Float64} = getvalue(p_val)
-        y_calc::Array{Float64} = poly(best_p,x)
-        return y[:,1] - y_calc, y_calc
-	
-	######## DIERCKX SPLINE BASELINE
-	elseif basetype == "Dspline"
-		spl = Spline1D(interest_x,interest_y,s=p[1],bc="extrapolate",k=SplOrder)
-		y_calc = evaluate(spl,x[:,1])
-		return y[:,1] - y_calc, y_calc
-		
-	######## GCV SPLINE BASELINE
-	elseif basetype == "gcvspline"
-		ese_y = sqrt(abs(y)) # we assume errors as sqrt(y)
-		c, WK, IER = gcvspl(interest_x,interest_y,ese_y,p[1];SplineOrder = SplOrder-1) # with cubic spline as the default
-		y_calc = splderivative(x[:,1],interest_x,c,SplineOrder= SplOrder-1)
-		return y[:,1] - y_calc, y_calc
-		
-	######## RAISING ERROR IF NOT THE GOOD CHOICE
-	else
-        error("Not implemented, choose between poly and [to come]")
-    end
-end
-
-function gcvspl(x::Array{Float64},y::Array{Float64},ese::Array{Float64},SplineSmooth::Float64;SplineOrder::Int32 = 2,SplineMode::Int32 = 3)
+function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1};SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
 	"""
     
     c, wk, ier = gcvspline(x,y,ese,SplineSmooth,SplineOrder,SplineMode)
@@ -122,9 +74,9 @@ function gcvspl(x::Array{Float64},y::Array{Float64},ese::Array{Float64},SplineSm
 	
 	"""
 	if size(y,2)>1
-		error('This function does not accept multiple dataset. Please provide only one dataset at a time.')
-	elseif size(x,1) != size(y,1) || size(ese,1) != size(y,1) || size(x,1) != size(ese,1)
-		error('This function only accepts x, y and ese arrays of the same lengths.')
+		error("This function does not accept multiple dataset. Please provide only one dataset at a time.")
+		#elseif size(x,1) != size(y,1) || size(ese,1) != size(y,1) || size(x,1) != size(ese,1)
+		#error("This function only accepts x, y and ese arrays of the same lengths.")
 	end
 	
 	WX = 1. ./(ese.^2) # relative variance of observations
@@ -132,19 +84,19 @@ function gcvspl(x::Array{Float64},y::Array{Float64},ese::Array{Float64},SplineSm
 	VAL = ese.^2
 
 	# M = SplineOrder # No need to redefine but just this comment to keep record
-	N = length(x) #same as length(y)
+	N = size(x,1) #same as length(y)
 	K = 1 # number of y columns
 	# MD = SplineMode # No need to redefine but just this comment to keep record
 	NC = length(y)
 
 	c = ones(N,NC)
-	WK = ones(6*(N*M+1)+N,1)
+	WK = ones(6*(N*SplineOrder+1)+N,1)
 	IER=Int32[1]
-	ccall( (:gcvspl_, "../Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,wx,wy,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
+	ccall( (:gcvspl_, "../Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
 	return c, WK, IER
 end
 
-function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = 2, L = 1, IDER = 0)
+function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = In32(2), L::Int32 = Int32(1), IDER::Int32 = Int32(0))
     """
     Wrapper to the SPLDER function of gcvspl.f, for interpolation purpose
     
@@ -168,15 +120,62 @@ function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Arra
     SEE gcvspl.f FOR MORE INFORMATION
     """   
 	# Note: In the following t, x and c in the fortran code are renamed  xfull, xparse and cparse for clarity
-    N = size(xparse,1)    
+    N = Int32(size(xparse,1))    
     q = zeros(2*SplineOrder,1)  # working array
-    ycalc::Array{Float64} = zeros(size(xfull,1),1) # Output array
+    y_calc::Array{Float64} = zeros(size(xfull,1),1) # Output array
     
     # we loop other xfull to create the output values
 	for i =1:size(y_calc,1)
-	    y_calc[i] = ccall( (:splder_, "../Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &M, &N, &x[i], x, c, &l, q)
+	    y_calc[i] = ccall( (:splder_, "../Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &SplineOrder, &N, &xfull[i], xparse, cparse, &L, q)
 	end
 	return y_calc
 end
     
-        
+function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64};SplOrder=3)
+    #### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
+    interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
+    if size(roi)[1] > 1
+        for i = 2:size(roi)[1]
+            interest_index = vcat(interest_index,  find(roi[i,1] .<= x[:,1] .<= roi[i,2]))
+        end
+    end
+    interest_x = x[interest_index,1]
+    interest_y = y[interest_index,1]
+    
+	#### THEN WE GO TO THE RIGHT METHOD FOR BASELINE CALCULATION
+    
+	######## POLYNOMIAL BASELINE
+	if basetype == "poly"
+        # The model for fitting baseline to roi signal
+        mod = Model(solver=IpoptSolver(print_level=0))
+        n::Int = size(p)[1] # number of coefficients
+        m::Int = size(interest_x)[1] # number of data
+
+        @variable(mod,p_val[i=1:n])
+        setvalue(p_val[i=1:n], p[i])
+        @NLobjective(mod,Min,sum{( sum{p_val[i]*interest_x[j]^(i-1), i=1:n} - interest_y[j])^2, j=1:m})
+        status = solve(mod)
+        println("Solver status: ", status)
+        best_p::Vector{Float64} = getvalue(p_val)
+        y_calc::Array{Float64} = poly(best_p,x)
+        return y[:,1] - y_calc, y_calc
+	
+	######## DIERCKX SPLINE BASELINE
+	elseif basetype == "Dspline"
+		spl = Spline1D(interest_x,interest_y,s=p[1],bc="extrapolate",k=SplOrder)
+		y_calc = evaluate(spl,x[:,1])
+		return y[:,1] - y_calc, y_calc
+		
+	######## GCV SPLINE BASELINE
+	elseif basetype == "gcvspline"
+		ese_y = sqrt(abs(y)) # we assume errors as sqrt(y)
+		c, WK, IER = gcvspl(interest_x[:,1],interest_y[:,1],ese_y[:,1].*p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
+		y_calc = splderivative(x[:,1],interest_x,c,SplineOrder= Int32(SplOrder-1))
+		return y[:,1] - y_calc, y_calc
+		
+	######## RAISING ERROR IF NOT THE GOOD CHOICE
+	else
+        error("Not implemented, choose between poly and [to come]")
+    end
+end
+
