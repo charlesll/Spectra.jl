@@ -47,10 +47,14 @@
 <p>This function just allows to build a polynomial curve as</p>
 <blockquote>
 <div>y = poly(p,x)</div></blockquote>
-<p>p: Vector{Float64} containing the polynomial parameters. For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;
-x: Array{Float64} containing the x values for calculation.</p>
+<p>INPUTS:</p>
+<blockquote>
+<div><p>p: Vector{Float64}, containing the polynomial parameters. For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;</p>
+<p>x: Array{Float64}, containing the x values for calculation.</p>
+</div></blockquote>
 <p>Output:</p>
-<p>y: Array{Float64} containing the result of calculation.</p>
+<blockquote>
+<div>y: Array{Float64}, containing the result of calculation.</div></blockquote>
 </div>
 <div class="section" id="function-gaussiennes">
 <h2>Function gaussiennes<a class="headerlink" href="#function-gaussiennes" title="Permalink to this headline">¶</a></h2>
@@ -61,18 +65,23 @@ x: Array{Float64} containing the x values for calculation.</p>
 <p>To call gaussienne:</p>
 <blockquote>
 <div>gaussiennes(amplitude,centre,hwhm,x;style)</div></blockquote>
-<p>Inputs:
-amplitude: Array{Float64} containing the peaks amplitudes;
-centre: Array{Float64} containing the peaks centres;
-hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-x: Array{Float64} containing the x axis values;</p>
-<p>Optional arguments:
-style: ASCIIString = &#8220;None&#8221;, see examples below.</p>
-<p>Outputs:
-y: Array{Float64} containing the calculated y values.</p>
+<p>INPUTS:</p>
+<blockquote>
+<div><p>amplitude: Array{Float64} containing the peaks amplitudes;</p>
+<p>centre: Array{Float64} containing the peaks centres;</p>
+<p>hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);</p>
+<p>x: Array{Float64} containing the x axis values;</p>
+</div></blockquote>
+<p>OPTIONS:</p>
+<blockquote>
+<div>style: ASCIIString = &#8220;None&#8221;, see examples below.</div></blockquote>
+<p>OUTPUTS:</p>
+<blockquote>
+<div>y: Array{Float64} containing the calculated y values.</div></blockquote>
 <p>You can enter the amplitude, centre and half-width at half-maximum (hwhm) values as arrays of float 64 (even containing one float value), without specifying style. hwhm is proportional to the standard deviation sigma:</p>
-<p>hwhm= sqrt(2xln(2)) x sigma
-that is used in a normal distribution (see function normal_dist)</p>
+<blockquote>
+<div>hwhm= sqrt(2xln(2)) x sigma</div></blockquote>
+<p>that is used in a normal distribution (see function normal_dist).</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
@@ -82,17 +91,18 @@ that is used in a normal distribution (see function normal_dist)</p>
 <p>and y_peaks will contain in 4 columns the 4 different y values of the peaks, and y_calc their sum (the total model). Now, if you want to calculate more complex models, such as for instance contructing how the Raman peaks of water vary with pressure, you might like to parametrize the variations of the peak parameters rather than just fitting each spectrum. This will provide more robust fits of the spectra, as you will fit them together, and will also force you to find the correct underlying mathematical assumption.</p>
 <p>The gaussiennes function allows you to do that. If you specify style = &#8220;poly&#8221;, you can enter arrays for the amplitudes, centres and half-widths at half-maximum (hwhm) of the peaks, with in each column the coefficients for the polynomial variations of this parameters. The second column of x will need to contain the second variable for those polynomial functions.</p>
 <p>Let&#8217;s say for instance that we have one peak at 900 cm-1 in a pure material. It&#8217;s frequency seems to linearly shift with increasing the amount of hydrogen in this material, but it&#8217;s intensity is non-linearly increasing, following a quadratic variation. It&#8217;s width seems constant.</p>
-<p>How to write that with gaussiennes? Well, first you need to construct a relevant x axis: first column contains the frequency, and the second one contains the chemical variable value. In our case, we want to model the peak between 800 and 1000 cm-1, for 1 wt% H. So we have an x array build like</p>
+<p>How to write that with gaussiennes? Well, first you need to construct a relevant x axis: first column contains the frequency, and the second one contains the chemical variable value. In our case, we want to model the peak between 800 and 1000 cm-1, for 1 wt% H. So we have an x array build like:</p>
 <blockquote>
-<div>frequency = collect(800:1:1000)
-x = ones(length(frequency),2)
-x[:,1] = frequency[:]
-x[:,2] = 1.0</div></blockquote>
+<div><p>frequency = collect(800:1:1000)</p>
+<p>x = ones(length(frequency),2)</p>
+<p>x[:,1] = frequency[:]</p>
+<p>x[:,2] = 1.0</p>
+</div></blockquote>
 <p>Ok, now lets build our y peaks:</p>
 <blockquote>
-<div><p>amplitudes = [1.0 0.1 0.1]
-frequencies = [900.0 2.0]
-hwhm = 20.0</p>
+<div><p>amplitudes = [1.0 0.1 0.1]</p>
+<p>frequencies = [900.0 2.0]</p>
+<p>hwhm = 20.0</p>
 <p>y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)</p>
 </div></blockquote>
 <p>This should provide you how the shape of the peak is as a function of both the frequency and the chemical composition there. If you want to go further, you might just want to stick gaussiennes in a loop, and play with creating various peaks with changing the chemical parameter in the x[:,2] column!</p>
@@ -101,10 +111,13 @@ hwhm = 20.0</p>
 <h2>Functions lorentziennes, pseudovoigts, pearson7, normal_dist:<a class="headerlink" href="#functions-lorentziennes-pseudovoigts-pearson7-normal-dist" title="Permalink to this headline">¶</a></h2>
 <p>Those functions return peaks that follow lorentzian, Pseudo-voigts, Pearson7 distributions. normal_dist return a peak following the normal distribution. They are implemented exactly the same way as gaussiennes, except that they return different peak shapes. We therefore refer the reader to the doc of the gaussiennes function for their uses. Inputs for those functions are:</p>
 <blockquote>
-<div>lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = &#8220;None&#8221;)
-pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::Array{Float64},x::Array{Float64};style::ASCIIString = &#8220;None&#8221;)
-pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},ps_fraction::Array{Float64},x::Array{Float64};style::ASCIIString = &#8220;None&#8221;)
-normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})</div></blockquote>
+<div><p>lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = &#8220;None&#8221;)</p>
+<dl class="docutils">
+<dt>pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::Array{Float64},x::Array{Float64};style::ASCIIString = &#8220;None&#8221;)</dt>
+<dd>pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},ps_fraction::Array{Float64},x::Array{Float64};style::ASCIIString = &#8220;None&#8221;)</dd>
+</dl>
+<p>normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})</p>
+</div></blockquote>
 </div>
 </div>
 

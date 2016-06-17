@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Pre-Processing Spectra &mdash; Spectra.jl 0.0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Spectra.jl 0.0.5 documentation" href="index.html" />
+    <link rel="next" title="Integration functions" href="Integration.html" />
+    <link rel="prev" title="Welcome to Spectra.jl’s documentation!" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pre-processing-spectra">
+<h1>Pre-Processing Spectra<a class="headerlink" href="#pre-processing-spectra" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="long-correction-for-glass-raman-data">
+<h2>&#8220;Long&#8221; correction for glass Raman data<a class="headerlink" href="#long-correction-for-glass-raman-data" title="Permalink to this headline">¶</a></h2>
+<p>The correction of glasses Raman spectra from temperature and excitation line effects (see Le Losq et al. 2014 and references therein) can be done using the function:</p>
+<blockquote>
+<div>x, long, eselong = long(data,tempe,wave)</div></blockquote>
+<p>INPUTS:</p>
+<blockquote>
+<div><p>data: Array{Float64}, input spectrum with x and y in first and second columns respectively;</p>
+<p>temp: Float64, the temperature in °C;</p>
+<p>wave: Float64, the wavenumber at which the spectrum was acquirred in nm.</p>
+</div></blockquote>
+<p>OUTPUTS:</p>
+<p>(are combined in one array if only one output name is given)</p>
+<blockquote>
+<div><p>x: Array{Float64} containing the x values;</p>
+<p>long: Array{Float64} containing the corrected y values;</p>
+<p>eselong: Array{Float64} containing the errors calculated as sqrt(y) on raw data and propagated after the correction.</p>
+</div></blockquote>
+</div>
+<div class="section" id="baseline-subtraction-function">
+<h2>Baseline subtraction function<a class="headerlink" href="#baseline-subtraction-function" title="Permalink to this headline">¶</a></h2>
+<p>Baseline subtraction can be made with using the baseline function:</p>
+<blockquote>
+<div>y_corr, bass = baseline(x,y,roi,basetype,p::Array{Float64};SplOrder=3)</div></blockquote>
+<p>INPUTS:</p>
+<blockquote>
+<div><p>x: Array{Float64} containing the x values;</p>
+<p>y: Array{Float64} containing the y values;</p>
+<p>roi: Array{Float64} containing the &#8220;region of interest&#8221;, i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];</p>
+<p>basetype: AbstractString, the type of baseline that you want to use. For now, polynomial and cubic spline baselines are available. Indicate the type you want as:</p>
+<blockquote>
+<div><p>Polynomial baseline: enter &#8220;poly&#8221; for basetype, then the polynomial degree as p.</p>
+<p>Dierckx cubic spline baseline: enter &#8220;Dspline&#8221; for basetype, then the smoothing degree as p.</p>
+<blockquote>
+<div><p>Generalised Cross-Validated baseline: enter &#8220;gsvspline&#8221; for basetype, then the smoothing degree as p.</p>
+<p>note: errors on measurenements are automatically provided as sqrt(y) in gcvspline. For further options, please use the gcvspl and splderivative functions that directly call the GCVSPL and SPLDER function of the gcvspl.f program (Holtring, 1986).</p>
+</div></blockquote>
+</div></blockquote>
+<p>p:: Array{Float64}, containing the coefficients for the polynomial fit, or the spline smoothing coefficient (still needs to be provided in an array as [1.0] for instance).</p>
+</div></blockquote>
+<p>OPTIONS:</p>
+<blockquote>
+<div>SplOrder: Integer, the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.</div></blockquote>
+<p>OUTPUTS:</p>
+<p>(are combined in a tuple in one array if only one output variable is provided)</p>
+<blockquote>
+<div><p>y_corr: Array{Float64}, the spectrum corrected from its baseline;</p>
+<p>bass: Array{Float64}, the baseline.</p>
+</div></blockquote>
+<p>Further informations for the use of splines are given in the Splines section, see <span class="xref std std-ref">Splines</span>.</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>For instance, for subtracting a constant baseline between 1250 and 1300 cm^{-1}:</p>
+<blockquote>
+<div><p>roi = [[1250. 1300.]]</p>
+<p>basetype = &#8220;poly&#8221;</p>
+<p>p = [1.0]</p>
+<p>y_corr, bas = baseline(x,y,roi,&#8221;poly&#8221;,p)</p>
+</div></blockquote>
+<p>For a linear baseline,</p>
+<blockquote>
+<div><p>p = [1.0, 1.0]</p>
+<p>bas = baseline(x,y,roi,&#8221;poly&#8221;,p)</p>
+</div></blockquote>
+<p>For a second order polynomial baseline,</p>
+<blockquote>
+<div><p>p = [1.0, 1.0, 1.0]</p>
+<p>bas = baseline(x,y,roi,&#8221;poly&#8221;,p)</p>
+</div></blockquote>
+<p>with the last coefficient will be the one in front of x^2. This can continue as you want by adding more 1.0 values to p.</p>
+<p>For a cubic spline baseline fitting the basis of a peak centered at 1100 cm$^{-1}$ and with basis at 900 and 1250 cm^{-1}:</p>
+<blockquote>
+<div><p>roi = [[890. 910.]; [1250. 1300.]]</p>
+<p>basetype = &#8220;Dspline&#8221;</p>
+<p>s = [0.01]</p>
+<p>bas = baseline(x,y,roi,basetype,s)</p>
+</div></blockquote>
+<p>s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: <a class="reference external" href="https://github.com/kbarbary/Dierckx.jl">https://github.com/kbarbary/Dierckx.jl</a></p>
+</div>
+<div class="section" id="tips">
+<h2>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Always be careful to enter float and integer numbers as required by the functions! They will return an error if you do not do that.</li>
+<li>For the spline, do not hesitate to test a broad range in term of order of magnitudes for the smoothing parameter!</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Pre-Processing Spectra</a><ul>
+<li><a class="reference internal" href="#long-correction-for-glass-raman-data">&#8220;Long&#8221; correction for glass Raman data</a></li>
+<li><a class="reference internal" href="#baseline-subtraction-function">Baseline subtraction function</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#tips">Tips</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Spectra.jl&#8217;s documentation!</a></li>
+      <li>Next: <a href="Integration.html" title="next chapter">Integration functions</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/PreProcessing.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Charles Le Losq.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/PreProcessing.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

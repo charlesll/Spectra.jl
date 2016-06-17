@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Splines &mdash; Spectra.jl 0.0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Spectra.jl 0.0.5 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>Splines<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introductory-notes">
+<h2>Introductory notes<a class="headerlink" href="#introductory-notes" title="Permalink to this headline">¶</a></h2>
+<p>Not all the splines packages provide the same performances for data smoothing and interpolation. By experience, the Dierckx spline package (&#8220;Dspline&#8221; option in the baseline() function) provides a good starting point, but is not as usefull as other spline packages.</p>
+<p>The csaps function of Matlab uses the SMOOTH Fortran library, and provides better smoothing capabilities for noisy data. Similarly, the GCVSPL Fortran package from Woltring (1986) also provides a very robust way to smooth and interpolate noisy data.</p>
+<p>This GCVSPL spline package is called directly by Julia (through a ccall()) in the baseline function, with the options of a cubic spline with least-square data fitting. The smoothing is done with scaling the variances of the data points (VAR variable in the GCVSPL.f package) that is provided to the GCVSPL.f program.</p>
+<p>Now, while baseline() should be well suited for most users needs, it uses cubic splines that are not always the best answers to some problems. For instance, quadratic splines may be more robust in some cases. You can change that by providing the spline order to baseline() as SplOrder = 2 for instance.</p>
+<p>In case you want to have even more control on GCVSPL.f, and use its internal tricks and tweeks, the following lines will provide you the documentation of the two functions allowing you to calculate the spline coefficients and to evaluate the spline values at specific x entries.</p>
+</div>
+<div class="section" id="function-gcvspl">
+<h2>Function gcvspl<a class="headerlink" href="#function-gcvspl" title="Permalink to this headline">¶</a></h2>
+<p>This function allows you to calculate the spline coefficients. It calls gcvspline subroutine of the program GCVSPL.f as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">c</span><span class="p">,</span> <span class="n">wk</span><span class="p">,</span> <span class="n">ier</span> <span class="o">=</span> <span class="n">gcvspline</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">ese</span><span class="p">,</span><span class="n">SplineSmooth</span><span class="p">,</span><span class="n">SplineOrder</span><span class="p">,</span><span class="n">SplineMode</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>INPUTS:</p>
+<blockquote>
+<div><p>x: Array{Float64}, the independent variables;</p>
+<p>y: Array{Float64}, the observations (we assume here that you want to use this spline only on 1 dataset... see gcvspl.f if not);</p>
+<p>ese: Array{Float64}, the errors on y;</p>
+<p>SplineSmooth: Float64, the smoothing factor;</p>
+<p>SplineOrder (M parameter in gcvspl.f): Int32, the half order of the required B-splines. default: splorder = 2 (cubic). SplineOrder = 1,2,3,4 correspond to linear, cubic, quintic, and heptic splines, respectively.</p>
+<dl class="docutils">
+<dt>SplineMode (Int32, MD parameter in gcvspl.f) is the Optimization mode switch:</dt>
+<dd><p class="first">default:   SplineMode = 2 (General Cross Validated)</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>SplineMode = 1: Prior given value for p in VAL</dt>
+<dd>(VAL.ge.ZERO). This is the fastest
+use of GCVSPL, since no iteration
+is performed in p.</dd>
+</dl>
+<p>SplineMode = 2: Generalized cross validation.</p>
+<dl class="docutils">
+<dt>SplineMode = 3: True predicted mean-squared error,</dt>
+<dd>with prior given variance in VAL.</dd>
+<dt>SplineMode = 4: Prior given number of degrees of</dt>
+<dd>freedom in VAL (ZERO.le.VAL.le.N-M).</dd>
+<dt>SplineMode  &lt; 0: It is assumed that the contents of</dt>
+<dd>X, W, M, N, and WK have not been
+modified since the previous invoca-
+tion of GCVSPL. If MD &lt; -1, WK(4)
+is used as an initial estimate for
+the smoothing parameter p.  At the
+first call to GCVSPL, MD must be &gt; 0.</dd>
+</dl>
+<p>Other values for SplineMode, and inappropriate values
+for VAL will result in an error condition, or
+cause a default value for VAL to be selected.
+After return from MD.ne.1, the same number of
+degrees of freedom can be obtained, for identical
+weight factors and knot positions, by selecting
+SplineMode=1, and by copying the value of p from WK(4)
+into VAL. In this way, no iterative optimization
+is required when processing other data in Y.</p>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p>OUPUTS:</p>
+<blockquote>
+<div><p>c: Array{Float64}, the spline coefficients;</p>
+<p>WK: Array{Float64}, working vector, see gcvspl.f;</p>
+<p>IER: error parameter</p>
+<blockquote>
+<div><p>IER = 0: Normal exit</p>
+<p>IER = 1: M.le.0 .or. N.lt.2*M</p>
+<p>IER = 2: Knot sequence is not strictly increasing, or some weight factor is not positive.</p>
+<p>IER = 3: Wrong mode parameter or value.</p>
+</div></blockquote>
+</div></blockquote>
+<p>SEE GCVSPL.f and Woltring (1986) for even more information.</p>
+</div>
+<div class="section" id="function-splderivative">
+<h2>Function splderivative<a class="headerlink" href="#function-splderivative" title="Permalink to this headline">¶</a></h2>
+<p>After a call of gcvspl, this function allows you to calculate the spline values for given x entries. It is called as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span>splderivative(xfull,xparse,cparse;SplineOrder::Int32 = Int32(2), L::Int32 = Int32(1), IDER::Int32 = Int32(0))
+</pre></div>
+</div>
+<p>INPUTS:</p>
+<blockquote>
+<div><p>xfull: Array{Float64}, contains the entire x range where the spline has to be evaluated;</p>
+<p>xparse: Array{Float64}, contains the x values of interpolation regions. WARNING!!! =&gt; xparse[0] &lt;= xfull[0] &lt;= xparse[n];</p>
+<p>cparse: Array{Float64}, is the evaluated spline coefficients returned by gcvspl for xparse.</p>
+</div></blockquote>
+<p>OPTIONS:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>splineorder (integer): is the spline order,</dt>
+<dd><p class="first">default: splineorder = 2 (cubic) (yes 2 is for a cubic spline, not 3. Be careful with this!)</p>
+<p>L (integer): see gcvspl.f for details, default: L = 1</p>
+<p class="last">IDER: the Derivative order required, with 0.le.IDER and IDER.le.2*M. If IDER.eq.0, the function value is returned; otherwise, the IDER-th derivative of the spline is returned.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>SEE GCVSPL.f and Woltring (1986) for even more information.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Splines</a><ul>
+<li><a class="reference internal" href="#introductory-notes">Introductory notes</a></li>
+<li><a class="reference internal" href="#function-gcvspl">Function gcvspl</a></li>
+<li><a class="reference internal" href="#function-splderivative">Function splderivative</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Splines.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Charles Le Losq.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/Splines.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

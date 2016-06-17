@@ -69,8 +69,11 @@ Contents
    PreProcessing
    Integration
    Functions
+   Splines
    PeakFitting
    Tutorial
+   ToDo
+   References
 
 Indices and tables
 ==================

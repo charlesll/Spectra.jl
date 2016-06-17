@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Spectra.jl 0.0.5 documentation" href="#" />
-    <link rel="next" title="Baseline subtraction" href="Baselines.html" />
+    <link rel="next" title="Pre-Processing Spectra" href="PreProcessing.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -58,6 +58,9 @@
 <div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
 <p>In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Therefore, a good thing will be to install it before installing Julia. Anaconda Python provides a nice, fully-featured Python distribution with MatplotLib, SciPy and Numpy. Follow installation instructions here:</p>
 <p><a class="reference external" href="https://www.continuum.io/downloads">https://www.continuum.io/downloads</a></p>
+<p>## IMPORTANT INFORMATION REGARDING GCVSPLINE
+To be able to use the gcvspline function, you actually need to change the paths in Spectra/src/gcvspl.jl, that should be located in ~/.julia/v0.4/ under Mac OSX or Linux. Set the paths to the library libgcvspl.so lines 89 and 123 to match those of your computer!
+## IMPORTANT INFORMATION REGARDING GCVSPLINE</p>
 </div>
 <div class="section" id="before-starting">
 <h1>Before Starting<a class="headerlink" href="#before-starting" title="Permalink to this headline">¶</a></h1>
@@ -78,15 +81,16 @@
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Baselines.html">Baseline subtraction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Baselines.html#baseline-subtraction-function">Baseline subtraction function</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Baselines.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Baselines.html#tips">Tips</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Baselines.html#to-do">To Do</a></li>
+<li class="toctree-l1"><a class="reference internal" href="PreProcessing.html">Pre-Processing Spectra</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#long-correction-for-glass-raman-data">&#8220;Long&#8221; correction for glass Raman data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#baseline-subtraction-function">Baseline subtraction function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#tips">Tips</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Integration.html">Integration functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Integration.html#to-do">To Do</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Integration.html#function-trapz">Function trapz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Integration.html#function-gaussianarea">Function gaussianarea</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Functions.html">Available Functions</a><ul>
@@ -96,8 +100,20 @@
 <li class="toctree-l2"><a class="reference internal" href="Functions.html#functions-lorentziennes-pseudovoigts-pearson7-normal-dist">Functions lorentziennes, pseudovoigts, pearson7, normal_dist:</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Splines.html">Splines</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Splines.html#introductory-notes">Introductory notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Splines.html#function-gcvspl">Function gcvspl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Splines.html#function-splderivative">Function splderivative</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="PeakFitting.html">Peak fitting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ToDo.html">To Do</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ToDo.html#pre-processing">Pre-Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ToDo.html#integration">Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
 </ul>
 </div>
 </div>
@@ -129,7 +145,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="Baselines.html" title="next chapter">Baseline subtraction</a></li>
+      <li>Next: <a href="PreProcessing.html" title="next chapter">Pre-Processing Spectra</a></li>
   </ul></li>
 </ul>
 </div>
