@@ -86,7 +86,7 @@ function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},Sm
 	c = ones(N,NC)
 	WK = ones(6*(N*SplineOrder+1)+N,1)
 	IER=Int32[1]
-	ccall( (:gcvspl_, abspath("../Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
+	ccall( (:gcvspl_, abspath("../Dependencies/gcvspline/libgcvspl.so")), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
 	return c, WK, IER
 end
 
