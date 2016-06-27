@@ -10,10 +10,25 @@
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, #INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 #############################################################################
+
+VERSION >= v"0.4.0" && __precompile__()
+
 module Spectra
 
 using StatsBase
 using PyPlot
+
+# some initial setup for calling the GCVSPL.f library
+unixpath = "../Dependencies/src/gcvspline/libgcvspl"
+winpath = "../Dependencies/bin$WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
+const gcvspl = joinpath(dirname(@__FILE__), @unix? unixpath : winpath)
+
+function __init__()
+    # Ensure library is available.
+    if (Libdl.dlopen_e(gcvspl) == C_NULL)
+        error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
+    end
+end
 
 include("diffusion.jl")
 include("integrale.jl")
@@ -26,10 +41,10 @@ include("long.jl")
 export trapz, gaussianarea
 
 #From diffusion.jl
-export peak_diffusion, model, IRdataprep 
+export peak_diffusion, model, IRdataprep
 
 #From functions.jl
-export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist 
+export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
 
 #From baseline.jl
 export baseline

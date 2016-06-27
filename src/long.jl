@@ -23,9 +23,9 @@
 
 function long(data::Array{Float64},temp::Float64,wave::Float64)
 
-    h::Float64 = 6.62606896e-34   # J.s    Plank constant
-    k::Float64 = 1.38066e-23      # J/K    Boltzman
-    c::Float64 = 2.9979e8         # m/s    Speed of light
+    h::Float64 = 6.626070040e-34   # J.s    Plank constant from NIST
+    k::Float64 = 1.38064852e-23      # J/K    Boltzman constant from NIST
+    c::Float64 = 299792458.         # m/s    Speed of light from NIST
     nu0::Float64 = 1.0./wave*1e9     # nu0 laser is in m-1
     T::Float64 = temp + 273.15    # K temperature
 
@@ -37,7 +37,7 @@ function long(data::Array{Float64},temp::Float64,wave::Float64)
 
     # then we proceed to the correction (Neuville and Mysen, 1996; Le Losq et al., 2012)
     nu::Array{Float64} = 100.0.*x # cm-1 -> m-1 Raman shift
-    t0::Array{Float64} = nu0.^3.*nu./(nu0-nu)
+    t0::Array{Float64} = nu0.^3.*nu./((nu0-nu).^4)
     t1::Array{Float64} = 1 - exp(-h.*c.*nu./(k.*T)) # c in m/s  : t1 dimensionless
     long::Array{Float64} = y.*t0.*t1; # pour les y
 

@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},SmoothSpline::Float64;SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
+function gcvspl_julia(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},SmoothSpline::Float64;SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
 	"""
     
     c, wk, ier = gcvspline(x,y,ese,SplineSmooth,SplineOrder,SplineMode)
@@ -90,11 +90,11 @@ function gcvspl(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},Sm
 	#libgcvspl = Libdl.dlopen(abspath("../Dependencies/gcvspline/libgcvspl.so"))
 	#const pathname = "/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"
 	#mylibvar = dlopen("mylib")
-	ccall( (:gcvspl_,"/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
+	ccall( (:gcvspl_,gcvspl), Void, (Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ref{Float64},Ptr{Cint},Ref{Float64},Ref{Cint}),x,y,&N,WX,WY,&SplineOrder,&N,&K,&SplineMode,VAL,c,&NC,WK,IER)
 	return c, WK, IER
 end
 
-function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = Int32(2), L::Int32 = Int32(1), IDER::Int32 = Int32(0))
+function splderivative_julia(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = Int32(2), L::Int32 = Int32(1), IDER::Int32 = Int32(0))
     """
     Wrapper to the SPLDER function of gcvspl.f, for interpolation purpose
     
@@ -126,7 +126,7 @@ function splderivative(xfull::Array{Float64},xparse::Array{Float64},cparse::Arra
 	#libgcvspl = Libdl.dlopen(abspath("../Dependencies/gcvspline/libgcvspl.so"))
     # we loop other xfull to create the output values
 	for i =1:size(y_calc,1)
-	    y_calc[i] = ccall( (:splder_,"/Users/charles/.julia/v0.4/Spectra/Dependencies/gcvspline/libgcvspl.so"), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &SplineOrder, &N, &xfull[i], xparse, cparse, &L, q)
+	    y_calc[i] = ccall( (:splder_,gcvspl), Float64, (Ptr{Cint},Ptr{Cint},Ptr{Cint},Ptr{Float64},Ptr{Float64},Ptr{Float64},Ptr{Cint},Ptr{Float64}),&IDER, &SplineOrder, &N, &xfull[i], xparse, cparse, &L, q)
 	end
 	return y_calc
 end

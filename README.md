@@ -10,11 +10,11 @@ Licence MIT: see LICENCE.md
 
 Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia. Spectra.jl aim is to provide the simplest way to perform actions like baseline fitting and removal, or peak fitting for instance, while respecting the freedom offered by data treatment through using a computer code instead of a Graphic User Interface.
 
+# Documentation
+
 Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ .
 
 Package is under construction, any help welcome!
-
-Last modified 2/06/2016
 
 # Quick Usage Examples
 
@@ -59,3 +59,5 @@ The "gaussiennes" function allows to get the values fo the peaks after the fit f
 Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
+
+Last modified 27/06/2016

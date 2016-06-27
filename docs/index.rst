@@ -31,9 +31,10 @@ In the Julia shell. Please note that before installing Spectra.jl, the installat
 
 https://www.continuum.io/downloads
 
-## IMPORTANT INFORMATION REGARDING GCVSPLINE
-To be able to use the gcvspline function, you actually need to change the paths in Spectra/src/gcvspl.jl, that should be located in ~/.julia/v0.4/ under Mac OSX or Linux. Set the paths to the library libgcvspl.so lines 89 and 123 to match those of your computer!
-## IMPORTANT INFORMATION REGARDING GCVSPLINE
+## IMPORTANT INFORMATION REGARDING GCVSPLINE ON WINDOWS
+
+Windows users probably need to compile manually the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.
+
 
 Before Starting
 ==================

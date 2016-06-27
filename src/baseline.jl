@@ -17,8 +17,8 @@ using JuMP
 using Ipopt
 using Dierckx
 
-include("gcvspl.jl")
- 
+include("gcvspl_wrapper.jl")
+
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString,p::Array{Float64};SplOrder=3)
     #### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
     interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
@@ -29,9 +29,9 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     end
     interest_x = x[interest_index,1]
     interest_y = y[interest_index,1]
-    
+
 	#### THEN WE GO TO THE RIGHT METHOD FOR BASELINE CALCULATION
-    
+
 	######## POLYNOMIAL BASELINE
 	if basetype == "poly"
         # The model for fitting baseline to roi signal
@@ -47,23 +47,22 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
         best_p::Vector{Float64} = getvalue(p_val)
         y_calc::Array{Float64} = poly(best_p,x)
         return y[:,1] - y_calc, y_calc
-	
+
 	######## DIERCKX SPLINE BASELINE
 	elseif basetype == "Dspline"
 		spl = Spline1D(interest_x,interest_y,s=p[1],bc="extrapolate",k=SplOrder)
 		y_calc = evaluate(spl,x[:,1])
 		return y[:,1] - y_calc, y_calc
-		
+
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
 		ese_y = sqrt(abs(y)) # we assume errors as sqrt(y)
-		c, WK, IER = gcvspl(interest_x[:,1],interest_y[:,1],ese_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
-		y_calc = splderivative(x[:,1],interest_x,c,SplineOrder= Int32(SplOrder-1))
+		c, WK, IER = gcvspl_julia(interest_x[:,1],interest_y[:,1],ese_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
+		y_calc = splderivative_julia(x[:,1],interest_x,c,SplineOrder= Int32(SplOrder-1))
 		return y[:,1] - y_calc, y_calc
-		
+
 	######## RAISING ERROR IF NOT THE GOOD CHOICE
 	else
         error("Not implemented, choose between poly and [to come]")
     end
 end
-
