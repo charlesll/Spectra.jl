@@ -19,8 +19,8 @@ using StatsBase
 using PyPlot
 
 # some initial setup for calling the GCVSPL.f library
-unixpath = "../Dependencies/src/gcvspline/libgcvspl"
-winpath = "../Dependencies/bin$WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
+unixpath = "../deps/src/gcvspline/libgcvspl"
+winpath = "../deps/bin$WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
 const gcvspl = joinpath(dirname(@__FILE__), @unix? unixpath : winpath)
 
 function __init__()
