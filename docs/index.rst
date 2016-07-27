@@ -19,13 +19,13 @@ Two ways of using Spectra.jl: [1] with using a cloud-computing approach and [2] 
 
 [1] JuliaBox (https://www.juliabox.org/) allows you to run Julia in your browser. You still need to add Spectra.jl. To do so, run a notebook, and in the first instance, type
 
-    Pkg.add("Spectra.jl")
+    Pkg.add("Spectra")
 
 Everything shoul install without trouble. Requirements in Spectra.jl are extensive and will provide you all the packages needed by Spectra.jl's functions and examples.
 
 [2] You can download the current version of Julia and follow the installation instruction here: http://julialang.org/downloads/ . Then, run
 
-    Pkg.add("Spectra.jl")
+    Pkg.add("Spectra")
 
 In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Therefore, a good thing will be to install it before installing Julia. Anaconda Python provides a nice, fully-featured Python distribution with MatplotLib, SciPy and Numpy. Follow installation instructions here:
 
