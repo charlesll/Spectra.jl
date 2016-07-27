@@ -17,6 +17,15 @@ module Spectra
 
 using StatsBase
 using PyPlot
+using LsqFit
+using PyCall
+
+# For PyCall modules
+const preprocessing = PyNULL()
+const grid_search = PyNULL()
+const kernelridge = PyNULL()
+const svm = PyNULL()
+const gaussian_process = PyNULL()
 
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
@@ -28,6 +37,12 @@ function __init__()
     if (Libdl.dlopen_e(gcvspl) == C_NULL)
         error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
     end
+	
+	copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
+	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
+	copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
+	copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 end
 
 include("diffusion.jl")
@@ -35,7 +50,9 @@ include("integrale.jl")
 include("functions.jl")
 include("baseline.jl")
 include("bootstrap.jl")
-include("long.jl")
+include("tlcorrection.jl")
+include("rameau.jl")
+include("deprecated.jl")
 
 #From integrale.jl
 export trapz, gaussianarea
@@ -44,7 +61,7 @@ export trapz, gaussianarea
 export peak_diffusion, model, IRdataprep
 
 #From functions.jl
-export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
+export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
 
 #From baseline.jl
 export baseline
@@ -55,7 +72,10 @@ export gcvspl, splderivative
 #From bootstrap
 export bootsample, bootperf
 
-#From long
-export long
+#From tlcorrection
+export tlcorrection
+
+#From rameau
+export rameau
 
 end # module
