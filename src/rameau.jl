@@ -11,9 +11,8 @@
 #
 #############################################################################
 
-function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.035,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0)
+function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.069,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,basetype="KRregression")
 	
-	used_baseline = "gcvspline"
 	scale = 1000.
 	
 	liste=readcsv(paths[1], skipstart=1)
@@ -39,7 +38,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	    end
     
 	    x = spectra[:,1]
-	    y = spectra[:,2]#./trapz(x,spectra[:,2]).*scale # area normalisation
+	    y = spectra[:,2]./trapz(x,spectra[:,2]).*scale # area normalisation
     
 	    if switches[2] == "yes" # if user asks for a double baseline
         
@@ -55,13 +54,13 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	        y_calc1_part1, baseline1 = baseline(x,y,roi_hf[1,:],"poly",[1.0,1.0])
         
 	        # above 2000 cm-1, we use the gcvspline
-	        y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],used_baseline,[smo_hf[i]])
+	        y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],basetype,p=[smo_hf[i]])
         
 	        # and we glue together the two parts
 	        y_calc1 = [y_calc1_part1[0 .<x.<roi_hf[2,1]];y_calc1_part2[x .>= roi_hf[2,1]]]
 	        bas1 = [baseline1[0 .<x.<roi_hf[2,1]];baseline2[x .>= roi_hf[2,1]]]
         
-	        #y_calc1, bas1 = baseline(x,y,roi_hf,basetype=used_baseline,p=[smooth*10]) # baseline substraction
+	        #y_calc1, bas1 = baseline(x,y,roi_hf,basetype=basetype,p=[smooth*10]) # baseline substraction
 	        y_calc1 = y_calc1./trapz(x,y_calc1).*scale # area normalisation
         
 	        if switches[3] == "yes"
@@ -69,13 +68,13 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
             	y_long = y_long .*scale
 			
 	            # Again we need a trick as we don't want to do anything in the HF part...
-	            y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,used_baseline,[smo_lf[i]]) # baseline substraction
+	            y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,basetype,p=[smo_lf[i]]) # baseline substraction
 	            y_calc2 = [y_calc2_part1[x.<roi_lf[end,1]];y_long[x.>=roi_lf[end,1]]] # we glue the good parts 
 	            bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
 	            y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
 	        else
             
-	            y_calc2_part1, bas2 = baseline(x,y_calc1,roi_lf,used_baseline,[smo_lf[i]]) # baseline substraction
+	            y_calc2_part1, bas2 = baseline(x,y_calc1,roi_lf,basetype,p=[smo_lf[i]]) # baseline substraction
 	            y_calc2 = [y_calc2_part1[x.<roi_lf[end,1]];y_calc1[x.>=roi_lf[end,1]]] # we glue the good parts
 	            bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
 	            y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
@@ -114,7 +113,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
             	#y_long = y_long ./maximum(y_long)
 				y_long=y_long.*scale
 				
-	            y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],used_baseline,[smo_lf[i]])
+	            y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=[smo_lf[i]])
 				y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*(scale./10) # area normalisation
             
 	            figure()
@@ -128,7 +127,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 				legend(loc="upper left",fancybox="true")
             
 	        else
-	            y_calc2, bas2 = baseline(x,y,roi[:,:,i],used_baseline,[smo_lf[i]])
+	            y_calc2, bas2 = baseline(x,y,roi[:,:,i],basetype,p=[smo_lf[i]])
 				y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*scale # area normalisation
             
 	            figure()

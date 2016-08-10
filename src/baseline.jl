@@ -67,7 +67,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		y_calc = splderivative_julia(x[:,1],interest_x,c,SplineOrder= Int32(SplOrder-1))
 		return y[:,1] - y_calc, y_calc
 
-	######## KERNEL RIDGE REGRESSION WITH SCIPY
+	######## KERNEL RIDGE REGRESSION WITH SCIKIT LEARN
 	elseif basetype == "KRregression"
 		# to be sure everything is in the right shape for SciKit Learn API
 		interest_x = reshape(interest_x,size(interest_x,1),1)
@@ -79,7 +79,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 		X_scaler[:fit](interest_x)
 		Y_scaler[:fit](interest_y)
-		
+
 		#scaling the data
 		x_bas_sc = X_scaler[:transform](interest_x)
 		y_bas_sc = Y_scaler[:transform](interest_y)
@@ -93,6 +93,33 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		y_kr_sc = kr[:predict](x_sc)
 		y_kr = Y_scaler[:inverse_transform](y_kr_sc)
 		return y[:,1] - y_kr, y_kr
+		
+	######## SUPPORT VECTOR MACHINES REGRESSION WITH SCIKIT LEARN
+	elseif basetype == "SVMregression"
+		# to be sure everything is in the right shape for SciKit Learn API
+		interest_x = reshape(interest_x,size(interest_x,1),1)
+		interest_y = reshape(interest_y,size(interest_y,1),1)
+	
+		# initialising the preprocessor scaler
+		X_scaler = preprocessing[:StandardScaler]()
+		Y_scaler = preprocessing[:StandardScaler]()
+
+		X_scaler[:fit](interest_x)
+		Y_scaler[:fit](interest_y)
+
+		#scaling the data
+		x_bas_sc = X_scaler[:transform](interest_x)
+		y_bas_sc = Y_scaler[:transform](interest_y)
+		x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
+	
+		# constructing a GridSearchCV instance for grabing the best parameters
+		clf = kernelridge[:SVR](kernel="rbf", gamma=0.1)
+		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e0, 1e1, 1e2, 1e3],
+		                              "gamma"=> logspace(-4, 4, 9)))
+		svr[:fit](x_bas_sc, y_bas_sc)
+		y_svr_sc = svr[:predict](x_sc)
+		y_svr = Y_scaler[:inverse_transform](y_svr_sc)
+		return y[:,1] - y_svr, y_svr
 		
 	######## RAISING ERROR IF NOT THE GOOD CHOICE
 	else

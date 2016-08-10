@@ -24,6 +24,7 @@ using PyCall
 const preprocessing = PyNULL()
 const grid_search = PyNULL()
 const kernelridge = PyNULL()
+const svm = PyNULL()
 
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
@@ -36,6 +37,7 @@ function __init__()
         error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
     end
 	
+	copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
 	copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
 	copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "kernelridge"))

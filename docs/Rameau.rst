@@ -61,15 +61,17 @@ INPUTS:
 	
 OPTIONS:
 	
-	prediction_coef: Float64, this is the calibration coefficient that will be used in the predictions, if you use the predictive mode (i.g., calibration switch is NOT set to "yes")
+	prediction_coef: Float64, this is the calibration coefficient that will be used in the predictions, if you use the predictive mode (i.g., calibration switch is NOT set to "yes"). Default = 0.069.
 	
-	temperature: Float64, the temperature for the Long correction in Celsius.
+	temperature: Float64, the temperature for the Long correction in Celsius. Default = 23.0.
 	
-	laser: Float64, the laser wavelength in nm for the Long correction
+	laser: Float64, the laser wavelength in nm for the Long correction. Default = 532.0.
 	
-	lb_break: for double baseline correction, the breaking point before which the software will consider the BIRs in the low frequency region
+	lb_break: Float64, for double baseline correction, the breaking point before which the software will consider the BIRs in the low frequency region. Default = 2010.0.
 	
-	hb_start: for double baseline correction, the breaking point after which the software will consider the BIRs in the high frequency region
+	hb_start: Float64, for double baseline correction, the breaking point after which the software will consider the BIRs in the high frequency region. Default = 1000.0.
+	
+	basetype: String, the type of baseline you want to fit. Corresponds to the "basetype" parameter of the baseline function.  Default = "KRregression".
 	
 OUTPUTS:
 
@@ -110,3 +112,9 @@ However, I warn the user that this is not always the best solution... Indeed, th
 Therefore, this is up to the user to choose what is best in his case.
 
 From my test, switching from one mode to the other might improve or worsen the standard deviation of the calibration of around 0.1-0.3 wt%. It might (or not...) improve the robustness of the baseline fitting procedure.
+
+-----------------------------------------------------------------------
+Note on the use of KRregression baseline fitting instead of GCV splines
+-----------------------------------------------------------------------
+
+Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). The only downside is time. Those technic are slower at execution time as we need to test different hyperparameters. This may be improved with experience by decreasing the amount of hyperparameters to check, so do not forget to regularly run a Pkg.update()!
