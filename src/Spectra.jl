@@ -17,6 +17,14 @@ module Spectra
 
 using StatsBase
 using PyPlot
+using LsqFit
+using PyCall
+
+# For PyCall modules
+const np = PyNULL()
+const preprocessing = PyNULL()
+const grid_search = PyNULL()
+const kernelridge = PyNULL()
 
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
@@ -28,6 +36,11 @@ function __init__()
     if (Libdl.dlopen_e(gcvspl) == C_NULL)
         error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
     end
+	
+	copy!(np, pyimport_conda("scipy.optimize", "scipy"))
+	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
+	copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
+	copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "kernelridge"))
 end
 
 include("diffusion.jl")
@@ -35,7 +48,9 @@ include("integrale.jl")
 include("functions.jl")
 include("baseline.jl")
 include("bootstrap.jl")
-include("long.jl")
+include("tlcorrection.jl")
+include("rameau.jl")
+include("deprecated.jl")
 
 #From integrale.jl
 export trapz, gaussianarea
@@ -55,7 +70,10 @@ export gcvspl, splderivative
 #From bootstrap
 export bootsample, bootperf
 
-#From long
-export long
+#From tlcorrection
+export tlcorrection
+
+#From rameau
+export rameau
 
 end # module

@@ -27,6 +27,14 @@ OUTPUTS:
 	long: Array{Float64} containing the corrected y values;
 
 	eselong: Array{Float64} containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
+	
+NOTES:
+
+This correction uses the formula reported in
+
+Brooker et al. 1988 Assessment of correction procedures for reduction of Raman spectra. Journal of Raman Spectroscopy 19(2), 71-78.
+
+It uses the Boltzman distribution. It gives basically the same results as that reported in Galeener and Sen (1978) with the Bose-Einstein form. Other corrections are possible, see Brooker et al. (1988) for a discussion, and Hehlen et al. (2010, Journal of Physics: Condensed Matter 22:025401) for a different form that does no destroy the Boson peak in glasses. In a futur implementation the later will be integrated to the long function.
 
 ------------------------------
 Baseline subtraction function

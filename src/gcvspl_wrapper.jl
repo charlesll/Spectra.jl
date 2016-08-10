@@ -25,7 +25,7 @@ function gcvspl_julia(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64
     SplineOrder (M parameter in gcvspl.f): Int32, the half order of the required B-splines. default: splorder = 2 (cubic)
     SplineOrder = 1,2,3,4 correspond to linear, cubic, quintic, and heptic splines, respectively. 
     SplineMode (MD parameter in gcvspl.f) is the Optimization mode switch:
-	    default:   SplineMode = 2 (General Cross Validated)
+	    default:   SplineMode = 3 (True predicted mean-squared error)
 	               SplineMode = 1: Prior given value for p in VAL
 	                         (VAL.ge.ZERO). This is the fastest
 	                         use of GCVSPL, since no iteration
@@ -73,7 +73,7 @@ function gcvspl_julia(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64
 		#error("This function only accepts x, y and ese arrays of the same lengths.")
 	end
 	
-	WX = 1. ./(ese.^2) # relative variance of observations
+	WX = 1. ./((SmoothSpline.*ese).^2) # relative variance of observations
 	WY = zeros([1])+1. # systematic errors... not used so put them to 1
 	VAL = (SmoothSpline.*ese).^2
 
