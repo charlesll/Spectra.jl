@@ -10,11 +10,26 @@ Licence MIT: see LICENCE.md
 
 Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia. Spectra.jl aim is to provide the simplest way to perform actions like baseline fitting and removal, or peak fitting for instance, while respecting the freedom offered by data treatment through using a computer code instead of a Graphic User Interface.
 
+Package is under construction, any help welcome!
+
 # Documentation
 
 Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ .
 
-Package is under construction, any help welcome!
+# News
+
+Version 0.1.3 is arriving soon and will contain the following new features:
+
+- Several functions for temperature and excitation line corrections of Raman spectra;
+
+- Use of machine learning algorithms (support vector machines and kernel ridge regressor) from SciKit Learn to fit baseline of spectra;
+
+- a new Rameau function to simplify the quantification of glass water content with Raman spectroscopy following Le Losq et al. (2012);
+
+Corrections:
+
+- gcvspline has been corrected from a mistake in the use of the smoothing coefficient
+
 
 # Quick Usage Examples
 
@@ -60,4 +75,4 @@ Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
 
-Last modified 27/06/2016
+Last modified 10/08/2016
