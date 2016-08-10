@@ -74,8 +74,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		interest_y = reshape(interest_y,size(interest_y,1),1)
 		
 		# initialising the preprocessor scaler
-		X_scaler = preprocessing.StandardScaler()
-		Y_scaler = preprocessing.StandardScaler()
+		X_scaler = preprocessing[:StandardScaler]()
+		Y_scaler = preprocessing[:StandardScaler]()
 
 		X_scaler[:fit](interest_x)
 		Y_scaler[:fit](interest_y)
@@ -86,9 +86,9 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
 		
 		# constructing a GridSearchCV instance for grabing the best parameters
-		clf = kernelridge.KernelRidge(kernel="rbf", gamma=0.1)
-		kr = grid_search.GridSearchCV(clf,cv=5,param_grid=Dict("alpha"=> [1e0, 0.1, 1e-2, 1e-3],
-		                              "gamma"=> np.logspace(-4, 4, 9)))
+		clf = kernelridge[:KernelRidge](kernel="rbf", gamma=0.1)
+		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e0, 0.1, 1e-2, 1e-3],
+		                              "gamma"=> logspace(-4, 4, 9)))
 		kr[:fit](x_bas_sc, y_bas_sc)
 		y_kr_sc = kr[:predict](x_sc)
 		y_kr = Y_scaler[:inverse_transform](y_kr_sc)
@@ -96,6 +96,6 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		
 	######## RAISING ERROR IF NOT THE GOOD CHOICE
 	else
-        error("Not implemented, choose between "poly", "Dspline", "gcvspline" and "KRregression".")
+        error("Not implemented, choose between poly, Dspline, gcvspline and KRregression.")
     end
 end

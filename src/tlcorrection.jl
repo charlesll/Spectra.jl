@@ -30,10 +30,10 @@
 # Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.
 #############################################################################
 
-function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction::AbstractString="long";density::Float64=2210)
+function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",density=2210.0)
 
     h::Float64 = 6.626070040e-34   # J S    Plank constant from NIST
-	hb::Float64 = 1.054571800e−34 # J S    Reduced Plank constant from NIST
+	hb::Float64 = 1.054571800e-34 # J S    Reduced Plank constant from NIST
     k::Float64 = 1.38064852e-23      # J K-1    Boltzman constant from NIST
     c::Float64 = 299792458.         # M S-1    Speed of light from NIST
     nu0::Float64 = 1.0./wave*1e9     # nu0 laser is in M-1 (wave is in nm)
@@ -60,17 +60,17 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 	elseif correction == "galeener"
 		# This uses the formula reported in Galeener and Sen (1978) and Brooker et al. (1988); it uses the Bose-Einstein / Boltzman distribution
 		# Formula from  without the scaling vo^3 coefficient reported in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012)
-    	frequency::Array{Float64} = nu./((nu0-nu).^4) # frequency correction; M^3
-    	boltzman::Array{Float64} = 1 - exp(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
-    	ycorr::Array{Float64} = y.*frequency.*boltzman; # correction
+    	frequency = nu./((nu0-nu).^4) # frequency correction; M^3
+    	boltzman = 1 - exp(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
+    	ycorr = y.*frequency.*boltzman; # correction
 		
 	elseif correction =="hehlen"
 		# this uses the formula reported in Hehlen et al. 2010
-    	frequency::Array{Float64} = nu./(nu0.^3.*density) # frequency + density correction; M/KG
-    	boltzman::Array{Float64} = 1 - exp(-h.*c.*nu./(k.*T)) # dimensionless
-    	ycorr::Array{Float64} = y.*frequency.*boltzman; # correction
+    	frequency = nu./(nu0.^3.*density) # frequency + density correction; M/KG
+    	boltzman = 1 - exp(-h.*c.*nu./(k.*T)) # dimensionless
+    	ycorr = y.*frequency.*boltzman; # correction
 	else
-		error("Not implemented, choose between "long", "galeener" or "hehlen".")
+		error("Not implemented, choose between long, galeener or hehlen.")
 	end
 	
     ycorr = ycorr./trapz(x,ycorr) # area normalisation
