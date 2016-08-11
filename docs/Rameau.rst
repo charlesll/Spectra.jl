@@ -27,7 +27,7 @@ This is purely experimental for now so I don't advise using it for now, but we h
 - It may be better (or not...) to remove a general spectral background before performing the Long correction;
 - Different smoothing coefficients for the silicate and water region may provide more robust and precise baseline fitting.
 
-Please read carefully the following description, and after that jump into the examples section of Spectra.jl to see Spectra.rameau in action on the dataset published in 2012! wTo conclude, any bug report, contributions on Github and suggestions will help improving this software and Spectra.jl in general. So you're very welcome to provide any feedback!
+Please read carefully the following description, and after that jump into the examples section of Spectra.jl to see Spectra.rameau in action on the dataset published in 2012! To conclude, any bug report, contributions on Github and suggestions will help improving this software and Spectra.jl in general. So you're very welcome to provide any feedback!
 
 NOTE ON ABREVIATIONS: Rws in the following refers to the ratio between the area of the water peak and that of the silicate bands.
 
@@ -71,7 +71,7 @@ OPTIONS:
 	
 	hb_start: Float64, for double baseline correction, the breaking point after which the software will consider the BIRs in the high frequency region. Default = 1000.0.
 	
-	basetype: String, the type of baseline you want to fit. Corresponds to the "basetype" parameter of the baseline function.  Default = "KRregression".
+	basetype: String, the type of baseline you want to fit. Corresponds to the "basetype" parameter of the baseline function.  Default = "gcvspline".
 	
 OUTPUTS:
 
@@ -117,4 +117,4 @@ From my test, switching from one mode to the other might improve or worsen the s
 Note on the use of KRregression baseline fitting instead of GCV splines
 -----------------------------------------------------------------------
 
-Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). The only downside is time. Those technic are slower at execution time as we need to test different hyperparameters. This may be improved with experience by decreasing the amount of hyperparameters to check, so do not forget to regularly run a Pkg.update()!
+Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). From experience, using a spline carefully adjusted provides better result. However, using KRregression may provide good results without headache to adjust any parameter. For now this is an experimental feature.

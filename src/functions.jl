@@ -25,6 +25,13 @@ end
 For Gaussian peaks in spectra
 	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
 """
+
+# From https://rosettacode.org/wiki/Polynomial_regression#Julia
+function polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
+  A = [ float(x[i])^p for i = 1:length(x), p = 0:n ]
+  return A \ y
+end
+
 function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"

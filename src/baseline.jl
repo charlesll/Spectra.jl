@@ -19,7 +19,7 @@ using Dierckx
 
 include("gcvspl_wrapper.jl")
 
-function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p::Array{Float64}=[1.0,1.0],SplOrder=3)
+function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,SplOrder=3)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
 	if x[end,1] < x[1,1]
 	    x = flipdim(x,1)
@@ -35,22 +35,24 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     end
     interest_x = x[interest_index,1]
     interest_y = y[interest_index,1]
+	ese_interest_y = sqrt(abs(interest_y)) # we assume errors as sqrt(y)
 
 	#### THEN WE GO TO THE RIGHT METHOD FOR BASELINE CALCULATION
 
 	######## POLYNOMIAL BASELINE
 	if basetype == "poly"
         # The model for fitting baseline to roi signal
-        mod = Model(solver=IpoptSolver(print_level=0))
-        n::Int = size(p)[1] # number of coefficients
-        m::Int = size(interest_x)[1] # number of data
+        #mod = Model(solver=IpoptSolver(print_level=0))
+        #n::Int = size(p)[1] # number of coefficients
+        #m::Int = size(interest_x)[1] # number of data
 
-        @variable(mod,p_val[i=1:n])
-        setvalue(p_val[i=1:n], p[i])
-        @NLobjective(mod,Min,sum{( sum{p_val[i]*interest_x[j]^(i-1), i=1:n} - interest_y[j])^2, j=1:m})
-        status = solve(mod)
-        println("Solver status: ", status)
-        best_p::Vector{Float64} = getvalue(p_val)
+        #@variable(mod,p_val[i=1:n])
+        #setvalue(p_val[i=1:n], p[i])
+        #@NLobjective(mod,Min,sum{( sum{p_val[i]*interest_x[j]^(i-1), i=1:n} - interest_y[j])^2, j=1:m})
+        #status = solve(mod)
+        #println("Solver status: ", status)
+		#best_p::Vector{Float64} = getvalue(p_val)
+		best_p::Array{Float64} = polyfit(interest_x,interest_y,round(Int,p))
         y_calc::Array{Float64} = poly(best_p,x)
         return y[:,1] - y_calc, y_calc
 
@@ -62,8 +64,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
-		ese_y = sqrt(abs(y)) # we assume errors as sqrt(y)
-		c, WK, IER = gcvspl_julia(interest_x[:,1],interest_y[:,1],ese_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
+		c, WK, IER = gcvspl_julia(interest_x[:,1],interest_y[:,1],ese_interest_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
 		y_calc = splderivative_julia(x[:,1],interest_x,c,SplineOrder= Int32(SplOrder-1))
 		return y[:,1] - y_calc, y_calc
 
@@ -87,9 +88,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		
 		# constructing a GridSearchCV instance for grabing the best parameters
 		clf = kernelridge[:KernelRidge](kernel="rbf", gamma=0.1)
-		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e0, 0.1, 1e-2, 1e-3],
-		                              "gamma"=> logspace(-4, 4, 9)))
-		kr[:fit](x_bas_sc, y_bas_sc)
+		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.1, 1e-2, 1e-3],"gamma"=> logspace(-2, 2, 5)))
+		kr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_kr_sc = kr[:predict](x_sc)
 		y_kr = Y_scaler[:inverse_transform](y_kr_sc)
 		return y[:,1] - y_kr, y_kr
@@ -113,13 +113,39 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
 	
 		# constructing a GridSearchCV instance for grabing the best parameters
-		clf = kernelridge[:SVR](kernel="rbf", gamma=0.1)
-		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e0, 1e1, 1e2, 1e3],
-		                              "gamma"=> logspace(-4, 4, 9)))
-		svr[:fit](x_bas_sc, y_bas_sc)
+		clf = svm[:SVR](kernel="rbf", gamma=0.1)
+		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-2, 2, 5)))
+		svr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_svr_sc = svr[:predict](x_sc)
 		y_svr = Y_scaler[:inverse_transform](y_svr_sc)
 		return y[:,1] - y_svr, y_svr
+		
+		######## GRADIENT BOOSTING ENSEMBLE REGRESSION WITH SCIKIT LEARN
+		elseif basetype == "GPregression"
+			# to be sure everything is in the right shape for SciKit Learn API
+			interest_x = reshape(interest_x,size(interest_x,1),1)
+			interest_y = reshape(interest_y,size(interest_y,1),1)
+			ese_interest_y = reshape(ese_interest_y,size(ese_interest_y,1),1)
+	
+			# initialising the preprocessor scaler
+			X_scaler = preprocessing[:StandardScaler]()
+			Y_scaler = preprocessing[:StandardScaler]()
+
+			X_scaler[:fit](interest_x)
+			Y_scaler[:fit](interest_y)
+
+			#scaling the data
+			x_bas_sc = X_scaler[:transform](interest_x)
+			y_bas_sc = Y_scaler[:transform](interest_y)
+			x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
+	
+			# constructing a GridSearchCV instance for grabing the best parameters
+			gpr = gaussian_process[:GaussianProcess](corr="squared_exponential", theta0=1e-1,thetaL=1e-3, thetaU=1,nugget=(ese_interest_y[:] ./ interest_y[:]).^2,random_start=100)
+			#svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-2, 2, 5)))
+			gpr[:fit](interest_x, squeeze(interest_y,2)) #SciKit learn is expecting a y vector, not an array...
+			y_gpr = gpr[:predict](x_sc)
+			#y_gpr = Y_scaler[:inverse_transform](y_gpr_sc)
+			return y[:,1] - y_gpr, y_gpr
 		
 	######## RAISING ERROR IF NOT THE GOOD CHOICE
 	else

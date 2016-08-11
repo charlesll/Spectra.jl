@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.069,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,basetype="KRregression")
+function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.069,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,basetype="gcvspline")
 	
 	scale = 1000.
 	
@@ -28,8 +28,6 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 
 	rws = ones(size(liste,1),3)
 	
-	
-	
 	for i = 1:size(liste,1)   
 	    spectra = readdlm(string(paths[2],names[i]),input_properties[1],skipstart=input_properties[2])
     
@@ -39,6 +37,16 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
     
 	    x = spectra[:,1]
 	    y = spectra[:,2]./trapz(x,spectra[:,2]).*scale # area normalisation
+		
+		#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
+	    interest_index::Array{Int64} = find(roi[1,1,i] .<= x[:,1] .<= roi[1,2,i])
+	    if size(roi)[1] > 1
+	        for j = 2:size(roi)[1]
+	            interest_index = vcat(interest_index,  find(roi[j,1,i] .<= x[:,1] .<= roi[j,2,i]))
+	        end
+	    end
+	    interest_x = x[interest_index,1]
+	    interest_y = y[interest_index,1]
     
 	    if switches[2] == "yes" # if user asks for a double baseline
         
@@ -48,14 +56,21 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	        roi_hf =  [lb[hb.>hb_start] hb[hb.>hb_start]]
 	        roi_lf =  [lb[hb.<lb_break] hb[hb.<lb_break]]
 			
-			roi_lf = [lb[1,1] hb[1,1];x[y .== minimum(y[550 .< x .<900])]-10 x[y .== minimum(y[550 .< x .<900])]; lb[4,1] hb[4,1]]
+			#roi_lf = [lb[1,1] hb[1,1];x[y .== minimum(y[550 .< x .<900])]-5 x[y .== minimum(y[550 .< x .<900])]+5; lb[4,1] hb[4,1]]
         
 	        # A first linear baseline in signals between ~1300 and ~ 2000 cm-1
-	        y_calc1_part1, baseline1 = baseline(x,y,roi_hf[1,:],"poly",[1.0,1.0])
+	        y_calc1_part1, baseline1 = baseline(x,y,roi_hf[1,:],"poly",p=1.0)
+			
+			# we get a mean signal for background below 1300 cm-1
+			X_low_lf = x[y .==minimum(y[1100.<x.<1400])]
+			b_low_lf = mean(y[X_low_lf[1]-5 .< x .< X_low_lf[1]+5])
+			baseline1[x.<X_low_lf[1]] = b_low_lf
+			y_calc1_part1 = y - baseline1
         
-	        # above 2000 cm-1, we use the gcvspline
+	        # above 2500 cm-1, we use a thrid order polynomial function below the water peak
 	        y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],basetype,p=[smo_hf[i]])
-        
+        	#y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],"poly",p=3.0)
+		
 	        # and we glue together the two parts
 	        y_calc1 = [y_calc1_part1[0 .<x.<roi_hf[2,1]];y_calc1_part2[x .>= roi_hf[2,1]]]
 	        bas1 = [baseline1[0 .<x.<roi_hf[2,1]];baseline2[x .>= roi_hf[2,1]]]
@@ -69,6 +84,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			
 	            # Again we need a trick as we don't want to do anything in the HF part...
 	            y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,basetype,p=[smo_lf[i]]) # baseline substraction
+				#y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,"poly",p=4.0) # baseline substraction
 	            y_calc2 = [y_calc2_part1[x.<roi_lf[end,1]];y_long[x.>=roi_lf[end,1]]] # we glue the good parts 
 	            bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
 	            y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
@@ -80,23 +96,37 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	            y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
             
 	        end
-        
+			
 	        # Plotting the spectra
-	        figure()
+	        figure(figsize=(10,10))
 			suptitle("Spectrum $(names[i])")
-	        subplot(121)
+			
+	        subplot(221)
 	        plot(x,y,color="black",label="Raw sp.")
+			scatter(interest_x,interest_y,s=10.,color="red",label="ROI")
 	        plot(x,bas1,color="blue",label="Baseline")
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, area normalised")
 	        title("First baseline")
 			legend(loc="upper left",fancybox="true")
+			
+	        subplot(223)
+	        plot(x,y,color="black",label="Raw sp.")
+			scatter(interest_x,interest_y,s=10.,color="red",label="ROI")
+	        plot(x,bas1,color="blue",label="Baseline")
+			xlim(2300,4000)
+			ylim(minimum(y[x.>2300]),maximum(y[x.>2300]))
+	        xlabel(L"Raman shift, cm$^{-1}$")
+	        ylabel("Intensity, area normalised")
+	        title("First baseline, HF zoom")
         
-	        subplot(122)
+	        subplot(222)
 	        if switches[3] == "yes" # if Long correction is activated
 	            plot(x,y_long,color="blue",label="Long corr. sp.")
+				scatter(interest_x,y_long[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 	        else
 	            plot(x,y_calc1,color="blue",label="Corr. sp.")
+				scatter(interest_x,y_calc1[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline
 	        end
 	        plot(x,bas2,color="magenta",label="2nd baseline")
 	        plot(x,y_calc2,color="cyan",label="Final sp.")
@@ -104,6 +134,25 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	        ylabel("Intensity, area normalised")
 	        title("Second baseline")
 			legend(loc="upper left",fancybox="true")
+			
+	        subplot(224)
+	        if switches[3] == "yes" # if Long correction is activated
+	            plot(x,y_long,color="blue",label="Long corr. sp.")
+				scatter(interest_x,y_long[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
+				ylim(0,maximum(y_long[x.<1500]))
+	        else
+	            plot(x,y_calc1,color="blue",label="Corr. sp.")
+				scatter(interest_x,y_calc1[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline
+				ylim(0,maximum(y_calc1[x.<1500]))
+	        end
+	        plot(x,bas2,color="magenta",label="2nd baseline")
+	        plot(x,y_calc2,color="cyan",label="Final sp.")
+			xlim(0,1500)
+			
+	        xlabel(L"Raman shift, cm$^{-1}$")
+	        ylabel("Intensity, area normalised")
+	        title("Second baseline, LF zoom")
+			
             
 	    else # only a single baseline treatment is asked
         
@@ -119,6 +168,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	            figure()
 	            plot(x,y,"black",label="Raw sp.")
 	            plot(x,y_long,"blue",label="Long corr. sp.")
+				scatter(interest_x,y_long[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 	            plot(x,bas2,"red",label="Baseline")
 	            plot(x,y_calc2,"cyan",label="Final sp.")
 	            xlabel(L"Raman shift, cm$^{-1}$")
@@ -132,6 +182,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
             
 	            figure()
 	            plot(x,y.*10,"black",label="Raw sp.")
+				scatter(interest_x,interest_y.*10,s=10.,color="red",label="ROI")
 	            plot(x,bas2.*10,"red",label="Baseline")
 	            plot(x,y_calc2,"cyan",label="Final sp.")
 	            xlabel(L"Raman shift, cm$^{-1}$")
@@ -178,11 +229,11 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	    title("Calibration with a Rws factor of $(round(coef,5)), water% std = $(round(rmse_calibration,2))")
 	    savefig(paths[6])
         
-	    writecsv(string(paths[5],"calibration.csv"), [rws[:,3] water water_compare]   )
+	    writecsv(string(paths[5]), [rws[:,3] water water_compare]   )
 	    #return [rws[:,3] water water_compare]   
 	else
 	    water_predicted = ws[:,3].*provided_coef 
-	    writecsv(string(paths[5],"prediction.csv"), [rws[:,3] water_predicted])
+	    writecsv(string(paths[5]), [rws[:,3] water_predicted])
 	    #return [rws[:,3] water_predicted]
 	end           
 end

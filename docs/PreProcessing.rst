@@ -50,7 +50,7 @@ Baseline subtraction function
 
 Baseline subtraction can be made with using the baseline function:
 
-    y_corr, bass = baseline(x,y,roi,basetype;p::Array{Float64},SplOrder=3)
+    y_corr, bass = baseline(x,y,roi,basetype;p=1.0,SplOrder=3)
 
 INPUTS:
 
@@ -74,7 +74,7 @@ INPUTS:
 
 OPTIONS:
 
-	p:: Array{Float64}, containing the coefficients for the polynomial fit, or the spline smoothing coefficient (warning, the latter still needs to be provided in an array as [1.0] for instance).
+	p:: Float64, if using gcvspline or Dspline, this number indicates the spline smoothing coefficient. If using "poly", it is the degree of the polynomial function to be fitted. Please enter a float number (1.0, 2.0 or 3.0 for splines of order 1, 2 or 3), and it is automatically converted to an Integer for the polyfit function. Default = 1.0.
 
 	SplOrder: Integer, the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.
 	

@@ -25,6 +25,7 @@ const preprocessing = PyNULL()
 const grid_search = PyNULL()
 const kernelridge = PyNULL()
 const svm = PyNULL()
+const gaussian_process = PyNULL()
 
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
@@ -40,7 +41,8 @@ function __init__()
 	copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
 	copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
-	copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "kernelridge"))
+	copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 end
 
 include("diffusion.jl")
@@ -59,7 +61,7 @@ export trapz, gaussianarea
 export peak_diffusion, model, IRdataprep
 
 #From functions.jl
-export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
+export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
 
 #From baseline.jl
 export baseline
