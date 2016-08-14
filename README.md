@@ -14,7 +14,7 @@ Package is under construction, any help welcome!
 
 # Documentation
 
-Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ .
+Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ . The latter link provides installation instructions.
 
 # News
 
