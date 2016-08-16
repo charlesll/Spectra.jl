@@ -72,6 +72,7 @@ Contents
    Functions
    Splines
    PeakFitting
+   Rameau
    Tutorial
    ToDo
    References

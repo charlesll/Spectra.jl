@@ -51,16 +51,15 @@
 <p>Two ways of using Spectra.jl: [1] with using a cloud-computing approach and [2] with installing everything on your computer.</p>
 <p>[1] JuliaBox (<a class="reference external" href="https://www.juliabox.org/">https://www.juliabox.org/</a>) allows you to run Julia in your browser. You still need to add Spectra.jl. To do so, run a notebook, and in the first instance, type</p>
 <blockquote>
-<div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
+<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
 <p>Everything shoul install without trouble. Requirements in Spectra.jl are extensive and will provide you all the packages needed by Spectra.jl&#8217;s functions and examples.</p>
 <p>[2] You can download the current version of Julia and follow the installation instruction here: <a class="reference external" href="http://julialang.org/downloads/">http://julialang.org/downloads/</a> . Then, run</p>
 <blockquote>
-<div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
-<p>In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Therefore, a good thing will be to install it before installing Julia. Anaconda Python provides a nice, fully-featured Python distribution with MatplotLib, SciPy and Numpy. Follow installation instructions here:</p>
+<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
+<p>In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Furthermore, some baseline codes call the SciKit learn library, again belonging to the Python ecosystem. Therefore, a good thing will be to install a Python scientific distribution before installing Julia. I recommend Anaconda Python that provides an easy-to-install and nice, fully-featured Python distribution with MatplotLib, SciPy, Numpy and SciKit learn. Follow installation instructions here:</p>
 <p><a class="reference external" href="https://www.continuum.io/downloads">https://www.continuum.io/downloads</a></p>
-<p>## IMPORTANT INFORMATION REGARDING GCVSPLINE
-To be able to use the gcvspline function, you actually need to change the paths in Spectra/src/gcvspl.jl, that should be located in ~/.julia/v0.4/ under Mac OSX or Linux. Set the paths to the library libgcvspl.so lines 89 and 123 to match those of your computer!
-## IMPORTANT INFORMATION REGARDING GCVSPLINE</p>
+<p>## IMPORTANT INFORMATION REGARDING GCVSPLINE ON WINDOWS</p>
+<p>Windows users probably need to compile manually the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.</p>
 </div>
 <div class="section" id="before-starting">
 <h1>Before Starting<a class="headerlink" href="#before-starting" title="Permalink to this headline">¶</a></h1>
@@ -82,10 +81,11 @@ To be able to use the gcvspline function, you actually need to change the paths 
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="PreProcessing.html">Pre-Processing Spectra</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#long-correction-for-glass-raman-data">&#8220;Long&#8221; correction for glass Raman data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#temperature-and-frequency-corrections-for-raman-spectra">Temperature and frequency corrections for Raman spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#baseline-subtraction-function">Baseline subtraction function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#examples">Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Integration.html">Integration functions</a><ul>
@@ -107,6 +107,14 @@ To be able to use the gcvspline function, you actually need to change the paths 
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="PeakFitting.html">Peak fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Rameau.html">RamEau</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Rameau.html#introductory-notes">Introductory notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Rameau.html#function-rameau">Function rameau</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-input-file-liste">Note on the input file liste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-double-baseline-feature">Note on the double baseline feature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-use-of-krregression-baseline-fitting-instead-of-gcv-splines">Note on the use of KRregression baseline fitting instead of GCV splines</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ToDo.html">To Do</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ToDo.html#pre-processing">Pre-Processing</a></li>
