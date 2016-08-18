@@ -232,7 +232,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	    writecsv(string(paths[5]), [rws[:,3] water water_compare]   )
 	    #return [rws[:,3] water water_compare]   
 	else
-	    water_predicted = ws[:,3].*provided_coef 
+	    water_predicted = 100.*(ws[:,3].*provided_coef./(ws[:,3].*provided_coef+1)) 
 	    writecsv(string(paths[5]), [rws[:,3] water_predicted])
 	    #return [rws[:,3] water_predicted]
 	end           
