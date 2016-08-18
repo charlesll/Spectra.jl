@@ -73,4 +73,4 @@ Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
 
-Last modified 10/08/2016
+Last modified 18/08/2016
