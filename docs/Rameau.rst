@@ -57,15 +57,25 @@ INPUTS:
 		
 	input_properties: Tuple, it contains the delimiter of the columns in your spectra files, and the number of starting lines to skip. For instance, use ('\t',1) if your files have one header line and the columns are separated  by tabulations, or (',',0) if you use CSV files without header.
 	
-	switches: Tuple, it contains the different switches as (calibration, double baseline, Long correction). You have to enter "yes" if you want the relevant feature. For instance, you have a bunch of spectra and you want to perform a new calibration, without the double baseline but the Long correction (you are following the "traditional approach published in 2012). So you are going to enter ("yes","no","yes"). Now, you think removing the initial background may be good before calculating the calibration. So you will enter ("yes","yes","yes"). Now that you have determined your calibration coefficient, you can make any prediction on a bunch of new spectra in the futur by entering ("no","yes","yes") and by providing the good calibration coefficient in the variable prediction_coef (see options below).
+	switches: Tuple, it contains the different switches as (type of calibration, calibration?, double baseline, temperature-laser wavelength correction). 
+		
+		Type of calibration: should be set to "internal" or "external". The external mode requires standards, as described in Behrens et al. (2006) and Thomas et al. (2008). If you use the external mode, you can leave blanks for the other switches. For instance, enter ("external","","","").
+		
+		calibration? :  use only with the "internal" mode. Enter yes if you are setting up a new calibration, or "no" if you want to use a previously determined calibration coefficient with providing the later in the prediction_coef variable (see options).
+		
+		double baseline? : use only with the "internal" mode. Enter "yes" if you want to use it. This is a new feature for internal calibration, see comments below.
+		
+		temperature-laser wavelength correction? : use only with the "internal" mode. Enter "yes" if you want to use it. This asks if you want to use the temperature-laser wavelength correction as done in Le Losq et al. (2012). If you use the double baseline mode, this correction is applied after removing the background under the water peak.
+	
+	For instance, you have a bunch of spectra and you want to perform a new calibration, without the double baseline but the Long correction (you are following the "traditional approach published in 2012). So you are going to enter ("internal",""yes","no","yes"). Now, you think removing the initial background may be good before calculating the calibration. So you will enter ("internal","yes","yes","yes"). Now that you have determined your calibration coefficient, you can make any prediction on a bunch of new spectra in the futur by entering ("internal","no","yes","yes") and by providing the good calibration coefficient in the variable prediction_coef (see options below).
 	
 OPTIONS:
 	
 	prediction_coef: Float64, this is the calibration coefficient that will be used in the predictions, if you use the predictive mode (i.g., calibration switch is NOT set to "yes"). Default = 0.069.
 	
-	temperature: Float64, the temperature for the Long correction in Celsius. Default = 23.0.
+	temperature: Float64, the temperature for the temperature-laser wavelength correction in Celsius. Default = 23.0.
 	
-	laser: Float64, the laser wavelength in nm for the Long correction. Default = 532.0.
+	laser: Float64, the laser wavelength in nm for the temperature-laser wavelength correction. Default = 532.0.
 	
 	lb_break: Float64, for double baseline correction, the breaking point before which the software will consider the BIRs in the low frequency region. Default = 2010.0.
 	
@@ -83,27 +93,51 @@ Note on the input file liste
 
 The great news about RamEau in Julia is that you can work your file liste in Excel, as it is now a CSV file. It makes it much more robust and readable.
 
-This file liste MUST contain:
+If using the "internal" mode, this file liste MUST contain:
 
-column 1: the file name and extensions, e.g. myspectrum.txt
+	column 1: the file name and extensions, e.g. myspectrum.txt
 
-column 2: the name of your product
+	column 2: the name of your product
 
-column 3: the water content, if known. If unknow, put 0.0
+	column 3: the water content, if known. If unknow, put 0.0
 
-column 4: the spline coefficient for the silicate part. Note: this value is used in the single baseline procedure for the whole spectrum
+	column 4: the spline coefficient for the silicate part. Note: this value is used in the single baseline procedure for the whole spectrum
 
-column 5: the spline coefficient for the water part, in case you use the double baseline fitting procedure
+	column 5: the spline coefficient for the water part, in case you use the double baseline fitting procedure
 
-columns 6 to end: the beginning and ends of the BIRs, paired. Please keep the same number of BIRs for all the spectra in one batch.
+	columns 6 to end: the beginning and ends of the BIRs, paired. Please keep the same number of BIRs for all the spectra in one batch.
+
+If using the "external" mode, this file liste MUST contain:
+
+	column 1: the file name and extensions of the references, e.g. myreference.txt
+
+	column 2: the name of your references
+
+	column 3: the water content of the references, in wt%
+
+	column 4: the density of the references, in kg m-3
+	
+	column 5: the file name and extensions of the samples, e.g. mysample.txt
+
+	column 6: the name of your samples
+
+	column 7: the estimated density of your samples, in kg m-3
 
 WARNING: BE SURE THAT THE NUMBER YOU PROVIDE ARE FLOAT NUMBER!
+
+-----------------------------------------------------------------------------
+Note on the temperature and excitation line effects corrections
+-----------------------------------------------------------------------------
+
+The "internal" mode uses the "long" mode of the tlcorrection function, whereas the "external" mode uses the "hehlen", which takes into account the sample density (see tlcorrection function documentation). This allows to intrisically correct the intensity from density effects.
 
 -----------------------------------
 Note on the double baseline feature
 -----------------------------------
 
 This is purely experimental and will probably strongly change in the upcoming future. However, some thoughts about why we may enjoy such function:
+
+This is to be used with the internal calibration mode.
 
 I added this step to avoid the strong distortion of the spectra during the Long correction. Indeed, spectra are distorded because even the parts without signals are not close to a zero intensity in raw spectra. Therefore, to avoid that, I added this feature which basically fits a linear function between 1300 and 2000 cm-1, where no signals are usually expected in silicate glasses. I futher take the shot to fit the water peak at the same time. Then, a second baseline will fit the basis of the peaks below 1500 cm-1. This double baseline approach allows to avoid a strong distortion of the signal due to the Long correction, and further allow working with different spline coefficients.
 
@@ -116,5 +150,7 @@ From my test, switching from one mode to the other might improve or worsen the s
 -----------------------------------------------------------------------
 Note on the use of KRregression baseline fitting instead of GCV splines
 -----------------------------------------------------------------------
+
+This is to be used with the internal calibration mode.
 
 Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). From experience, using a spline carefully adjusted provides better result. However, using KRregression may provide good results without headache to adjust any parameter. For now this is an experimental feature.

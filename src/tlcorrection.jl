@@ -30,7 +30,7 @@
 # Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.
 #############################################################################
 
-function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",density=2210.0)
+function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",normalisation="area",density=2210.0)
 
     h::Float64 = 6.626070040e-34   # J S    Plank constant from NIST
 	hb::Float64 = 1.054571800e-34 # J S    Reduced Plank constant from NIST
@@ -73,8 +73,16 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 		error("Not implemented, choose between long, galeener or hehlen.")
 	end
 	
-    ycorr = ycorr./trapz(x,ycorr) # area normalisation
-
+	if normalisation == "area"
+    	ycorr = ycorr./trapz(x,ycorr) # area normalisation
+	elseif normalisation == "intensity"
+		ycorr= ycorr./maximum(ycorr) # max. intensity normalisation
+	elseif normalisation == "no"
+		# nothing will happen
+	else 
+		error("Set the optional normalisation parameter to area, intensity or no.")
+	end
+		
     esecorr::Array{Float64} = ese.*ycorr # error calculation
 
     return x, ycorr, esecorr

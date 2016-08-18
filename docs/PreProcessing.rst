@@ -22,6 +22,8 @@ OPTIONS:
 
 	correction: string, the equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
 	
+	normalisation: string, indicate if you want to normalise your signal or not. Choose between "intensity", "area", or "no". Default = "area".
+	
 	density: Float64, the density of the studied material in kg m-3, to be used with the "hehlen" equation. Default = 2210.0 (density of silica).
 
 OUTPUTS:

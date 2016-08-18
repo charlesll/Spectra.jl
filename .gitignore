@@ -3,3 +3,5 @@
 *.jl.mem
 .DS_STORE
 gcvspl.o
+libgcvspl.so
+libgcvspl.dylib

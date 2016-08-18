@@ -18,17 +18,15 @@ Front page for the project is available at http://charlesll.github.io/Spectra.jl
 
 # News
 
-Version 0.1.3 is arriving soon and will contain the following new features:
+Version 0.1.6 is arriving soon and will contain the following new features:
 
-- Several functions for temperature and excitation line corrections of Raman spectra;
+- The possibility to request different type of normalisation after the correction from the temperature and frequency effects.
 
-- Use of machine learning algorithms (support vector machines and kernel ridge regressor) from SciKit Learn to fit baseline of spectra;
-
-- a new Rameau function to simplify the quantification of glass water content with Raman spectroscopy following Le Losq et al. (2012);
+- Use of the external calibration mode in RamEau, with added documentation.
 
 Corrections:
 
-- gcvspline has been corrected from a mistake in the use of the smoothing coefficient
+- RamEau internal calibration prediction mode equation was wrong and is now corrected
 
 
 # Quick Usage Examples
