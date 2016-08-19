@@ -43,24 +43,24 @@ A common problem is baseline subtraction and peak fitting when dealing with spec
 
 We can remove a baseline with the Spectra function "baseline" in two lines:
 
-	roi = [[860.0 870.0]; [1300.0 1400.0]] # the frequencies of the region where we want to fit the baseline
-	y_corr, y_bas = baseline(inputsp[:,1],inputsp[:,2],roi,"poly",[1.0,1.0,1.0]) # the last vector indicates the coefficients of the baseline k0 + k1 * x + k2 * x^2
+	roi = [860.0 870.0; 1300.0 1400.0] # the frequencies of the region where we want to fit the baseline
+	y_corr, y_bas = baseline(inputsp[:,1],inputsp[:,2],roi,"poly",p=2.0)
 
 A model for fitting gaussian peaks to the spectrum can be easily built with JuMP (https://jump.readthedocs.org/en/latest/):
 
 	mod = Model(solver=IpoptSolver(print_level=0)) # we build a model, initialising the optimiser to Ipopt (https://projects.coin-or.org/Ipopt)
 	n = size(x)[1] # number of data
 	m = 5 #number of peaks, can be modified!
-	@defVar(mod,g_amplitudes[i=1:m] >= 0.0) # we declare a first variable containing the amplitudes of peaks
-	@defVar(mod,g_frequency[i=1:m]) # this one contains the Raman shifts of peaks
-	@defVar(mod,20.0 <= g_hwhm[i=1:m] <= 40.0) # and this one the hwhm shifts of peaks
+	@variable(mod,g_amplitudes[i=1:m] >= 0.0) # we declare a first variable containing the amplitudes of peaks
+	@variable(mod,g_frequency[i=1:m]) # this one contains the Raman shifts of peaks
+	@variable(mod,20.0 <= g_hwhm[i=1:m] <= 40.0) # and this one the hwhm shifts of peaks
 	# we set initial values for parameters
-	setValue(g_amplitudes[i=1:m],[1,1,1,1,1])
-	setValue(g_frequency[i=1:m],[950,1050,1090,1140,1190])
-	setValue(g_hwhm[i=1:m],[30,30,30,30,30])
+	setvalue(g_amplitudes[i=1:m],[1,1,1,1,1])
+	setvalue(g_frequency[i=1:m],[950,1050,1090,1140,1190])
+	setvalue(g_hwhm[i=1:m],[30,30,30,30,30])
 	#We write the model expression that is a sum of Gaussian peaks, and then the objective function that is the least-square deviation function:
-	@defNLExpr(g_mod[j=1:n],sum{g_amplitudes[i] *exp(-log(2) * ((x[j]-g_frequency[i])/g_hwhm[i])^2), i = 1:m})
-	@setNLObjective(mod,Min,sum{(g_mod[j] - y[j])^2, j=1:n})
+	@NLexpression(g_mod[j=1:n],sum{g_amplitudes[i] *exp(-log(2) * ((x[j]-g_frequency[i])/g_hwhm[i])^2), i = 1:m})
+	@NLObjective(mod,Min,sum{(g_mod[j] - y[j])^2, j=1:n})
 	#And we ask to solve it:
 	status = solve(mod)
 
