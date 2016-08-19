@@ -38,11 +38,21 @@ function __init__()
         error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
     end
 	
-	copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
-	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
-	copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
-	copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
-	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
+	try
+		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
+		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
+		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
+		copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
+	catch
+		using Conda
+		Conda.add("scikit-learn")
+		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
+		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
+		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
+		copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
+	end
 end
 
 include("diffusion.jl")

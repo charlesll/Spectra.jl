@@ -12,6 +12,8 @@ Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear
 
 Spectra.jl is particularly focused on large datasets because of the high speed of Julia's, e.g. for performing peak fitting along Infrared diffusion profiles. For peak fitting for instance, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with solvers such as Ipopt or NLopt.
 
+Please consult this documentation to learn using Spectra, do not forget to check the Tips_ section if you have issues, and please report anything you want!
+
 Installation
 ==================
 
@@ -34,6 +36,8 @@ https://www.continuum.io/downloads
 ## IMPORTANT INFORMATION REGARDING GCVSPLINE ON WINDOWS
 
 Windows users probably need to compile manually the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.
+
+## If you see various errors messages when trying to install Spectra or after a Pkg.update() command, please see the Tips_ section!
 
 
 Before Starting
@@ -61,6 +65,13 @@ http://docs.julialang.org/en/release-0.4/manual/packages/
 
 Any help developing and maintaining this Spectra.jl package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra.jl are not exhaustive, and a little help to add new ones will be more that welcome.
 
+Citing Spectra
+==============
+
+You can cite Spectra as 
+
+LE LOSQ, C. (2016) Spectra.jl: a Julia package for processing spectroscopic data. Zenodo. 10.5281/zenodo.53940
+
 Contents
 ==================
 
@@ -74,6 +85,7 @@ Contents
    PeakFitting
    Rameau
    Tutorial
+   Tips
    ToDo
    References
 

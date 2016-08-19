@@ -143,11 +143,11 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 				if switches[4] == "yes" # if Long correction is activated
 					plot(x,y_long,color="blue",label="Long corr. sp.")
 					scatter(interest_x,y_long[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
-					ylim(0,maximum(y_long[x.<1500]))
+					ylim(minimum(y_long[x.<1500]),maximum(y_long[x.<1500]))
 				else
 					plot(x,y_calc1,color="blue",label="Corr. sp.")
 					scatter(interest_x,y_calc1[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline
-					ylim(0,maximum(y_calc1[x.<1500]))
+					ylim(minimum(y_long[x.<1500]),maximum(y_calc1[x.<1500]))
 				end
 				plot(x,bas2,color="magenta",label="2nd baseline")
 				plot(x,y_calc2,color="cyan",label="Final sp.")
@@ -170,7 +170,8 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*(scale./10) # area normalisation
             
 					figure(figsize=(20,20))
-					title("Baseline sub. with Long corr., sp. $(names[i])")
+					suptitle("Baseline sub. with Long corr., sp. $(names[i])")
+					
 					subplot(3,2,(1,2))
 					plot(x,y,"black",label="Raw sp.")
 					plot(x,y_long,"blue",label="Long corr. sp.")
@@ -182,12 +183,14 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 					plot(x[x.<1500],y_long[x.<1500],"blue",label="Long corr. sp.")
 					scatter(interest_x[interest_x.<1500],y_long[interest_index[interest_x.<1500],1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 					plot(x[x.<1500],bas2[x.<1500],"red",label="Baseline")
+					xlim(0,1500)
 					legend(loc="best",fancybox="true")
 				
 					subplot(3,2,4)
 					plot(x[x.>2800],y_long[x.>2800],"blue",label="Long corr. sp.")
 					scatter(interest_x[interest_x.>2800],y_long[interest_index[interest_x.>2800],1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 					plot(x[x.>2800],bas2[x.>2800],"red",label="Baseline")
+					xlim(2800,4000)
 					legend(loc="best",fancybox="true")
 				
 					subplot(3,2,(5,6))
@@ -249,11 +252,11 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			title("Calibration with a Rws factor of $(round(coef,5)), water% std = $(round(rmse_calibration,2))")
 			savefig(paths[6])
         
-			writecsv(string(paths[5]), [rws[:,3] water water_compare]   )
+			writecsv(string(paths[5]), [liste[:,1] liste[:,2] rws[:,3] water water_compare]   )
 			#return [rws[:,3] water water_compare]   
 		else
 			water_predicted = 100.*(rws[:,3].*prediction_coef./(rws[:,3].*prediction_coef+1)) 
-			writecsv(string(paths[5]), [rws[:,3] water_predicted])
+			writecsv(string(paths[5]), [liste[:,1] liste[:,2] rws[:,3] water_predicted])
 			#return [rws[:,3] water_predicted]
 		end        
 		

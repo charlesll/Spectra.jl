@@ -142,16 +142,6 @@ For a cubic spline baseline fitting the basis of a peak centered at 1100 cm$^{-1
 
 s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
 
-----------
-Tips
-----------
-
-- Always be careful to enter float and integer numbers as required by the functions! They will return an error if you do not do that.
-
-- For the spline, do not hesitate to test a broad range in term of order of magnitudes for the smoothing parameter.
-
-- SVMregression and KRregression will take more time as several models are tried over a broad range of hyperparameters. Therefore, it is normal that those technics require further time, up to ten to twenty minutes for treating 50 to 100 spectra.
-
 --------------
 References
 --------------
