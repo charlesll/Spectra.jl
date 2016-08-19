@@ -19,6 +19,7 @@ using StatsBase
 using PyPlot
 using LsqFit
 using PyCall
+using Conda
 
 # For PyCall modules
 const preprocessing = PyNULL()
@@ -45,7 +46,6 @@ function __init__()
 		copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
 		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 	catch
-		using Conda
 		Conda.add("scikit-learn")
 		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))

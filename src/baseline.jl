@@ -88,7 +88,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		
 		# constructing a GridSearchCV instance for grabing the best parameters
 		clf = kernelridge[:KernelRidge](kernel="rbf", gamma=0.1)
-		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.1, 1e-2, 1e-3],"gamma"=> logspace(-2, 2, 5)))
+		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3,1e-4],"gamma"=> logspace(-4, 4, 9)))
 		kr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_kr_sc = kr[:predict](x_sc)
 		y_kr = Y_scaler[:inverse_transform](y_kr_sc)
@@ -114,7 +114,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	
 		# constructing a GridSearchCV instance for grabing the best parameters
 		clf = svm[:SVR](kernel="rbf", gamma=0.1)
-		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-2, 2, 5)))
+		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-4, 4, 9)))
 		svr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_svr_sc = svr[:predict](x_sc)
 		y_svr = Y_scaler[:inverse_transform](y_svr_sc)
