@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Spectra.jl 0.0.5 documentation" href="#" />
-    <link rel="next" title="Pre-Processing Spectra" href="PreProcessing.html" />
+    <link rel="next" title="Before Starting" href="Beforestart.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -45,46 +45,25 @@
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
 <p>Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment written with the Julia programming language (<a class="reference external" href="http://julialang.org/">http://julialang.org/</a>). It&#8217;s aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding. Therefore, Spectra.jl is aimed to be used explicitly with other packages like JuMP for building models (see <a class="reference external" href="http://www.juliaopt.org/">http://www.juliaopt.org/</a> for further details on optimisation under Julia). The key is to provide functions for simplifying the life of the spectroscopist, while still leaving him all the freedom offered by treating data with a performant computer language.</p>
 <p>Spectra.jl is particularly focused on large datasets because of the high speed of Julia&#8217;s, e.g. for performing peak fitting along Infrared diffusion profiles. For peak fitting for instance, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with solvers such as Ipopt or NLopt.</p>
-</div>
-<div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Two ways of using Spectra.jl: [1] with using a cloud-computing approach and [2] with installing everything on your computer.</p>
-<p>[1] JuliaBox (<a class="reference external" href="https://www.juliabox.org/">https://www.juliabox.org/</a>) allows you to run Julia in your browser. You still need to add Spectra.jl. To do so, run a notebook, and in the first instance, type</p>
-<blockquote>
-<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
-<p>Everything shoul install without trouble. Requirements in Spectra.jl are extensive and will provide you all the packages needed by Spectra.jl&#8217;s functions and examples.</p>
-<p>[2] You can download the current version of Julia and follow the installation instruction here: <a class="reference external" href="http://julialang.org/downloads/">http://julialang.org/downloads/</a> . Then, run</p>
-<blockquote>
-<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
-<p>In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Furthermore, some baseline codes call the SciKit learn library, again belonging to the Python ecosystem. Therefore, a good thing will be to install a Python scientific distribution before installing Julia. I recommend Anaconda Python that provides an easy-to-install and nice, fully-featured Python distribution with MatplotLib, SciPy, Numpy and SciKit learn. Follow installation instructions here:</p>
-<p><a class="reference external" href="https://www.continuum.io/downloads">https://www.continuum.io/downloads</a></p>
-<p>## IMPORTANT INFORMATION REGARDING GCVSPLINE ON WINDOWS</p>
-<p>Windows users probably need to compile manually the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.</p>
-</div>
-<div class="section" id="before-starting">
-<h1>Before Starting<a class="headerlink" href="#before-starting" title="Permalink to this headline">¶</a></h1>
-<p>Using Julia and Spectra.jl for processing your data is quite similar to Matlab, with the flexibility offered by the open-source and free character of Julia. Reading the docs is strongly recommended. A good start will be to read the docs of Julia itself:</p>
-<p><a class="reference external" href="http://docs.julialang.org/en/release-0.4/">http://docs.julialang.org/en/release-0.4/</a></p>
-<p>Programming can be done locally using your browser and the IJulia notebooks, very similar to the IPython ones. Please follow the instructions there to do so:</p>
-<p><a class="reference external" href="https://github.com/JuliaLang/IJulia.jl">https://github.com/JuliaLang/IJulia.jl</a></p>
-<p>For a Matlab-like interface, you can use Atom with Juno. Follow all the instructions at this link to install this interactive developing environment:</p>
-<p><a class="reference external" href="http://junolab.org/">http://junolab.org/</a></p>
-<p>For maintaining your packages up-to-date, something critical with the fast evolution of Julia packages, I suggest running each day of Julia use the update command:</p>
-<blockquote>
-<div>Pkg.update()</div></blockquote>
-<p>For further information about installing packages, please have a read at:</p>
-<p><a class="reference external" href="http://docs.julialang.org/en/release-0.4/manual/packages/">http://docs.julialang.org/en/release-0.4/manual/packages/</a></p>
-<p>Any help developing and maintaining this Spectra.jl package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra.jl are not exhaustive, and a little help to add new ones will be more that welcome.</p>
+<p>Please consult this documentation to learn using Spectra, do not forget to check the <a href="#id1"><span class="problematic" id="id2">Tips_</span></a> section if you have issues, and please report anything you want!</p>
 </div>
 <div class="section" id="contents">
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="Beforestart.html">Before Starting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Tips.html">Tips</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Tips.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Tips.html#maintenance">Maintenance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Tips.html#running-spectra">Running Spectra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PreProcessing.html">Pre-Processing Spectra</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#temperature-and-frequency-corrections-for-raman-spectra">Temperature and frequency corrections for Raman spectra</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#baseline-subtraction-function">Baseline subtraction function</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#examples">Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#tips">Tips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PreProcessing.html#references">References</a></li>
 </ul>
 </li>
@@ -111,11 +90,11 @@
 <li class="toctree-l2"><a class="reference internal" href="Rameau.html#introductory-notes">Introductory notes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Rameau.html#function-rameau">Function rameau</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-input-file-liste">Note on the input file liste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-temperature-and-excitation-line-effects-corrections">Note on the temperature and excitation line effects corrections</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-double-baseline-feature">Note on the double baseline feature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Rameau.html#note-on-the-use-of-krregression-baseline-fitting-instead-of-gcv-splines">Note on the use of KRregression baseline fitting instead of GCV splines</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ToDo.html">To Do</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ToDo.html#pre-processing">Pre-Processing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ToDo.html#integration">Integration</a></li>
@@ -124,6 +103,11 @@
 <li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
 </ul>
 </div>
+</div>
+<div class="section" id="citing-spectra">
+<h1>Citing Spectra<a class="headerlink" href="#citing-spectra" title="Permalink to this headline">¶</a></h1>
+<p>You can cite Spectra as</p>
+<p>LE LOSQ, C. (2016) Spectra.jl: a Julia package for processing spectroscopic data. Zenodo. 10.5281/zenodo.53940</p>
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -144,16 +128,15 @@
   <ul>
 <li><a class="reference internal" href="#">Welcome to Spectra.jl&#8217;s documentation!</a></li>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#before-starting">Before Starting</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>
+<li><a class="reference internal" href="#citing-spectra">Citing Spectra</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="PreProcessing.html" title="next chapter">Pre-Processing Spectra</a></li>
+      <li>Next: <a href="Beforestart.html" title="next chapter">Before Starting</a></li>
   </ul></li>
 </ul>
 </div>

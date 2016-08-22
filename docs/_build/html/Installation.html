@@ -25,8 +25,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Spectra.jl 0.0.5 documentation" href="index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="Tutorial.html" />
-    <link rel="prev" title="Introduction" href="Introduction.html" />
+    <link rel="next" title="Tips" href="Tips.html" />
+    <link rel="prev" title="Before Starting" href="Beforestart.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -44,27 +44,16 @@
 <p>Two ways of using Spectra.jl: [1] with using a cloud-computing approach and [2] with installing everything on your computer.</p>
 <p>[1] JuliaBox (<a class="reference external" href="https://www.juliabox.org/">https://www.juliabox.org/</a>) allows you to run Julia in your browser. You still need to add Spectra.jl. To do so, run a notebook, and in the first instance, type</p>
 <blockquote>
-<div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
+<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
 <p>Everything shoul install without trouble. Requirements in Spectra.jl are extensive and will provide you all the packages needed by Spectra.jl&#8217;s functions and examples.</p>
 <p>[2] You can download the current version of Julia and follow the installation instruction here: <a class="reference external" href="http://julialang.org/downloads/">http://julialang.org/downloads/</a> . Then, run</p>
 <blockquote>
-<div>Pkg.add(&#8220;Spectra.jl&#8221;)</div></blockquote>
-<p>You can start Julia, type for instance</p>
-<blockquote>
-<div>using(&#8220;IJulia&#8221;)
-notebook()</div></blockquote>
-<p>And it will start Jupyler in your browser. From there, you can create new notebooks, open old ones, etc.</p>
-<p>With this simple installation, you should be ready to go! Do not forget to go through the instructions and documentation of Julia. The following sites are very helpful:</p>
-<p><a class="reference external" href="http://docs.julialang.org/en/release-0.4/">http://docs.julialang.org/en/release-0.4/</a></p>
-<p>Particularly, the section about packages is important to read, with a mandatory look at the paragraphs &#8216;Adding or Removing Packages&#8217; and &#8216;Updating Packages&#8217;:</p>
-<p><a class="reference external" href="http://docs.julialang.org/en/release-0.4/manual/packages/">http://docs.julialang.org/en/release-0.4/manual/packages/</a></p>
-<p>Maintaining the distribution is easy, it takes only a</p>
-<blockquote>
-<div>Pkg.update()</div></blockquote>
-<p>I suggest doing that each day you are running Julia, as everything is in constant evolution for this package. Another good read is the page for IJulia if you plan using it:</p>
-<p><a class="reference external" href="https://github.com/JuliaLang/IJulia.jl">https://github.com/JuliaLang/IJulia.jl</a></p>
-<p>Concerning a nice interface, other than IJulia, we can suggest using Atom with Juno. Follow all the instructions there to install and run such matlab-like interactive developping environment:</p>
-<p><a class="reference external" href="http://junolab.org/">http://junolab.org/</a></p>
+<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
+<p>In the Julia shell. Please note that before installing Spectra.jl, the installation of the MatPlotLib library for Python is strongly recommended. Furthermore, some baseline codes call the SciKit learn library, again belonging to the Python ecosystem. Therefore, a good thing will be to install a Python scientific distribution before installing Julia. I recommend Anaconda Python that provides an easy-to-install and nice, fully-featured Python distribution with MatplotLib, SciPy, Numpy and SciKit learn. Follow installation instructions here:</p>
+<p><a class="reference external" href="https://www.continuum.io/downloads">https://www.continuum.io/downloads</a></p>
+<p>## IMPORTANT INFORMATION REGARDING GCVSPLINE ON WINDOWS</p>
+<p>Windows users probably need to compile manually the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.</p>
+<p>## If you see various errors messages when trying to install Spectra or after a Pkg.update() command, please see the <a href="#id1"><span class="problematic" id="id2">Tips_</span></a> section!</p>
 </div>
 
 
@@ -76,8 +65,8 @@ notebook()</div></blockquote>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="Introduction.html" title="previous chapter">Introduction</a></li>
-      <li>Next: <a href="Tutorial.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Previous: <a href="Beforestart.html" title="previous chapter">Before Starting</a></li>
+      <li>Next: <a href="Tips.html" title="next chapter">Tips</a></li>
   </ul></li>
 </ul>
 </div>

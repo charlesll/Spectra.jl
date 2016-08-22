@@ -26,7 +26,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="Spectra.jl 0.0.5 documentation" href="index.html" />
     <link rel="next" title="Integration functions" href="Integration.html" />
-    <link rel="prev" title="Welcome to Spectra.jl’s documentation!" href="index.html" />
+    <link rel="prev" title="Tutorial" href="Tutorial.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
@@ -43,9 +43,9 @@
 <h1>Pre-Processing Spectra<a class="headerlink" href="#pre-processing-spectra" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="temperature-and-frequency-corrections-for-raman-spectra">
 <h2>Temperature and frequency corrections for Raman spectra<a class="headerlink" href="#temperature-and-frequency-corrections-for-raman-spectra" title="Permalink to this headline">¶</a></h2>
-<p>Raman spectra may be corrected from temperature and excitation line effects using the function</p>
+<p>Raman spectra can be corrected from temperature and excitation line effects using the function</p>
 <blockquote>
-<div>x, y_corrected, ese_corrected = tlcorrection(data,temp,wave;correction=&#8221;long&#8221;,density=2210.0)</div></blockquote>
+<div>x, y_corrected, ese_corrected = tlcorrection(data,temp,wave;correction=&#8221;long&#8221;,normalisation=&#8221;area&#8221;,density=2210.0)</div></blockquote>
 <p>INPUTS:</p>
 <blockquote>
 <div><p>data: Array{Float64}, input spectrum with x and y in first and second columns respectively;</p>
@@ -54,15 +54,16 @@
 </div></blockquote>
 <p>OPTIONS:</p>
 <blockquote>
-<div><p>correction: string, the equation used for the correction. Choose between &#8220;long&#8221;, &#8220;galeener&#8221;, or &#8220;hehlen&#8221;. Default = &#8220;long&#8221;.</p>
+<div><p>correction: String, the equation used for the correction. Choose between &#8220;long&#8221;, &#8220;galeener&#8221;, or &#8220;hehlen&#8221;. Default = &#8220;long&#8221;.</p>
+<p>normalisation: String, indicate if you want to normalise your signal or not. Choose between &#8220;intensity&#8221;, &#8220;area&#8221;, or &#8220;no&#8221;. Default = &#8220;area&#8221;.</p>
 <p>density: Float64, the density of the studied material in kg m-3, to be used with the &#8220;hehlen&#8221; equation. Default = 2210.0 (density of silica).</p>
 </div></blockquote>
 <p>OUTPUTS:</p>
 <p>(are combined in one array if only one output name is given)</p>
 <blockquote>
-<div><p>x: Array{Float64} containing the x values;</p>
-<p>long: Array{Float64} containing the corrected y values;</p>
-<p>eselong: Array{Float64} containing the errors calculated as sqrt(y) on raw data and propagated after the correction.</p>
+<div><p>x: Array{Float64}, containing the x values;</p>
+<p>long: Array{Float64}, containing the corrected y values;</p>
+<p>eselong: Array{Float64}, containing the errors calculated as sqrt(y) on raw data and propagated after the correction.</p>
 </div></blockquote>
 <p>NOTES:</p>
 <p>This correction uses the formula reported in Galeener and Sen (1978), Mysen et al. (1982), Brooker et al. (1988) and Hehlen et al. (2010).</p>
@@ -77,9 +78,9 @@
 <div>y_corr, bass = baseline(x,y,roi,basetype;p=1.0,SplOrder=3)</div></blockquote>
 <p>INPUTS:</p>
 <blockquote>
-<div><p>x: Array{Float64} containing the x values;</p>
-<p>y: Array{Float64} containing the y values;</p>
-<p>roi: Array{Float64} containing the &#8220;region of interest&#8221;, i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];</p>
+<div><p>x: Array{Float64}, containing the x values;</p>
+<p>y: Array{Float64}, containing the y values;</p>
+<p>roi: Array{Float64}, containing the &#8220;region of interest&#8221;, i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];</p>
 <p>basetype: AbstractString, the type of baseline that you want to use. For now, polynomial and cubic spline baselines are available. Indicate the type you want as:</p>
 <blockquote>
 <div><p>Polynomial baseline: enter &#8220;poly&#8221; for basetype, then the polynomial degree as p.</p>
@@ -141,23 +142,15 @@
 </div></blockquote>
 <p>s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: <a class="reference external" href="https://github.com/kbarbary/Dierckx.jl">https://github.com/kbarbary/Dierckx.jl</a></p>
 </div>
-<div class="section" id="tips">
-<h2>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>Always be careful to enter float and integer numbers as required by the functions! They will return an error if you do not do that.</li>
-<li>For the spline, do not hesitate to test a broad range in term of order of magnitudes for the smoothing parameter.</li>
-<li>SVMregression and KRregression will take more time as several models are tried over a broad range of hyperparameters. Therefore, it is normal that those technics require further time, up to ten to twenty minutes for treating 50 to 100 spectra.</li>
-</ul>
-</div>
 <div class="section" id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p>Shuker, Reuben, and Robert Gammon. 1970. “Raman-Scattering Selection-Rule Breaking and the Density of States in Amorphous Materials.” Physical Review Letters 25 (4): 222–25.
-Galeener, F. L., and Sen, P. N. 1978. “Theory of the First-Order Vibrational Spectra of Disordered Solids.” Physical Review B 17 (4): 1928–33.
-Mysen, B. O., L. W. Finger, D. Virgo, and F. A. Seifert. 1982. “Curve-Fitting of Raman Spectra of Silicate Glasses.” American Mineralogist 67: 686–95.
-Brooker et al. 1988 Assessment of correction procedures for reduction of Raman spectra. Journal of Raman Spectroscopy 19(2), 71-78.
-Neuville, D. R., and B. O. Mysen. 1996. “Role of Aluminium in the Silicate Network: In Situ, High-Temperature Study of Glasses and Melts on the Join SiO₂-NaAl0₂.” Geochimica et Cosmochimica Acta 60: 1727–37.
-Le Losq, C., D. R. Neuville, R. Moretti, and J. Roux. 2012. “Determination of Water Content in Silicate Glasses Using Raman Spectrometry: Implications for the Study of Explosive Volcanism.” American Mineralogist 97 (5-6): 779–90. doi:10.2138/am.2012.3831.
-Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.</p>
+<p>Shuker, Reuben, and Robert Gammon. 1970. “Raman-Scattering Selection-Rule Breaking and the Density of States in Amorphous Materials.” Physical Review Letters 25 (4): 222–25.</p>
+<p>Galeener, F. L., and Sen, P. N. 1978. “Theory of the First-Order Vibrational Spectra of Disordered Solids.” Physical Review B 17 (4): 1928–33.</p>
+<p>Mysen, B. O., L. W. Finger, D. Virgo, and F. A. Seifert. 1982. “Curve-Fitting of Raman Spectra of Silicate Glasses.” American Mineralogist 67: 686–95.</p>
+<p>Brooker et al. 1988 Assessment of correction procedures for reduction of Raman spectra. Journal of Raman Spectroscopy 19(2), 71-78.</p>
+<p>Neuville, D. R., and B. O. Mysen. 1996. “Role of Aluminium in the Silicate Network: In Situ, High-Temperature Study of Glasses and Melts on the Join SiO₂-NaAl0₂.” Geochimica et Cosmochimica Acta 60: 1727–37.</p>
+<p>Le Losq, C., D. R. Neuville, R. Moretti, and J. Roux. 2012. “Determination of Water Content in Silicate Glasses Using Raman Spectrometry: Implications for the Study of Explosive Volcanism.” American Mineralogist 97 (5-6): 779–90. doi:10.2138/am.2012.3831.</p>
+<p>Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.</p>
 </div>
 </div>
 
@@ -173,7 +166,6 @@ Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas
 <li><a class="reference internal" href="#temperature-and-frequency-corrections-for-raman-spectra">Temperature and frequency corrections for Raman spectra</a></li>
 <li><a class="reference internal" href="#baseline-subtraction-function">Baseline subtraction function</a></li>
 <li><a class="reference internal" href="#examples">Examples</a></li>
-<li><a class="reference internal" href="#tips">Tips</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
@@ -182,7 +174,7 @@ Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Spectra.jl&#8217;s documentation!</a></li>
+      <li>Previous: <a href="Tutorial.html" title="previous chapter">Tutorial</a></li>
       <li>Next: <a href="Integration.html" title="next chapter">Integration functions</a></li>
   </ul></li>
 </ul>

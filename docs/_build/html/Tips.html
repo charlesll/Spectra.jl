@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Tips &mdash; Spectra.jl 0.0.5 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.5',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="Spectra.jl 0.0.5 documentation" href="index.html" />
+    <link rel="next" title="Tutorial" href="Tutorial.html" />
+    <link rel="prev" title="Installation" href="Installation.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>Tips<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<p>In this section are listed various tips for the use of Julia and Spectra:</p>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">You need the gfortran, gcc and g++ compilers. ifort also works. Check that you have them on your system. Even Ubuntu does not necessary come with those compilers out of the box. If you don&#8217;t know anything about installing them, ask Google: &#8220;Installing gcc/gfortran/g++ on my mac/linux/windows&#8221;</p>
+</li>
+<li><p class="first">Windows users probably need to manually compile the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.</p>
+</li>
+<li><p class="first">If you see errors messages linked to PyCall, you may have a problem with your environment variable. To solve it, tyope the following commands in the Julia prompt:</p>
+<blockquote>
+<div><p>ENV[&#8220;PYTHON&#8221;]=&#8221;&#8221;
+Pkg.build(&#8220;PyCall&#8221;)</p>
+</div></blockquote>
+</li>
+</ol>
+<p>At this point it should work. If yes, you now can enter:</p>
+<blockquote>
+<div>Pkg.add(&#8220;Spectra&#8221;)</div></blockquote>
+</div>
+<div class="section" id="maintenance">
+<h2>Maintenance<a class="headerlink" href="#maintenance" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">The Julia package ecosystem is constantly evolving, with daily changes. Because of that, it is strongly recommanded to run in the starting Julia prompt a</p>
+<blockquote>
+<div><p>Pkg.update()</p>
+</div></blockquote>
+</li>
+</ol>
+<p>command every day, at the beginning of your session.</p>
+<ol class="arabic simple" start="2">
+<li>Time to time, after running the Pkg.update() command for instance and trying to directly work with the same Julia session, you may get Warning/Error messages during the packages pre-compilation indicating a problem with Compat. To solve that, just quit the current session (exit the notebooks AND close the terminals), and open a new Julia terminal. Most of the time, this solves the problem.</li>
+</ol>
+</div>
+<div class="section" id="running-spectra">
+<h2>Running Spectra<a class="headerlink" href="#running-spectra" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Spectra is changing every week, if not every day in some case. Do not forget to Pkg.update() quite often, and check the website.</li>
+<li>Always be careful to enter float and integer numbers as required by the functions! They will return an error message if you do not do that.</li>
+<li>For the spline, do not hesitate to test a broad range in term of order of magnitudes for the smoothing parameter.</li>
+<li>SVMregression and KRregression will take more time as several models are tried over a broad range of hyperparameters. Therefore, it is normal that those technics require more time, up to ten to twenty minutes for treating 50 to 100 spectra.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tips</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#maintenance">Maintenance</a></li>
+<li><a class="reference internal" href="#running-spectra">Running Spectra</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Installation.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="Tutorial.html" title="next chapter">Tutorial</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Tips.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Charles Le Losq.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/Tips.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

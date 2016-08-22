@@ -6,9 +6,9 @@
 Temperature and frequency corrections for Raman spectra
 ------------------------------------------------------------
 
-Raman spectra may be corrected from temperature and excitation line effects using the function
+Raman spectra can be corrected from temperature and excitation line effects using the function
 
-    x, y_corrected, ese_corrected = tlcorrection(data,temp,wave;correction="long",density=2210.0)
+    x, y_corrected, ese_corrected = tlcorrection(data,temp,wave;correction="long",normalisation="area",density=2210.0)
 
 INPUTS:
 
@@ -20,7 +20,9 @@ INPUTS:
 
 OPTIONS:
 
-	correction: string, the equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
+	correction: String, the equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
+	
+	normalisation: String, indicate if you want to normalise your signal or not. Choose between "intensity", "area", or "no". Default = "area".
 	
 	density: Float64, the density of the studied material in kg m-3, to be used with the "hehlen" equation. Default = 2210.0 (density of silica).
 
@@ -28,11 +30,11 @@ OUTPUTS:
 
 (are combined in one array if only one output name is given)
 
-	x: Array{Float64} containing the x values;
+	x: Array{Float64}, containing the x values;
 
-	long: Array{Float64} containing the corrected y values;
+	long: Array{Float64}, containing the corrected y values;
 
-	eselong: Array{Float64} containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
+	eselong: Array{Float64}, containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
 	
 NOTES:
 
@@ -54,11 +56,11 @@ Baseline subtraction can be made with using the baseline function:
 
 INPUTS:
 
-	x: Array{Float64} containing the x values;
+	x: Array{Float64}, containing the x values;
 	
-	y: Array{Float64} containing the y values;
+	y: Array{Float64}, containing the y values;
 	
-	roi: Array{Float64} containing the "region of interest", i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];
+	roi: Array{Float64}, containing the "region of interest", i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];
 
 	basetype: AbstractString, the type of baseline that you want to use. For now, polynomial and cubic spline baselines are available. Indicate the type you want as:
 
@@ -140,24 +142,20 @@ For a cubic spline baseline fitting the basis of a peak centered at 1100 cm$^{-1
 
 s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
 
-----------
-Tips
-----------
-
-- Always be careful to enter float and integer numbers as required by the functions! They will return an error if you do not do that.
-
-- For the spline, do not hesitate to test a broad range in term of order of magnitudes for the smoothing parameter.
-
-- SVMregression and KRregression will take more time as several models are tried over a broad range of hyperparameters. Therefore, it is normal that those technics require further time, up to ten to twenty minutes for treating 50 to 100 spectra.
-
 --------------
 References
 --------------
 
 Shuker, Reuben, and Robert Gammon. 1970. “Raman-Scattering Selection-Rule Breaking and the Density of States in Amorphous Materials.” Physical Review Letters 25 (4): 222–25.
+
 Galeener, F. L., and Sen, P. N. 1978. “Theory of the First-Order Vibrational Spectra of Disordered Solids.” Physical Review B 17 (4): 1928–33.
+
 Mysen, B. O., L. W. Finger, D. Virgo, and F. A. Seifert. 1982. “Curve-Fitting of Raman Spectra of Silicate Glasses.” American Mineralogist 67: 686–95.
+
 Brooker et al. 1988 Assessment of correction procedures for reduction of Raman spectra. Journal of Raman Spectroscopy 19(2), 71-78.
+
 Neuville, D. R., and B. O. Mysen. 1996. “Role of Aluminium in the Silicate Network: In Situ, High-Temperature Study of Glasses and Melts on the Join SiO₂-NaAl0₂.” Geochimica et Cosmochimica Acta 60: 1727–37.
+
 Le Losq, C., D. R. Neuville, R. Moretti, and J. Roux. 2012. “Determination of Water Content in Silicate Glasses Using Raman Spectrometry: Implications for the Study of Explosive Volcanism.” American Mineralogist 97 (5-6): 779–90. doi:10.2138/am.2012.3831.
+
 Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.
