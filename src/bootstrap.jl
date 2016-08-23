@@ -71,7 +71,7 @@ save_histogram: Name for the graphic showing the histogram for the parameter and
 RETURN: std_record, mean_record, the arrays recording how the standard deviation and mean of the parameters as a function of the bootstrap advance. 
 
 """
-function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", parameter::Int64 = 0, feature::Int64 = 0, histogram_step::Int64 = 100, savefigures::ASCIIString = "False", save_bootrecord::ASCIIString = "Boot_record.pdf", save_histogram::ASCIIString = "Boot_histogram.pdf")
+function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", parameter::Int64 = 1, feature::Int64 = 1, histogram_step::Int64 = 100, savefigures::ASCIIString = "False", save_bootrecord::ASCIIString = "Boot_record.pdf", save_histogram::ASCIIString = "Boot_histogram.pdf")
     
     # test
     if plotting != "True" && plotting != "False"

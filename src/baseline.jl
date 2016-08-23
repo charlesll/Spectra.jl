@@ -87,7 +87,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
 		
 		# constructing a GridSearchCV instance for grabing the best parameters
-		clf = kernelridge[:KernelRidge](kernel="rbf", gamma=0.1)
+		clf = kernel_ridge[:KernelRidge](kernel="rbf", gamma=0.1)
 		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3,1e-4],"gamma"=> logspace(-4, 4, 9)))
 		kr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_kr_sc = kr[:predict](x_sc)

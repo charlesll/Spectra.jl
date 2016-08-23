@@ -24,7 +24,8 @@ using Conda
 # For PyCall modules
 const preprocessing = PyNULL()
 const grid_search = PyNULL()
-const kernelridge = PyNULL()
+const cross_validation = PyNULL()
+const kernel_ridge = PyNULL()
 const svm = PyNULL()
 const gaussian_process = PyNULL()
 
@@ -43,14 +44,16 @@ function __init__()
 		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
 		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
-		copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+		copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "sklearn"))
+		copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
 		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 	catch
 		Conda.add("scikit-learn")
 		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
 		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
-		copy!(kernelridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+		copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "sklearn"))
+		copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
 		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 	end
 end
@@ -63,6 +66,7 @@ include("bootstrap.jl")
 include("tlcorrection.jl")
 include("rameau.jl")
 include("deprecated.jl")
+include("ml_regressor.jl")
 
 #From integrale.jl
 export trapz, gaussianarea
@@ -87,5 +91,8 @@ export tlcorrection
 
 #From rameau
 export rameau
+
+#From ml_regressor
+export mlregressor
 
 end # module
