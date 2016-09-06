@@ -41,7 +41,8 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
     
 			x = spectra[:,1]
 			y = spectra[:,2]./trapz(x,spectra[:,2]).*scale # area normalisation
-		
+			ratio_bkg = minimum(y)/maximum(y) # to keep a record of the ratio of maximum signal intensity over minimum background intensity
+			
 			#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
 			interest_index::Array{Int64} = find(roi[1,1,i] .<= x[:,1] .<= roi[1,2,i])
 			if size(roi)[1] > 1
@@ -67,13 +68,12 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			
 				# we get a mean signal for background below 1300 cm-1
 				X_low_lf = x[y .==minimum(y[1100.<x.<1400])]
-				b_low_lf = mean(y[X_low_lf[1]-5 .< x .< X_low_lf[1]+5])
+				b_low_lf = mean(y[X_low_lf[1]-20 .< x .< X_low_lf[1]+20])
 				baseline1[x.<X_low_lf[1]] = b_low_lf
 				y_calc1_part1 = y - baseline1
         
-				# above 2500 cm-1, we use a thrid order polynomial function below the water peak
-				y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],basetype,p=[smo_hf[i]])
-				#y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],"poly",p=3.0)
+				# above 2500 cm-1, we use a gcvspline function below the water peak
+				y_calc1_part2, baseline2 = baseline(x,y,roi_hf[2:end,:],basetype,p=smo_hf[i])
 		
 				# and we glue together the two parts
 				y_calc1 = [y_calc1_part1[0 .<x.<roi_hf[2,1]];y_calc1_part2[x .>= roi_hf[2,1]]]
@@ -81,20 +81,20 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
         
 				#y_calc1, bas1 = baseline(x,y,roi_hf,basetype=basetype,p=[smooth*10]) # baseline substraction
 				y_calc1 = y_calc1./trapz(x,y_calc1).*scale # area normalisation
-        
+				
 				if switches[4] == "yes"
+					
 					x, y_long, ~ = tlcorrection([x[:] y_calc1[:]],temperature,laser) # Long correction
 					y_long = y_long .*scale
 			
 					# Again we need a trick as we don't want to do anything in the HF part...
-					y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,basetype,p=[smo_lf[i]]) # baseline substraction
-					#y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,"poly",p=4.0) # baseline substraction
+					y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,basetype,p=smo_lf[i]) # baseline substraction
 					y_calc2 = [y_calc2_part1[x.<roi_lf[end,1]];y_long[x.>=roi_lf[end,1]]] # we glue the good parts 
 					bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
 					y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
 				else
             
-					y_calc2_part1, bas2 = baseline(x,y_calc1,roi_lf,basetype,p=[smo_lf[i]]) # baseline substraction
+					y_calc2_part1, bas2 = baseline(x,y_calc1,roi_lf,basetype,p=smo_lf[i]) # baseline substraction
 					y_calc2 = [y_calc2_part1[x.<roi_lf[end,1]];y_calc1[x.>=roi_lf[end,1]]] # we glue the good parts
 					bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
 					y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
