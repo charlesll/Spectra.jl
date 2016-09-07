@@ -142,6 +142,59 @@ For a cubic spline baseline fitting the basis of a peak centered at 1100 cm$^{-1
 
 s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
 
+---------------------------
+Frequency shifts correction
+---------------------------
+
+In case your spectra are shifted from a reference value, Spectra offers several functions that allows you to correct it from this shift.
+
+To correct a spectrum from a shift of P wavenumbers, you can simply call:
+
+	xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
+
+INPUTS:
+
+	full_x: Array{Float64}, the entire X axis of your spectrum
+	
+	original_x: Array{Float64}, the (shifted) X axis of original_y
+	
+	original_y: Array{Float64}, the signal
+	
+	p: Float64, the value of the shift
+	
+OUTPUTS:
+
+	original_x: Array{Float64}, the entire X axis of your spectrum, we output it for records
+	
+	corrected_y: Array{Float64}, the signal corrected from the X shift.
+	
+	
+This function uses the Dierckx spline to interpolate your signal after the correction of the shift.
+
+Sometime, two signals from the same mineral show a shift in the X axis, while they share a common X axis. To correct from such thing, you can use the function:
+
+	xshift_correction(full_x, full_shifted_y, ref_x, ref_y, shifted_y)
+	
+INPUTS:
+
+	full_x: Array{Float64}, the entire X axis of your spectrum
+	
+	full_shifted_y: Array{Float64}, the entire shifted signal
+	
+	ref_x: Array{Float64}, the X axis of the reference ref_y signal
+	
+	ref_y: Array{Float64}, the reference signal
+	
+	shifted_y: Array{Float64}, the shifted signal
+	
+OUTPUTS:
+
+	full_x: Array{Float64}, the entire X axis of your spectrum, we output it for records
+	
+	corrected_y: Array{Float64}, the signal corrected from the X shift
+	
+ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.
+
 --------------
 References
 --------------

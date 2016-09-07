@@ -110,3 +110,26 @@ function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd
     end
     return sum(segments,2), segments
 end
+
+# to correct for shifts in X between two spectra, for the inversion
+function xshift_inversion(data::Array{Float64},p::Array{Float64})
+    xaxis = data[:,1]
+    shifted1 = data[:,2]
+
+    spl = Spline1D(xaxis-p[1], shifted1.*p[2] + shifted1.^2.*p[3])
+    y = evaluate(spl,xaxis)
+end
+
+# to correct a spectrum for a p shift in X
+function xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
+    spl = Spline1D(original_x-p, original_y)
+    corrected_y = evaluate(spl,original_x)
+	return original_x, corrected_y, p
+end
+
+# to correct a shift between two spectra using a reference peak
+function xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64}, ref_x::Array{Float64}, ref_y::Array{Float64},shifted_y::Array{Float64})
+	fit = curve_fit(xshift_inversion, [ref_x shifted_y], ref_y, [1.0, 1.0,1.0])
+	parameters = fit.param
+	return xshift_direct(full_x, full_shifted_y, parameters[1])
+end

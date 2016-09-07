@@ -20,11 +20,13 @@ using PyPlot
 using LsqFit
 using PyCall
 using Conda
+using Dierckx
 
 # For PyCall modules
 const preprocessing = PyNULL()
 const grid_search = PyNULL()
 const cross_validation = PyNULL()
+const decomposition = PyNULL()
 const kernel_ridge = PyNULL()
 const svm = PyNULL()
 const gaussian_process = PyNULL()
@@ -41,19 +43,21 @@ function __init__()
     end
 	
 	try
-		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
 		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
 		copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "sklearn"))
+		copy!(decomposition, pyimport_conda("sklearn.decomposition", "sklearn"))
 		copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 	catch
 		Conda.add("scikit-learn")
-		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
 		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
 		copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "sklearn"))
+		copy!(decomposition, pyimport_conda("sklearn.decomposition", "sklearn"))
 		copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
+		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
 		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
 	end
 end
@@ -67,6 +71,7 @@ include("tlcorrection.jl")
 include("rameau.jl")
 include("deprecated.jl")
 include("ml_regressor.jl")
+include("ctxremoval.jl")
 
 #From integrale.jl
 export trapz, gaussianarea
@@ -75,7 +80,7 @@ export trapz, gaussianarea
 export peak_diffusion, model, IRdataprep
 
 #From functions.jl
-export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
+export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction
 
 #From baseline.jl
 export baseline
@@ -94,5 +99,8 @@ export rameau
 
 #From ml_regressor
 export mlregressor
+
+#From ctxremoval
+export ctxremoval
 
 end # module

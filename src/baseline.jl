@@ -15,7 +15,6 @@
 
 using JuMP
 using Ipopt
-using Dierckx
 
 include("gcvspl_wrapper.jl")
 
