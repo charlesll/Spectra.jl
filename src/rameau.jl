@@ -17,7 +17,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 	if switches[1] == "internal"
 	
 	
-		scale = 1000.
+		scale = 1
 	
 		liste=readcsv(paths[1], skipstart=1)
 		names = liste[:,1]
@@ -40,7 +40,8 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			end
     
 			x = spectra[:,1]
-			y = spectra[:,2]./trapz(x,spectra[:,2]).*scale # area normalisation
+			spectra[:,2] = spectra[:,2] - minimum(spectra[:,2])
+			y = spectra[:,2]./maximum(spectra[:,2]).*scale + 0.1# area normalisation, and we avoid any 0
 			ratio_bkg = minimum(y)/maximum(y) # to keep a record of the ratio of maximum signal intensity over minimum background intensity
 			
 			#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
@@ -85,7 +86,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 				if switches[4] == "yes"
 					
 					x, y_long, ~ = tlcorrection([x[:] y_calc1[:]],temperature,laser) # Long correction
-					y_long = y_long .*scale
+					y_long = y_long .*scale + 0.1 # scaling and avoiding 0 values
 			
 					# Again we need a trick as we don't want to do anything in the HF part...
 					y_calc2_part1, bas2 = baseline(x,y_long,roi_lf,basetype,p=smo_lf[i]) # baseline substraction
@@ -93,7 +94,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 					bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
 					y_calc2 = y_calc2./trapz(x,y_calc2).*scale # area normalisation
 				else
-            
+            		y_calc1 = y_calc1 + 0.1 # avoiding 0 values
 					y_calc2_part1, bas2 = baseline(x,y_calc1,roi_lf,basetype,p=smo_lf[i]) # baseline substraction
 					y_calc2 = [y_calc2_part1[x.<roi_lf[end,1]];y_calc1[x.>=roi_lf[end,1]]] # we glue the good parts
 					bas2[x.>roi_lf[end,1]] = 0.0 # we put this part to 0
@@ -164,9 +165,9 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 				if switches[4] == "yes"
 					x, y_long, ~ = tlcorrection([x[:] y[:]],temperature,laser) # Long correction
 					#y_long = y_long ./maximum(y_long)
-					y_long=y_long.*scale
+					y_long=y_long./maximum(y_long).*scale
 				
-					y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=[smo_lf[i]])
+					y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*(scale./10) # area normalisation
             
 					figure(figsize=(20,20))
@@ -200,7 +201,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 					legend(loc="best",fancybox="true")
             
 				else
-					y_calc2, bas2 = baseline(x,y,roi[:,:,i],basetype,p=[smo_lf[i]])
+					y_calc2, bas2 = baseline(x,y,roi[:,:,i],basetype,p=smo_lf[i])
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*scale # area normalisation
             
 					figure()

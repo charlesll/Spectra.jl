@@ -111,36 +111,28 @@ For instance, for subtracting a constant baseline between 1250 and 1300 cm^{-1}:
 	
     basetype = "poly"
 	
-    p = [1.0]
-	
-    y_corr, bas = baseline(x,y,roi,"poly",p)
+    y_corr, bas = baseline(x,y,roi,"poly",p=0.0)
 	
 
 For a linear baseline,
-
-    p = [1.0, 1.0]
 	
-    bas = baseline(x,y,roi,"poly",p)
+    bas = baseline(x,y,roi,"poly",p=1.0)
 
 For a second order polynomial baseline,
-
-    p = [1.0, 1.0, 1.0]
 	
-    bas = baseline(x,y,roi,"poly",p)
+    bas = baseline(x,y,roi,"poly",p=2.0)
 
 with the last coefficient will be the one in front of x^2. This can continue as you want by adding more 1.0 values to p.
 
 For a cubic spline baseline fitting the basis of a peak centered at 1100 cm$^{-1}$ and with basis at 900 and 1250 cm^{-1}:
 
-    roi = [[890. 910.]; [1250. 1300.]]
+    roi = [890. 910.; 1250. 1300.]
 	
     basetype = "Dspline"
 	
-    s = [0.01]
-	
-    bas = baseline(x,y,roi,basetype,s)
+    bas = baseline(x,y,roi,basetype,p=0.01)
 
-s there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
+p there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
 
 ---------------------------
 Frequency shifts correction

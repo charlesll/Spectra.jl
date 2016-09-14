@@ -17,16 +17,13 @@
 """
 The 'ctxremoval' function allows to remove the signal of a cristal from the glass Raman signal.
 """
-function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_switch = "no",plot_mixing_switch = "yes",save_fig_switch = "yes",shutdown = 1300.)
+function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_switch = "no",plot_mixing_switch = "yes",save_fig_switch = "yes",shutdown = 1300.)
 	
 	# GRABING THE REGIONS OF INTEREST
 	roi_ctx = roi_all[1]
 	roi_glass = roi_all[2]
 	roi_xshift_low = roi_all[3]
 	roi_xshift_high = roi_all[4]
-	
-	# READING THE INPUT FILE
-	liste = readcsv(liste_path,skipstart=1)
 	
 	# NUMBER OF FILES?
 	nb_exp = size(liste,1)
@@ -80,12 +77,14 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
 	    # DISPLAYING INTERMEDIATE PLOTS
 	    if plot_intermediate_switch == "yes"
 	        figure()
+			
+			subplot(2,2,(1,2))
 	        title("Raw spectra and baseline")
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 
-	        plot(true_x,data[:,1],color="black",label="Ctx file"liste[i,2])
-	        plot(true_x,data[:,2],color="blue",label="Glass file"liste[i,1])
+	        plot(true_x,data[:,1],color="black",label="Ctx file"liste[i,1])
+	        plot(true_x,data[:,2],color="blue",label="Glass file"liste[i,2])
         
 	        plot(true_x,baseline_ctx,color="red")
 	        plot(true_x,baseline_gls,color="orange")
@@ -94,7 +93,7 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
 	    end
     
 	    if plot_intermediate_switch == "yes"
-	        figure()
+	        subplot(2,2,3)
 	        title("Frequency shift correction")
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]),color="blue",label="shifted")
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,2]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,2]),color="red",label="reference")
@@ -110,14 +109,11 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
 	        legend(loc="best",fancybox=true)
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
-	    end
-    
-	    # DISPLAYING INTERMEDIATE PLOTS
-	    if plot_intermediate_switch == "yes"
-	        figure()
+	    
+	        subplot(2,2,4)
 	        title("Spectra after the baseline and X shift corrections")
-	        plot(true_x,bas_matrix[:,1],color="black",label="Cristal file "liste[i,2])
-	        plot(true_x,bas_matrix[:,2],color="blue",label="Glass file "liste[i,1])
+	        plot(true_x,bas_matrix[:,1],color="black",label="Cristal file "liste[i,1])
+	        plot(true_x,bas_matrix[:,2],color="blue",label="Glass file "liste[i,2])
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 	        legend(loc="best",fancybox=true)
@@ -135,7 +131,7 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
     
 	    # CREATING USEFULL FUNCTIONS
 	    function f1(k,ctx,g_c)
-	        g = g_c - k.*ctx
+	        g = (g_c - k.*ctx)./(1.0-k)
 	        return g
 	    end
     
@@ -152,15 +148,14 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
 	    results = zeros(size(bas_matrix)) # the final matrix with mixed signals
 	    K = K_start # we start with K_start ctx signal
     
-	    if plot_mixing_switch == "yes" # for showing intermediate plots, if requested
-	        figure()
-	        title("The generation of spectra for FastICA")
-	    end
-    
 	    for iter = 1:nb_iter # iterative removal, should be good in a few iterations
 	        if iter == 1
 	            results[:,:] = bas_matrix[:,:]
 	            results[:,1] = K*bas_matrix[:,1]
+			    if plot_mixing_switch == "yes" # for showing intermediate plots, if requested
+			        figure()
+			        title("The generation of spectra for FastICA")
+			    end
 	        else
 	            results[:,1] = K.*bas_matrix[:,1]
 	            results[:,2] = f1(K,bas_matrix[:,1],bas_matrix[:,2])
@@ -179,7 +174,7 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
 	            plot(true_x,results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
 	            subplot(313)
 	            title("G_C, mixed glass signals = G + K*CTX")
-	            plot(true_x,results[:,1]+results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
+	            plot(true_x,results[:,1]+(1-K).*results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
 	            xlabel(L"Raman shift, cm$^{-1}$")
 	            xlim(0,shutdown)
 	        end
@@ -209,61 +204,61 @@ function ctxremoval(liste_path,in_path,out_path,roi_all;input_properties=('\t',0
 	    end
     
 	    # WHICH SIGNAL IS WAHT? Now we determine who is the glass? => the Boson peak is more intense!
-	    if maximum(S_corr[70. .< x_for_ica .< 200,2]) < maximum(S_corr[70 .< x_for_ica .<200,1])
+	    if maximum(S_corr[40 .< x_for_ica .< 100,2]) < maximum(S_corr[40 .< x_for_ica .<100,1])
 	        glass_ica = S_corr[:,1]
 	        ctx_ica = S_corr[:,2]
 	    else
 	        glass_ica = S_corr[:,2]
 	        ctx_ica = S_corr[:,1]
 	    end
-    
-	    # FINAL FIGURE 1, SHOWED
+    	
+	    # FINAL RECORDING MATRIX
+	    spectra_final = [true_x [glass_ica.*maximum(bas_matrix[true_x .<100.,2]);bas_matrix[true_x.>=shutdown,2]]]
+		
+	    # FINAL FIGURE, SHOWED
 	    figure()
-	    subplot(211)
+		
+		suptitle("Final result, glass sp. no $(liste[i,2])")
+		
+	    subplot(3,2,(1,2)) # UPPER PLOT
+		title("Baseline-corrected spectra")
+	    plot(true_x,bas_matrix[:,1],color="blue",label="Cristal")
+	    plot(true_x,bas_matrix[:,2],color="black",label="Glass")
+	    ylabel("Intensity, counts")
+	    xlim(0,4000)
+	    legend(loc="best",fancybox=true)
+		
+	    subplot(3,2,3)
 	    title("FastICA results")
 	    plot(x_for_ica,glass_ica,color="black")
 	    plot(x_for_ica,ctx_ica,color="blue")
 	    ylabel("Intensity, counts")
 	    xlim(0,shutdown)
     
-	    subplot(212)
-	    title("Final fit")
-	    plot(x_for_ica, glass_ica.*maximum(bas_matrix[true_x.<200,2]),color="green")
-	    plot(x_for_ica, bas_matrix[true_x.<shutdown,2],color="black")
+	    subplot(3,2,4)
+	    title("Final fit, silicate region")
+	    plot(x_for_ica, glass_ica.*maximum(bas_matrix[true_x.<100,2]),color="green",label="Glass, corrected")
+	    plot(x_for_ica, bas_matrix[true_x.<shutdown,2],color="black",label="Glass, initial")
 	    xlabel(L"Raman shift, cm$^{-1}$")
 	    ylabel("Intensity, counts")
 	    xlim(0,shutdown)
     
-	    # FINAL RECORDING MATRIX
-	    spectra_final = [true_x [glass_ica.*maximum(bas_matrix[true_x.<200,2]);bas_matrix[true_x.>=shutdown,2]]]
-    
-	    # FINAL FIGURE 2, SHOWED
-	    figure()
-	    suptitle("Final result, glass sp. no $(liste[i,1])")
-    
-	    subplot(211) # UPPER PLOT
-	    plot(true_x,bas_matrix[:,1],color="blue",label="Cristal")
-	    plot(true_x,bas_matrix[:,2],color="black",label="Glass")
-	    ylabel("Intensity, counts")
-	    xlim(0,4000)
-	    legend(loc="best",fancybox=true)
-    
-	    subplot(212) # LOWER PLOT
+	    subplot(3,2,(5,6)) # LOWER PLOT
+		title("Final fit, entire spectra")
 		plot(true_x,bas_matrix[:,2],color="black",label="Glass, initial")
 	    plot(spectra_final[:,1],spectra_final[:,2],color="green",label="Glass, corrected")
 	    legend(loc="best",fancybox=true)
 	    xlabel(L"Raman shift, cm$^{-1}$")
 	    ylabel("Intensity, counts")
 	    xlim(0,4000)
-    
-	    # WE WRITE THE CORRECTED SPECTRA IN THE CORRECT OUTPUT PATH (OUT_PATH)
-	    writedlm(out_path*"corr_"*liste[i,1],spectra_final)
-    
+	
 	    # AND IF THE USER WANTS TO SAVE THE FIGURE, WE OUTPUT THEM ALSO IN OUT_PATH
 	    if save_fig_switch == "yes"
-	        #println(out_path)#"corr_"liste[i,1]".pdf"
-	        savefig(out_path*"corr_"*liste[i,1]*".pdf")
+	        savefig(out_path*liste[i,2]*".pdf")
 	    end
+		
+	    # WE WRITE THE CORRECTED SPECTRA IN THE CORRECT OUTPUT PATH (OUT_PATH)
+	    writedlm(out_path*liste[i,2],spectra_final)
     
 	end
 end

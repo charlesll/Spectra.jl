@@ -12,13 +12,19 @@ Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear
 
 Package is under construction, any help welcome!
 
+# Installation
+
+Installation is done with using the Pkg.add() function of Julia. Please follow the instructions in the documentation (see below). 
+
+The version hosted on Github is bleeding-edge, and will probably NOT WORK well and will change day to day, as I am working on it. I strongly advise not to use it, except if you want to collaborate with me.
+
 # Documentation
 
 Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ . The latter link provides installation instructions.
 
 # News
 
-Version 0.1.6 is arriving soon and will contain the following new features:
+Version 0.1.7 is released and contain the following new features:
 
 - The possibility to request different type of normalisation after the correction from the temperature and frequency effects.
 
@@ -73,4 +79,4 @@ Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
 
-Last modified 18/08/2016
+Last modified 14/09/2016
