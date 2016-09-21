@@ -24,15 +24,17 @@ Front page for the project is available at http://charlesll.github.io/Spectra.jl
 
 # News
 
-Version 0.1.7 is released and contain the following new features:
+Version 0.1.8 will be released soon and contains the following new features:
 
-- The possibility to request different type of normalisation after the correction from the temperature and frequency effects.
+- Improved RamEau function with improved internal calibration and critical corrections for the external calibration protocol;
 
-- Use of the external calibration mode in RamEau, with added documentation.
+- A Ctxremoval function for removing crystal signals from Raman spectra of glasses is added;
+
+- A mlregressor function adding functionalities of SciKit Learn into Spectra.jl for using machine learning in the treatment of spectra has been added.
 
 Corrections:
 
-- RamEau internal calibration prediction mode equation was wrong and is now corrected
+- RamEau external calibration was not converting the water contents from mol/L to wt%. This is now corrected.
 
 
 # Quick Usage Examples

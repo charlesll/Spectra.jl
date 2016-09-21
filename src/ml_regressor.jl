@@ -45,6 +45,8 @@ function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractStri
 	elseif algorithm=="SVM"
 		clf_svm = svm[:SVR](kernel=user_kernel, gamma=0.1)
 		model = grid_search[:GridSearchCV](clf_svm,cv=5,param_grid=param_grid_svm)
+	elseif algorithm=="LinearRegression"
+		model = linear_model[:LinearRegression]()
 	end
 	
 	model[:fit](X_train_sc, squeeze(y_train_sc,2))

@@ -19,8 +19,9 @@ using StatsBase
 using PyPlot
 using LsqFit
 using PyCall
-using Conda
 using Dierckx
+using Ipopt
+using JuMP
 
 # For PyCall modules
 const preprocessing = PyNULL()
@@ -30,6 +31,7 @@ const decomposition = PyNULL()
 const kernel_ridge = PyNULL()
 const svm = PyNULL()
 const gaussian_process = PyNULL()
+const linear_model = PyNULL()
 
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
@@ -42,24 +44,16 @@ function __init__()
         error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
     end
 	
-	try
-		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
-		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
-		copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "sklearn"))
-		copy!(decomposition, pyimport_conda("sklearn.decomposition", "sklearn"))
-		copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
-		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
-		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
-	catch
-		Conda.add("scikit-learn")
-		copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "sklearn"))
-		copy!(grid_search, pyimport_conda("sklearn.grid_search", "sklearn"))
-		copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "sklearn"))
-		copy!(decomposition, pyimport_conda("sklearn.decomposition", "sklearn"))
-		copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "sklearn"))
-		copy!(svm, pyimport_conda("sklearn.svm","sklearn"))
-		copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "sklearn"))
-	end
+
+	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
+	copy!(grid_search, pyimport_conda("sklearn.grid_search", "scikit-learn"))
+	copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "scikit-learn"))
+	copy!(decomposition, pyimport_conda("sklearn.decomposition", "scikit-learn"))
+	copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "scikit-learn"))
+	copy!(svm, pyimport_conda("sklearn.svm","scikit-learn"))
+	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "scikit-learn"))
+	copy!(linear_model, pyimport_conda("sklearn.linear_model", "scikit-learn"))
+	
 end
 
 include("diffusion.jl")
