@@ -17,7 +17,10 @@
 """
 The 'ctxremoval' function allows to remove the signal of a cristal from the glass Raman signal.
 """
-function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_switch = "no",plot_mixing_switch = "yes",save_fig_switch = "yes",shutdown = 1300.)
+function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_switch = "no",plot_mixing_switch = "yes",save_fig_switch = "yes",shutdown = 1300.,scaling=100.)
+	
+	# Model for final adjustement
+	model_ctx_adj(x, p) = p[1]*x
 	
 	# GRABING THE REGIONS OF INTEREST
 	roi_ctx = roi_all[1]
@@ -78,22 +81,37 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    if plot_intermediate_switch == "yes"
 	        figure()
 			
-			subplot(2,2,(1,2))
 	        title("Raw spectra and baseline")
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 
-	        plot(true_x,data[:,1],color="black",label="Ctx file"liste[i,1])
-	        plot(true_x,data[:,2],color="blue",label="Glass file"liste[i,2])
+	        plot(true_x,data[:,1],color="black",label="Ctx file "liste[i,1])
+	        plot(true_x,data[:,2],color="blue",label="Glass file "liste[i,2])
         
 	        plot(true_x,baseline_ctx,color="red")
 	        plot(true_x,baseline_gls,color="orange")
 	        legend(loc="best",fancybox=true)
-	        #show()
+			show()
+			
+	        figure()
+			
+	        title("Raw spectra and baseline")
+	        xlabel(L"Raman shift, cm$^{-1}$")
+	        ylabel("Intensity, counts")
+
+	        plot(true_x,data[:,1],color="black",label="Ctx file "liste[i,1])
+	        plot(true_x,data[:,2],color="blue",label="Glass file "liste[i,2])
+        
+	        plot(true_x,baseline_ctx,color="red")
+	        plot(true_x,baseline_gls,color="orange")
+	        legend(loc="best",fancybox=true)
+			xlim(2600,4000)
+			ylim(0,maximum(data[2600 .<true_x.<4000,:]))
+	        show()
 	    end
     
 	    if plot_intermediate_switch == "yes"
-	        subplot(2,2,3)
+	        figure()
 	        title("Frequency shift correction")
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]),color="blue",label="shifted")
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,2]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,2]),color="red",label="reference")
@@ -109,14 +127,16 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	        legend(loc="best",fancybox=true)
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
-	    
-	        subplot(2,2,4)
+	    	show()
+			
+	        figure()
 	        title("Spectra after the baseline and X shift corrections")
 	        plot(true_x,bas_matrix[:,1],color="black",label="Cristal file "liste[i,1])
 	        plot(true_x,bas_matrix[:,2],color="blue",label="Glass file "liste[i,2])
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 	        legend(loc="best",fancybox=true)
+			show()
 	    end
     
 	    ######################################################################
@@ -164,19 +184,21 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
         
 	        if plot_mixing_switch == "yes" # for showing intermediate plots
 	            subplot(311)
-	            title("CTX, cristal signals")
+	            title("Ctx, cristal signals",fontsize=18,fontname="Arial")
 	            plot(true_x,results[:,1],color=[iter/(nb_iter+0.0),0.,0.])
 	            xlim(0,shutdown)
 	            subplot(312)
-	            title("G, unmixed glass signals = G_C - K*CTX")
-	            ylabel("Intensity, counts")
+	            title("G, unmixed glass signals = G_C - K*Ctx",fontsize=18,fontname="Arial")
+	            ylabel("Intensity, counts",fontsize=18,fontname="Arial")
 	            xlim(0,shutdown)
 	            plot(true_x,results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
 	            subplot(313)
-	            title("G_C, mixed glass signals = G + K*CTX")
+	            title("G_C, mixed glass signals = G + K*CTX",fontsize=18,fontname="Arial")
 	            plot(true_x,results[:,1]+(1-K).*results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
-	            xlabel(L"Raman shift, cm$^{-1}$")
+	            xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
 	            xlim(0,shutdown)
+				tight_layout()
+				show()
 	        end
         
 	        # INCREMENTING K
@@ -205,52 +227,55 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
     
 	    # WHICH SIGNAL IS WAHT? Now we determine who is the glass? => the Boson peak is more intense!
 	    if maximum(S_corr[40 .< x_for_ica .< 100,2]) < maximum(S_corr[40 .< x_for_ica .<100,1])
-	        glass_ica = S_corr[:,1]
-	        ctx_ica = S_corr[:,2]
-	    else
-	        glass_ica = S_corr[:,2]
-	        ctx_ica = S_corr[:,1]
+	        glass_ica = S_corr[:,1] - minimum(S_corr[:,1])
+	        ctx_ica = S_corr[:,2] - minimum(S_corr[:,2])
+	    else 
+	        glass_ica = S_corr[:,2] - minimum(S_corr[:,2])
+	        ctx_ica = S_corr[:,1] - minimum(S_corr[:,1])
 	    end
     	
 	    # FINAL RECORDING MATRIX
-	    spectra_final = [true_x [glass_ica.*maximum(bas_matrix[true_x .<100.,2]);bas_matrix[true_x.>=shutdown,2]]]
+		fit = curve_fit(model_ctx_adj, glass_ica[x_for_ica.<scaling], bas_matrix[true_x .<scaling,2], [1.0])
+		coef_scale = fit.param
+	    spectra_final = [true_x [model_ctx_adj(glass_ica,coef_scale);bas_matrix[true_x.>=shutdown,2]]]
 		
 	    # FINAL FIGURE, SHOWED
-	    figure()
-		
-		suptitle("Final result, glass sp. no $(liste[i,2])")
+	    figure(figsize=(15,15))
 		
 	    subplot(3,2,(1,2)) # UPPER PLOT
-		title("Baseline-corrected spectra")
+		title("Glass sp. no $(liste[i,2]), Baseline correction",fontsize=18,fontname="Arial")
 	    plot(true_x,bas_matrix[:,1],color="blue",label="Cristal")
 	    plot(true_x,bas_matrix[:,2],color="black",label="Glass")
-	    ylabel("Intensity, counts")
+	    ylabel("Intensity, counts",fontsize=18,fontname="Arial")
 	    xlim(0,4000)
 	    legend(loc="best",fancybox=true)
 		
 	    subplot(3,2,3)
-	    title("FastICA results")
+	    title("FastICA results",fontsize=18,fontname="Arial")
 	    plot(x_for_ica,glass_ica,color="black")
 	    plot(x_for_ica,ctx_ica,color="blue")
-	    ylabel("Intensity, counts")
+	    ylabel("Intensity, counts",fontsize=18,fontname="Arial")
 	    xlim(0,shutdown)
     
 	    subplot(3,2,4)
-	    title("Final fit, silicate region")
-	    plot(x_for_ica, glass_ica.*maximum(bas_matrix[true_x.<100,2]),color="green",label="Glass, corrected")
+	    title("Final fit, silicate region",fontsize=18,fontname="Arial")
+	    plot(x_for_ica, model_ctx_adj(glass_ica,coef_scale),color="green",label="Glass, corrected")
 	    plot(x_for_ica, bas_matrix[true_x.<shutdown,2],color="black",label="Glass, initial")
-	    xlabel(L"Raman shift, cm$^{-1}$")
-	    ylabel("Intensity, counts")
+	    xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+	    ylabel("Intensity, counts",fontsize=18,fontname="Arial")
 	    xlim(0,shutdown)
     
 	    subplot(3,2,(5,6)) # LOWER PLOT
-		title("Final fit, entire spectra")
+		title("Final fit, entire spectra",fontsize=18,fontname="Arial")
 		plot(true_x,bas_matrix[:,2],color="black",label="Glass, initial")
 	    plot(spectra_final[:,1],spectra_final[:,2],color="green",label="Glass, corrected")
 	    legend(loc="best",fancybox=true)
-	    xlabel(L"Raman shift, cm$^{-1}$")
-	    ylabel("Intensity, counts")
+	    xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+	    ylabel("Intensity, counts",fontsize=18,fontname="Arial")
 	    xlim(0,4000)
+		
+		tight_layout()
+		show()
 	
 	    # AND IF THE USER WANTS TO SAVE THE FIGURE, WE OUTPUT THEM ALSO IN OUT_PATH
 	    if save_fig_switch == "yes"

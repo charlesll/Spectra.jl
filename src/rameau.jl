@@ -262,7 +262,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			else
 				# calc=ulating the areas under silicate and water bands
 				As = trapz(x[150 .< x .<1300],y_calc2[150 .< x .<1300])
-				Aw = trapz(x[3100 .< x .<3750],y_calc2[3100 .< x .<3750])
+				Aw = trapz(x[2800 .< x .<3750],y_calc2[2800 .< x .<3750])
 			end
     
 			# recording them
@@ -296,7 +296,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			xlabel(L"A$_{water}$/A$_{silicates}$, area ratio",fontsize=18,fontname="Arial")
 			ylabel("Water/Glass, weight ratio",fontsize=18,fontname="Arial")
 			annotate(L"R$_{ws}$=",xy=(0.3,0.9),xycoords="axes fraction",fontsize=18,fontname="Arial",horizontalalignment="center")
-			annotate("$(round(coef[1],4)) +/- $(round(sigma[1],4))",xy=(0.3,0.8),xycoords="axes fraction",fontsize=18,fontname="Arial",horizontalalignment="center")
+			annotate("$(round(coef[1],5)) +/- $(round(sigma[1],5))",xy=(0.3,0.8),xycoords="axes fraction",fontsize=18,fontname="Arial",horizontalalignment="center")
 			annotate("Standard deviation\n= $(round(rmse_calibration,2)) wt%",xy=(0.7,0.3),xycoords="axes fraction",horizontalalignment="center",fontsize=18,fontname="Arial")
 			savefig(paths[6])
         
@@ -342,51 +342,50 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			x_sp, sample_sp_long, ~ = tlcorrection(sample_sp,temperature,laser,correction="hehlen",normalisation="no",density=sample_density[i])
 			
 			# Linear baseline subtraction
-			roi_hf = [3000. 3100.; 3800. 4000.] # the region where the spline is constrained
+			roi_hf = [3000. 3100.; 3800. 3900.] # the region where the basline is constrained
 			reference_sp_corr2, reference_baseline = baseline(x_ref,reference_sp_long,roi_hf,"poly",p=1.0)
 			sample_sp_corr2, sample_baseline = baseline(x_sp,sample_sp_long,roi_hf,"poly",p=1.0)
 			
 			# Area calculation between 3100 and 3800 cm-1
-			Area_reference = trapz(x_ref[3100 .<x_ref[:,1].<3800],reference_sp_corr2[3100 .<x_ref[:,1].<3800])
-			Area_sample = trapz(x_sp[3100 .<x_sp[:,1].<3800],sample_sp_corr2[3100 .<x_sp[:,1].<3800])
+			Area_reference = trapz(x_ref[3100. .<x_ref[:,1].<3800.],reference_sp_corr2[3100. .<x_ref[:,1].<3800.])
+			Area_sample = trapz(x_sp[3100. .<x_sp[:,1].<3800.],sample_sp_corr2[3100. .<x_sp[:,1].<3800.])
 			
 			# With the intensity
-			Intensity_reference = maximum(reference_sp_corr2[3100 .<x_ref[:,1].<3800])
-			Intensity_sample = maximum(sample_sp_corr2[3100 .<x_ref[:,1].<3800])
+			Intensity_reference = maximum(reference_sp_corr2[3100. .<x_ref[:,1].<3800])
+			Intensity_sample = maximum(sample_sp_corr2[3100. .<x_ref[:,1].<3800])
 
 			# Water calculation
 			water[i] = (reference_water[i]./1.8*reference_density[i]) .*Area_sample./Area_reference # water is in mol/L
+			#water[i] = (reference_water[i]./1.8*reference_density[i]) .*Intensity_sample./Intensity_reference # water is in mol/L
 			
 			water[i] = water[i] *1.8./sample_density[i] # water converted in wt%
 			
-			figure(figsize=(20,20))
-			title("Internal calibration: $(round(water[i],2)) wt% water,\n sp. $(sample[i]) with ref. $(reference[i]) ")
+			figure(figsize=(7.5,15))
 			
 			subplot(311)
+			title("Internal calibration: $(round(water[i],2)) wt% water,\n sp. $(sample[i]) with ref. $(reference[i]) ")
 			plot(reference_sp[:,1],reference_sp[:,2],color="black",label="Reference")
 			plot(sample_sp[:,1],sample_sp[:,2],color="blue",label="Sample")
-			xlabel(L"Raman shift, cm$^{-1}$")
-			ylabel("Normalized intensity, a. u.")
-			legend(loc="best")
+			xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+			legend(loc="best",frameon=false)
 			
 			subplot(312)
-			plot(x_ref[:],reference_sp_long[:],color="black",label=L"T-\nu corrected reference")
+			plot(x_ref[:],reference_sp_long[:],color="black",label=L"T-$\nu$ corrected reference")
 			plot(x_ref[:],reference_baseline,color="grey",label="Reference baseline")
-			plot(x_sp[:],sample_sp_long[:],color="blue",label=L"T-\nu corrected sample")
+			plot(x_sp[:],sample_sp_long[:],color="blue",label=L"T-$\nu$ corrected sample")
 			plot(x_sp[:],sample_baseline,color="cyan",label="Sample baseline")
-			xlabel(L"Raman shift, cm$^{-1}$")
-			ylabel("Normalized intensity, a. u.")
-			legend(loc="best")
+			xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+			ylabel("Normalized intensity, a. u.",fontsize=18,fontname="Arial")
+			legend(loc="best",frameon=false)
 			
 			subplot(313)
 			plot(x_ref,reference_sp_corr2,color="black",label="Ref. spectrum")
 			plot(x_sp,sample_sp_corr2,color="blue",label="Sample spectrum")
-			xlabel(L"Raman shift, cm$^{-1}$")
-			ylabel("Normalized intensity, a. u.")
-			legend(loc="best")
-			
+			xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+			legend(loc="best",frameon=false)
+			tight_layout()
 			# saving the water content
-			writecsv(string(paths[5]), [liste[:,5] liste[:,6] water])
+			writecsv(string(paths[5]), ["Spectrum" "Sample Name" "Estimated water content";liste[:,5] liste[:,6] water])
 			
 			#Saving the generated figure (specified directory should exist)
 			savefig(string(paths[4],"Internal_Std_",sample[i],".pdf"))
