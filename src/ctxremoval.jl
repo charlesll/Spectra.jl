@@ -17,7 +17,7 @@
 """
 The 'ctxremoval' function allows to remove the signal of a cristal from the glass Raman signal.
 """
-function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_show = "no",plot_mixing_show = "yes",save_fig_switch = "yes",plot_final_show = "no", shutdown = 1300.,scaling=100.)
+function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
 	
 	# Model for final adjustement
 	model_ctx_adj(x, p) = p[1]*x
