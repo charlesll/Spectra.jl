@@ -17,7 +17,7 @@
 """
 The 'ctxremoval' function allows to remove the signal of a cristal from the glass Raman signal.
 """
-function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_switch = "no",plot_mixing_switch = "yes",save_fig_switch = "yes",shutdown = 1300.,scaling=100.)
+function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_show = "no",plot_mixing_show = "yes",save_fig_switch = "yes",plot_final_show = "no", shutdown = 1300.,scaling=100.)
 	
 	# Model for final adjustement
 	model_ctx_adj(x, p) = p[1]*x
@@ -78,7 +78,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    bas_matrix[:,2] = [ycorr_gls_1;ycorr_gls_2]
     
 	    # DISPLAYING INTERMEDIATE PLOTS
-	    if plot_intermediate_switch == "yes"
+	    if plot_intermediate_show == "yes"
 	        figure()
 			
 	        title("Raw spectra and baseline")
@@ -110,7 +110,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	        show()
 	    end
     
-	    if plot_intermediate_switch == "yes"
+	    if plot_intermediate_show == "yes"
 	        figure()
 	        title("Frequency shift correction")
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]),color="blue",label="shifted")
@@ -121,7 +121,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    ~, bas_matrix[:,1], p = xshift_correction(true_x,bas_matrix[:,1],true_x[roi_xshift_low .< true_x .<roi_xshift_high], data[roi_xshift_low .< true_x .<roi_xshift_high,2],data[roi_xshift_low .< true_x .<roi_xshift_high,1])
     
 	    # DISPLAYING INTERMEDIATE PLOTS
-	    if plot_intermediate_switch == "yes"
+	    if plot_intermediate_show == "yes"
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,1]),color="green",label="corrected")
 	        			plot(true_x[roi_xshift_low.<true_x.<roi_xshift_high],bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,2]./maximum(bas_matrix[roi_xshift_low.<true_x.<roi_xshift_high,2]),color="red",label="reference")
 	        legend(loc="best",fancybox=true)
@@ -172,33 +172,40 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	        if iter == 1
 	            results[:,:] = bas_matrix[:,:]
 	            results[:,1] = K*bas_matrix[:,1]
-			    if plot_mixing_switch == "yes" # for showing intermediate plots, if requested
-			        figure()
-			        title("The generation of spectra for FastICA")
-			    end
 	        else
 	            results[:,1] = K.*bas_matrix[:,1]
 	            results[:,2] = f1(K,bas_matrix[:,1],bas_matrix[:,2])
 	            results[true_x.>shutdown,2] = bas_matrix[true_x.>shutdown,2]
 	        end
         
-	        if plot_mixing_switch == "yes" # for showing intermediate plots
-	            subplot(311)
-	            title("Ctx, cristal signals",fontsize=18,fontname="Arial")
-	            plot(true_x,results[:,1],color=[iter/(nb_iter+0.0),0.,0.])
-	            xlim(0,shutdown)
-	            subplot(312)
-	            title("G, unmixed glass signals = G_C - K*Ctx",fontsize=18,fontname="Arial")
-	            ylabel("Intensity, counts",fontsize=18,fontname="Arial")
-	            xlim(0,shutdown)
-	            plot(true_x,results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
-	            subplot(313)
-	            title("G_C, mixed glass signals = G + K*CTX",fontsize=18,fontname="Arial")
-	            plot(true_x,results[:,1]+(1-K).*results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
-	            xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
-	            xlim(0,shutdown)
-				tight_layout()
-				show()
+	        if plot_mixing_show == "yes" # for showing intermediate plots
+				if iter == 1
+				    figure()
+				    title("The generation of spectra for FastICA")
+		            subplot(311)
+		            title("Ctx, cristal signals",fontsize=18,fontname="Arial")
+		            plot(true_x,results[:,1],color=[iter/(nb_iter+0.0),0.,0.])
+		            xlim(0,shutdown)
+		            subplot(312)
+		            title("G, unmixed glass signals = (G_C - K*Ctx)/(1-K)",fontsize=18,fontname="Arial")
+		            ylabel("Intensity, counts",fontsize=18,fontname="Arial")
+		            xlim(0,shutdown)
+		            plot(true_x,results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
+		            subplot(313)
+		            title("G_C, mixed glass signals = G + K*CTX",fontsize=18,fontname="Arial")
+		            plot(true_x,results[:,1]+(1-K).*results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
+		            xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+		            xlim(0,shutdown)
+					tight_layout()
+				else
+					subplot(311)
+					plot(true_x,results[:,1],color=[iter/(nb_iter+0.0),0.,0.])
+					subplot(312)
+					plot(true_x,results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
+					subplot(313)	
+					plot(true_x,results[:,1]+(1-K).*results[:,2],color=[iter/(nb_iter+0.0),0.,0.])
+				end
+	            
 	        end
         
 	        # INCREMENTING K
@@ -206,6 +213,9 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
         
 	        y_for_ica[:,iter] = results[true_x.<shutdown,2]
 	    end
+		if plot_mixing_show == "yes"
+			show()
+		end
     
 	    # PREPROCESSING (STANDARDIZATION), maybe not needed...
 	    X_scaler = preprocessing[:StandardScaler]()
@@ -275,13 +285,17 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    xlim(0,4000)
 		
 		tight_layout()
-		show()
-	
 	    # AND IF THE USER WANTS TO SAVE THE FIGURE, WE OUTPUT THEM ALSO IN OUT_PATH
 	    if save_fig_switch == "yes"
 	        savefig(out_path*liste[i,2]*".pdf")
 	    end
 		
+		if plot_final_show == "yes"
+			show()
+		else
+			close()
+		end
+	
 	    # WE WRITE THE CORRECTED SPECTRA IN THE CORRECT OUTPUT PATH (OUT_PATH)
 	    writedlm(out_path*liste[i,2],spectra_final)
     
