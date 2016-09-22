@@ -363,7 +363,7 @@ function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_
 			figure(figsize=(7.5,15))
 			
 			subplot(311)
-			title("Internal calibration: $(round(water[i],2)) wt% water,\n sp. $(sample[i]) with ref. $(reference[i]) ")
+			title("External calibration: $(round(water[i],2)) wt% water,\n sp. $(sample[i]) with ref. $(reference[i]) ")
 			plot(reference_sp[:,1],reference_sp[:,2],color="black",label="Reference")
 			plot(sample_sp[:,1],sample_sp[:,2],color="blue",label="Sample")
 			xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
