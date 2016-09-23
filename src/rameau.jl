@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-function rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,basetype="gcvspline")
+function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,basetype="gcvspline")
 	
 	# some function definition
 	calibration_model(x, p) = p[1].*x

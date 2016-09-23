@@ -49,17 +49,15 @@ INPUTS:
 		
 	input_properties: Tuple, it contains the delimiter of the columns in your spectra files, and the number of starting lines to skip. For instance, use ('\t',1) if your files have one header line and the columns are separated  by tabulations, or (',',0) if you use CSV files without header.
 	
-	switches: Tuple, it contains the different switches as (Type_of_calibration, calibration?, double_baseline?, temperature_laser_correction?). 
+	switches: Tuple, it contains the different switches as (Type_of_calibration, calibration?, experimental?, temperature_laser_correction?). 
 		
 		Type_of_calibration: should be set to "internal" or "external". The external mode requires standards, as described in Behrens et al. (2006) and Thomas et al. (2008). If you use the external mode, you can leave blanks for the other switches. For instance, enter ("external","","","").
 		
-		calibration? :  use only with the "internal" mode. Enter yes if you are setting up a new calibration, or "no" if you want to use a previously determined calibration coefficient with providing the later in the prediction_coef variable (see options).
+		calibration? :  use only with the "internal" mode, this should be equal to "yes" or "no". Enter yes if you are setting up a new calibration, or "no" if you want to use a previously determined calibration coefficient with providing the later in the prediction_coef variable (see options).
 		
-		double_baseline? : use only with the "internal" mode. Enter "yes" if you want to use it. This is a new feature for internal calibration, see comments below.
+		experimental? : use only with the "internal" mode, this should be equal to "yes" or "no". This is an experimental code that is NOT WORKING. Do not use for now.
 		
-		temperature_laser_correction? : use only with the "internal" mode. Enter "yes" if you want to use it. This asks if you want to use the temperature-laser wavelength correction as done in Le Losq et al. (2012). If you use the double baseline mode, this correction is applied after removing the background under the water peak.
-	
-	For instance, you have a bunch of spectra and you want to perform a new calibration, without the double baseline but the Long correction (you are following the "traditional approach published in 2012). So you are going to enter ("internal",""yes","no","yes"). Now, you think removing the initial background may be good before calculating the calibration. So you will enter ("internal","yes","yes","yes"). Now that you have determined your calibration coefficient, you can make any prediction on a bunch of new spectra in the futur by entering ("internal","no","yes","yes") and by providing the good calibration coefficient in the variable prediction_coef (see options below).
+		temperature_laser_correction? : use only with the "internal" mode, this should be equal to "yes" or "no". This asks if you want to use the temperature-laser wavelength correction as done in Le Losq et al. (2012). If you use the double baseline mode, this correction is applied after removing the background under the water peak.
 	
 OPTIONS:
 	
@@ -77,7 +75,63 @@ OPTIONS:
 	
 OUTPUTS:
 
-	For now reameau does not provide any outputs, but save everything in the files you indicate in the variable "paths". This may change in the futur, so stay tuned!
+	Rameau does not provide any outputs directly in Julia, but saves everything in the folders you indicate in the variable "paths".
+
+--------------
+Quick examples
+--------------
+
+In this example, the Julia code and the csv liste (myliste.csv) of spectra are in the working folder, the data are in ./raw/, and we want to output the corrected spectra and the figures in the ./treated/ and ./figures/ folders. So we set things like:
+
+	in_liste: "./myliste.csv"
+	
+	in_path = "./raw/"
+	
+	out_path = "./treated/"
+	
+	fig_path= "./figures/"
+	
+	rws_save_file = "./treated/"
+	
+	rws_save_fig = "./figures/mycalibration.pdf"
+	
+	paths = (in_liste,in_path,out_path,fig_path,rws_save_file,rws_save_fig)
+
+Now, for performing an internal calibration as explained in Le Losq et al. (2012), enter:
+
+	switches = ("internal",""yes","no","yes")
+	
+and call Rameau:
+
+	rameau(paths,switches,input_properties = ('\t',0))
+
+This will allow you to get your prediction coefficient prediction_coef With this knowledge, you can predict values from the spectra of new glasses with the names in "myliste_newglasses.csv" with using the commands:
+
+	in_liste = "myliste_newglasses.csv"
+	
+	switches = ("internal",""no","no","yes")
+	
+	rameau(paths,switches,prediction_coef = 0.0059, input_properties = ('\t',0))
+	
+For an external calibration, you need a standard glass with known water concentration. You also need the knowledge of the densities of the standard and sample glasses. Then, the following commands allow you to calculate the water content of your sample with using the protocol described in Thomas et al. (2008; see also references cited therein):
+
+	in_liste: "./myliste.csv"
+	
+	in_path = "./raw/"
+	
+	out_path = "./treated/"
+	
+	fig_path= "./figures/"
+	
+	rws_save_file = "water_contents_external_calibration.csv" # this will save the output values
+	
+	rws_save_fig = "" # not used in the external mode
+	
+	paths = (in_liste,in_path,out_path,fig_path,rws_save_file,rws_save_fig)
+	
+	switches = ("external","no","no","no")
+	
+	rameau(paths,switches,input_properties = ('\t',0))
 
 -----------------------------------
 Note on the input file liste
@@ -123,21 +177,13 @@ Note on the temperature and excitation line effects corrections
 
 The "internal" mode uses the "long" mode of the tlcorrection function, whereas the "external" mode uses the "hehlen", which takes into account the sample density (see tlcorrection function documentation). This allows to intrisically correct the intensity from density effects.
 
------------------------------------
-Note on the double baseline feature
------------------------------------
+-----------------------------------------
+Note on the experimental baseline feature
+-----------------------------------------
 
-This is purely experimental and will probably strongly change in the upcoming future. However, some thoughts about why we may enjoy such function:
+THIS IS A PURELY EXPERIMENTAL MODE THAT SHOULD NOT BE USED.
 
-This is to be used with the internal calibration mode.
-
-I added this step to avoid the strong distortion of the spectra during the Long correction. Indeed, spectra are distorded because even the parts without signals are not close to a zero intensity in raw spectra. Therefore, to avoid that, I added this feature which basically fits a linear function between 1300 and 2000 cm-1, where no signals are usually expected in silicate glasses. I futher take the shot to fit the water peak at the same time. Then, a second baseline will fit the basis of the peaks below 1500 cm-1. This double baseline approach allows to avoid a strong distortion of the signal due to the Long correction, and further allow working with different spline coefficients.
-
-However, I warn the user that this is not always the best solution... Indeed, the slight signal distortion created by the usual Long correction sometimes helps fitting the baseline, as it nearly create a flat, linear increase of the spectral background.
-
-Therefore, this is up to the user to choose what is best in his case.
-
-From my test, switching from one mode to the other might improve or worsen the standard deviation of the calibration of around 0.1-0.3 wt%. It might (or not...) improve the robustness of the baseline fitting procedure.
+I am just experimenting new things and keeping this part in the code for the records.
 
 -----------------------------------------------------------------------
 Note on the use of KRregression baseline fitting instead of GCV splines
@@ -146,3 +192,5 @@ Note on the use of KRregression baseline fitting instead of GCV splines
 This is to be used with the internal calibration mode.
 
 Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). From experience, using a spline carefully adjusted provides better result. However, using KRregression may provide good results without headache to adjust any parameter. For now this is an experimental feature.
+
+Updates Spetember 2016: A well-adjusted gcvspline usually outperforms the KRregression mode. I advise sticking with the gcvspline for now.
