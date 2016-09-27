@@ -120,7 +120,7 @@ Baseline subtraction function
 
 Baseline subtraction can be made with using the baseline function:
 
-    y_corr, bass = baseline(x,y,roi,basetype;p=1.0,SplOrder=3)
+    y_corr, bass = baseline(x,y,roi,basetype;p=1.0,SplOrder=3, roi_out="no")
 
 INPUTS:
 
@@ -148,6 +148,8 @@ OPTIONS:
 
 	SplOrder: Integer, the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.
 	
+	roi_out: String, "no" or "yes". This will result in an additional output matrix containing the y signal in the roi regions of interest, which can then be used to plot and to evaluate the roi provided to the baseline function.
+	
 OUTPUTS:
 
 (are combined in a tuple in one array if only one output variable is provided)
@@ -155,7 +157,11 @@ OUTPUTS:
 	y_corr: Array{Float64}, the spectrum corrected from its baseline;
 	
 	bass: Array{Float64}, the baseline.
+	
+OPTIONAL OUTPUT:
 
+	y_roi_out: Array{Float64}, an 2 column array containing the initial x-y pairs of the signal in the roi regions of interest.
+	
 NOTES:
 
 Errors on measurenements are automatically provided as sqrt(y) in gcvspline. For further options, please use the gcvspl and splderivative functions that directly call the GCVSPL and SPLDER function of the gcvspl.f program (Holtring, 1986). Further informations for the use of splines are given in the Splines section, see :ref:`Splines`.
