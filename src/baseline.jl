@@ -35,9 +35,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	
     interest_x = x[interest_index,1]
     interest_y = y[interest_index,1]
-	ese_interest_y = sqrt(abs(interest_y)) # we assume errors as sqrt(y)
-	ese_interest_y[ese_interest_y.==0] = mean(ese_interest_y) # to avoid any error = 0.0
-
+	
 	# To help the splines and the machine learning methods, we scale all the dataset between 0 and 1
 	interest_x = reshape(interest_x,size(interest_x,1),1)
 	interest_y = reshape(interest_y,size(interest_y,1),1)
@@ -59,8 +57,12 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	# Scaling the data
 	x_bas_sc = X_scaler[:transform](interest_x)
 	y_bas_sc = Y_scaler[:transform](interest_y)
-	ese_interest_y_sc = Y_scaler[:transform](reshape(ese_interest_y,size(ese_interest_y,1),1))
 	x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
+	
+	# we assume errors as sqrt(y), we only use it for gcvspline
+	#ese_interest_y = sqrt(abs(y_bas_sc)) 
+	#ese_interest_y[interest_y.==0.0] = mean(ese_interest_y) # We protect it from any 0.0 values in y
+	ese_interest_y = ones(size(y_bas_sc))
 	
 	#### THEN WE GO TO THE RIGHT METHOD FOR BASELINE CALCULATION
 
@@ -87,7 +89,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
-		c, WK, IER = gcvspl_julia(x_bas_sc[:,1],y_bas_sc[:,1],ese_interest_y_sc[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
+		c, WK, IER = gcvspl_julia(x_bas_sc[:,1],y_bas_sc[:,1],ese_interest_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
 		y_calc_sc = splderivative_julia(x_sc[:,1],x_bas_sc[:,1],c,SplineOrder= Int32(SplOrder-1))
 
 	######## KERNEL RIDGE REGRESSION WITH SCIKIT LEARN
