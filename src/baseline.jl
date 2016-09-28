@@ -41,15 +41,9 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	interest_y = reshape(interest_y,size(interest_y,1),1)
 	
 	# Initialising the preprocessor scaler
-	if basetype == "Dspline" || basetype == "gcvspline"
-		X_scaler = preprocessing[:MinMaxScaler]()
-		Y_scaler = preprocessing[:MinMaxScaler]()
-		X_scaler[:__init__]((0.01, 0.99))
-		Y_scaler[:__init__]((0.01, 0.99))
-	else
-		X_scaler = preprocessing[:StandardScaler]()
-		Y_scaler = preprocessing[:StandardScaler]()
-	end
+	X_scaler = preprocessing[:StandardScaler]()
+	Y_scaler = preprocessing[:StandardScaler]()
+
 	
 	X_scaler[:fit](interest_x)
 	Y_scaler[:fit](interest_y)

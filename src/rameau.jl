@@ -394,7 +394,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 		   
 		   
 	else # or error message
-		error("the first switch indicates if you want to use an internal or external calibration mode. Please choose between both.")
+		error("The first switch indicates if you want to use an internal or external calibration mode. Please choose between both.")
 	end
 end
 
