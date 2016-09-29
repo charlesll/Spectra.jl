@@ -21,10 +21,6 @@ function poly(p::Vector{Float64},x::Array{Float64})
     end
     return sum(segments,2)
 end
-"""
-For Gaussian peaks in spectra
-	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
-"""
 
 # From https://rosettacode.org/wiki/Polynomial_regression#Julia
 function polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
@@ -32,6 +28,10 @@ function polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
   return A \ y
 end
 
+"""
+For Gaussian peaks in spectra
+	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
+"""
 function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"

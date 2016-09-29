@@ -44,7 +44,6 @@ function __init__()
         error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
     end
 	
-
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
 	copy!(grid_search, pyimport_conda("sklearn.grid_search", "scikit-learn"))
 	copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "scikit-learn"))
@@ -68,7 +67,7 @@ include("ml_regressor.jl")
 include("ctxremoval.jl")
 
 #From integrale.jl
-export trapz, gaussianarea
+export trapz, bandarea
 
 #From diffusion.jl
 export peak_diffusion, model, IRdataprep

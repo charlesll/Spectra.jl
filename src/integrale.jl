@@ -33,20 +33,38 @@ function trapz{Tx<:Number, Ty<:Number}(x::Vector{Tx}, y::Vector{Ty})
     return trapz_int
 end
 
-"""
-    function gaussianarea(Amplitude::Array{Float64},HWHM::Array{Float64}; eseAmplitude::Array{Float64} = 0, eseHWHM::Array{Float64} = 0)
-Return the integrated itnensity (area) of a gaussian with inputed amplitude and HWHM.
-Options are eseAmplitude (0 by default) and eseHWHM (0 by default).
-
-If Amplitude and HWHM are arrays, outputs will be arrays.
-"""
-function gaussianarea(Amplitude::Array{Float64},HWHM::Array{Float64}; eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
+function bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
     
-    area::Array{Float64} = sqrt(pi./log(2)).*Amplitude.*HWHM
-    if (eseAmplitude == 0.0) && (eseHWHM == 0.0)
-        esearea::Array{Float64} = 0.0
-    else
-        esearea = sqrt((pi./log(2).*HWHM).^2 .* eseAmplitude.^2 + (pi./log(2).*Amplitude).^2 .* eseHWHM.^2)
-    end
-    return area, esearea
+	# first we check the desired peak shape, and apply the relevant calculation
+	if peak_shape == "Gaussian"
+    	area::Array{Float64} = sqrt(pi./log(2)).*Amplitude.*HWHM # Gaussian area, HWHM is the half-width at half-maximum
+		if error_switch == "yes" # if errors are desired, perform the error calculation
+			if size(eseAmplitude) != size(Amplitude) || size(eseHWHM) != size(HWHM) # error check
+				error("Please check that you entered good arrays for the errors on the amplitude and widths of the bands")
+			end
+	        esearea::Array{Float64} = sqrt((pi./log(2).*HWHM).^2 .* eseAmplitude.^2 + (pi./log(2).*Amplitude).^2 .* eseHWHM.^2)
+	    end
+	else
+		error("Not yet implemented.")
+	end
+    
+	# Depending on the error switch, we output only the areas or also the errors
+    if error_switch == "no"
+		# a quick test to see if the output is an array or should be a Float64 number
+		if size(area) == (1,)
+        	return area[1] # we return a Float64 number
+		else
+			return area # we return an array
+		end
+	elseif error_switch =="yes"
+		# a quick test to see if the output is an array or should be 2 Float64 numbers
+		if size(area) == (1,)
+        	return area[1], esearea[1] # we return two Float64 numbers
+		else
+			return area, esearea # we return an array
+		end
+	else
+		error("error_switch should be equal to yes or no. Please select the appropriate value.")
+	end
+    
 end
