@@ -9,17 +9,17 @@ y_poly4 = 1.0+ x2 + 0.25*x2.^2 + 0.0001.*x2.^3 + 1.e-6.*x2.^4
 roi = [0.0 100.0]
 
 # testing baselines
-y_fit_gcvspl,bas_fit_gcvspl = baseline(x[:],y[:],roi,"gcvspline",p=1.0)
-@test_approx_eq_eps(y_fit_gcvspl,(y[:]-y[:]),1e-10)
-@test_approx_eq_eps(bas_fit_gcvspl,y[:],1e-10)
+y_fit_gcvspl,bas_fit_gcvspl = baseline(x[:],y[:],roi,"gcvspline",p=0.01)
+@test_approx_eq_eps(y_fit_gcvspl,(y[:]-y[:]),1e-5)
+@test_approx_eq_eps(bas_fit_gcvspl,y[:],1e-5)
 
-y_fit_dierckx,bas_fit_dierckx = baseline(x[:],y[:],roi,"Dspline",p=1.0)
-@test_approx_eq_eps(y_fit_dierckx,(y[:]-y[:]),1e-10)
-@test_approx_eq_eps(bas_fit_dierckx,y[:],1e-10)
+y_fit_dierckx,bas_fit_dierckx = baseline(x[:],y[:],roi,"Dspline",p=0.01)
+@test_approx_eq_eps(y_fit_dierckx,(y[:]-y[:]),1e-5)
+@test_approx_eq_eps(bas_fit_dierckx,y[:],1e-5)
 
 y_fit_linear,bas_fit_linear = baseline(x[:],y[:],roi,"poly",p=2.0)
-@test_approx_eq_eps(y_fit_linear,(y[:]-y[:]),1e-10)
-@test_approx_eq_eps(bas_fit_linear,y[:],1e-10)
+@test_approx_eq_eps(y_fit_linear,(y[:]-y[:]),1e-5)
+@test_approx_eq_eps(bas_fit_linear,y[:],1e-5)
 
 y_fit_poly,bas_fit_poly = baseline(x2[:],y_poly4[:],roi,"poly",p=4.0)
 @test_approx_eq_eps(y_fit_poly,(y_poly4[:]-y_poly4[:]),1e-3)
@@ -52,7 +52,3 @@ long_calc = long_calc./trapz(x_for_long,long_calc) # area normalisation
 
 @test_approx_eq(long_res,long_calc)
 @test_approx_eq(x_for_long,x_long)
-
-#figure()
-#plot(x2,y_poly4,"o")
-#plot(x2,bas_fit_poly,"-")
