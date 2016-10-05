@@ -80,20 +80,20 @@ function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::A
     return sum(segments,2), segments
 end
 
-function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},ps_fraction::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},lorentzian_fraction::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
-	test1 = find(ps_fraction .<0.0)
-	test2 = find(ps_fraction .>1.0)
+	test1 = find(lorentzian_fraction .<0.0)
+	test2 = find(lorentzian_fraction .>1.0)
     if size(test1)[1] != 0 || size(test2)[1] != 0
-		error("ps_fraction should be comprised between 0 and 1")
+		error("lorentzian_fraction should be comprised between 0 and 1")
 	end
 	if style == "None"
 		for i = 1:size(amplitude)[1]
-			segments[:,i] =  ps_fraction[i].* ( amplitude[i] .*exp(-log(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2) )   + (1- ps_fraction) .* amplitude[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2)
+			segments[:,i] =  amplitude[i].*( (1.0 - lorentzian_fraction[i]) .*exp(-log(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2)   + lorentzian_fraction[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2))
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-			segments[:,i] =  squeeze(ps_fraction[i,:]) .* (poly(squeeze(amplitude[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2))     +      (1- squeeze(ps_fraction[i,:])) .* poly(squeeze(amplitude[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2) 
+			segments[:,i] =  squeeze(lorentzian_fraction[i,:]) .* (poly(squeeze(amplitude[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2))     +      (1- squeeze(lorentzian_fraction[i,:])) .* poly(squeeze(amplitude[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2) 
         end	    	
     else
         error("Not implemented, see documentation") 
