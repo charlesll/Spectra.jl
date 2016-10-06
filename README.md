@@ -24,20 +24,7 @@ Front page for the project is available at http://charlesll.github.io/Spectra.jl
 
 # News
 
-Version 0.1.8 will be released soon and contains the following new features:
-
-- Improved Baseline function. IMPORTANT NOTE: the gcvspline and Dspline smoothing coefficients in your software will need to be revised!
-
-- Improved RamEau function with improved internal calibration and critical corrections for the external calibration protocol;
-
-- A Ctxremoval function for removing crystal signals from Raman spectra of glasses is added;
-
-- A mlregressor function adding functionalities of SciKit Learn into Spectra.jl for using machine learning in the treatment of spectra has been added.
-
-Corrections:
-
-- RamEau external calibration was not converting the water contents from mol/L to wt%. This is now corrected.
-
+See the NEWS.md file for following the evolution of Spectra.jl.
 
 # Quick Usage Examples
 
