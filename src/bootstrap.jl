@@ -31,7 +31,7 @@ RETURN: b_x_f, b_y_f, the arrays with bootstrapped x and y values.
 TODO: proposing other error PDF for parametric bootstrapping.
 
 """
-function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::ASCIIString = "np", ese::Array{Float64} = [0.0])
+function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np", ese::Array{Float64} = [0.0])
     testx = size(x,1)
     testy = size(y,1)
     teste = size(ese,1)
@@ -54,7 +54,7 @@ end
 """
 bootperf: reading the bootstrap parameter array for peak fitting
 
-    bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", parameter::Int64 = 0, feature::Int64 = 0, histogram_step::Int64 = 100, savefigures::ASCIIString = "False", save_bootrecord::ASCIIString = "Boot_record.pdf", save_histogram::ASCIIString = "Boot_histogram.pdf")
+    bootperf(params_boot::Array{Float64}; plotting::String = "True", parameter::Int64 = 0, feature::Int64 = 0, histogram_step::Int64 = 100, savefigures::String = "False", save_bootrecord::String = "Boot_record.pdf", save_histogram::String = "Boot_histogram.pdf")
 
 params_boot[i,j] or [i,j,k]: array with i the bootstrrap experiment, j the parameter and k the feature being calculated (e.g., a peak during peak fitting)
 
@@ -71,7 +71,7 @@ save_histogram: Name for the graphic showing the histogram for the parameter and
 RETURN: std_record, mean_record, the arrays recording how the standard deviation and mean of the parameters as a function of the bootstrap advance. 
 
 """
-function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", parameter::Int64 = 1, feature::Int64 = 1, histogram_step::Int64 = 100, savefigures::ASCIIString = "False", save_bootrecord::ASCIIString = "Boot_record.pdf", save_histogram::ASCIIString = "Boot_histogram.pdf")
+function bootperf(params_boot::Array{Float64}; plotting::String = "True", parameter::Int64 = 1, feature::Int64 = 1, histogram_step::Int64 = 100, savefigures::String = "False", save_bootrecord::String = "Boot_record.pdf", save_histogram::String = "Boot_histogram.pdf")
     
     # test
     if plotting != "True" && plotting != "False"
@@ -103,10 +103,10 @@ function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", p
            if savefigures != "True" && savefigures != "False"
                error("savefigure should be set to True or False.")
            end
-           if isa(save_bootrecord ,ASCIIString) != true
+           if isa(save_bootrecord ,String) != true
                error("Error: save_bootrecord is not a valid savename. Check it is a string of characters.")
            end
-           if isa(save_histogram ,ASCIIString) != true
+           if isa(save_histogram ,String) != true
                error("Error: save_histogram is not a valid savename. Check it is a string of characters.")
            end
         
@@ -170,10 +170,10 @@ function bootperf(params_boot::Array{Float64}; plotting::ASCIIString = "True", p
            if savefigures != "True" && savefigures != "False"
                error("savefigure should be set to True or False.")
            end
-           if isa(save_bootrecord ,ASCIIString) != true
+           if isa(save_bootrecord ,String) != true
                error("Error: save_bootrecord is not a valid savename. Check it is a string of characters.")
            end
-           if isa(save_bootrecord ,ASCIIString) != true
+           if isa(save_bootrecord ,String) != true
                error("Error: save_histogram is not a valid savename. Check it is a string of characters.")
            end
         

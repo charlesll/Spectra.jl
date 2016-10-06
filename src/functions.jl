@@ -30,9 +30,9 @@ end
 
 """
 For Gaussian peaks in spectra
-	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::ASCIIString = "None")
+	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::String = "None")
 """
-function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"
         for i = 1:size(amplitude)[1]
@@ -48,7 +48,7 @@ function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arra
     return sum(segments,2), segments
 end
 
-function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"
         for i = 1:size(amplitude)[1]
@@ -64,7 +64,7 @@ function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Ar
     return sum(segments,2), segments
 end
 
-function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::Array{Float64},x::Array{Float64};style::String = "None")
     segments = zeros(size(x)[1],size(a1)[1])
     if style == "None"
         for i = 1:size(a1)[1]
@@ -80,7 +80,7 @@ function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::A
     return sum(segments,2), segments
 end
 
-function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},lorentzian_fraction::Array{Float64},x::Array{Float64};style::ASCIIString = "None")
+function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},lorentzian_fraction::Array{Float64},x::Array{Float64};style::String = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
 	test1 = find(lorentzian_fraction .<0.0)
 	test2 = find(lorentzian_fraction .>1.0)
