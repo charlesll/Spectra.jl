@@ -36,8 +36,12 @@ const linear_model = PyNULL()
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
 winpath = "../deps/bin$WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
-#const gcvspl = joinpath(dirname(@__FILE__), @unix? unixpath : winpath)
-const gcvspl = joinpath(dirname(@__FILE__), @static is_unix()? unixpath : winpath)
+
+#if VERSION < v"0.5.0" # for Julia 0.5
+const gcvspl = joinpath(dirname(@__FILE__), @unix? unixpath : winpath)
+#else # for Julia 0.4
+#	const gcvspl = joinpath(dirname(@__FILE__), @static is_unix()? unixpath : winpath)
+#end
 
 function __init__()
     # Ensure library is available.
