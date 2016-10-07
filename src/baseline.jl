@@ -78,13 +78,13 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 	######## DIERCKX SPLINE BASELINE
 	elseif basetype == "Dspline"
-		warn("Following a change in the baseline function, the smoothing coefficients p for Dspline of your precedent code need to be revised. The new version greatly improves the robustness and goodness of fit of the polynomial and splines baselines. With my apologies for any inconvenience, I invite you to enjoy this new, better version.")
+		warn("New baseline version requires the revision of old smoothing p values for splines.")
 		spl = Spline1D(x_bas_sc[:,1],y_bas_sc[:,1],s=p[1],bc="extrapolate",k=SplOrder)
 		y_calc_sc = evaluate(spl,x_sc[:,1])
 
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
-		warn("Following a change in the baseline function, the smoothing coefficients p for gcvspline of your precedent code need to be revised. The new version greatly improves the robustness and goodness of fit of the polynomial and splines baselines. With my apologies for any inconvenience, I invite you to enjoy this new, better version.")
+		warn("New baseline version requires the revision of old smoothing p values for splines.")
 		c, WK, IER = gcvspl_julia(x_bas_sc[:,1],y_bas_sc[:,1],ese_interest_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
 		y_calc_sc = splderivative_julia(x_sc[:,1],x_bas_sc[:,1],c,SplineOrder= Int32(SplOrder-1))
 

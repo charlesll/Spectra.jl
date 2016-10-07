@@ -22,6 +22,7 @@ using PyCall
 using Dierckx
 using Ipopt
 using JuMP
+using Compat
 
 # For PyCall modules
 const preprocessing = PyNULL()
@@ -37,11 +38,7 @@ const linear_model = PyNULL()
 unixpath = "../deps/src/gcvspline/libgcvspl"
 winpath = "../deps/bin$WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
 
-#if VERSION < v"0.5.0" # for Julia 0.5
-const gcvspl = joinpath(dirname(@__FILE__), @unix? unixpath : winpath)
-#else # for Julia 0.4
-#	const gcvspl = joinpath(dirname(@__FILE__), @static is_unix()? unixpath : winpath)
-#end
+const gcvspl = joinpath(dirname(@__FILE__), Compat.@static is_unix()? unixpath : winpath)
 
 function __init__()
     # Ensure library is available.
