@@ -1,4 +1,5 @@
 julia 0.4
+Compat
 IJulia
 PyPlot
 JuMP 0.13
