@@ -23,6 +23,7 @@ using Dierckx
 using Ipopt
 using JuMP
 using Compat
+import Compat.String
 
 # For PyCall modules
 const preprocessing = PyNULL()
