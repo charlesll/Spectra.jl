@@ -55,7 +55,7 @@ INPUTS:
 		
 		calibration? :  use only with the "internal" mode, this should be equal to "yes" or "no". Enter yes if you are setting up a new calibration, or "no" if you want to use a previously determined calibration coefficient with providing the later in the prediction_coef variable (see options).
 		
-		experimental? : use only with the "internal" mode, this should be equal to "yes" or "no". This is an experimental code that is NOT WORKING. Do not use for now.
+		experimental? : use only with the "internal" mode, this is an experimental code. For now, only the "double" feature is advised. It allows using different smoothing spline coefficients for the water and silicate bands, delimited by the lb_break and hb_start variables (see below).
 		
 		temperature_laser_correction? : use only with the "internal" mode, this should be equal to "yes" or "no". This asks if you want to use the temperature-laser wavelength correction as done in Le Losq et al. (2012). If you use the double baseline mode, this correction is applied after removing the background under the water peak.
 	
@@ -149,7 +149,7 @@ If using the "internal" mode, this file liste MUST contain:
 
 	column 4: the spline coefficient for the silicate part. Note: this value is used in the single baseline procedure for the whole spectrum;
 
-	column 5: the spline coefficient for the water part, in case you use the double baseline fitting procedure;
+	column 5: the spline coefficient for the water part, in case you use the experimental mode with the double baseline fitting procedure (experimental? = "yes" + temperature_laser_correction? = "yes");
 
 	columns 6 to end: the beginning and ends of the BIRs, paired. Please keep the same number of BIRs for all the spectra in one batch.
 
@@ -178,12 +178,14 @@ Note on the temperature and excitation line effects corrections
 The "internal" mode uses the "long" mode of the tlcorrection function, whereas the "external" mode uses the "hehlen", which takes into account the sample density (see tlcorrection function documentation). This allows to intrisically correct the intensity from density effects.
 
 -----------------------------------------
-Note on the experimental baseline feature
+Note on the experimental mode
 -----------------------------------------
 
-THIS IS A PURELY EXPERIMENTAL MODE THAT SHOULD NOT BE USED.
+The experimental mode contains code for solutions that are currently under development. You may prefer not using it.
 
-I am just experimenting new things and keeping this part in the code for the records.
+However, an interesting feature is provided there, the "double" mode:
+
+When setting the switch experimental? to "double" and combining it with the switch tlcorrection "yes", it allows you to use different smoothing coefficients for the silicate and water signals. In order to use it, you must set the wavenumber of the first ROI for the water band above 2500 cm-1, and the last fo the silicate band below 1600 cm-1 (see the example file for instance). The two different smoothing coefficients are indicated in the dataliste csv file.
 
 -----------------------------------------------------------------------
 Note on the use of KRregression baseline fitting instead of GCV splines

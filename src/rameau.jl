@@ -57,13 +57,13 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			interest_x = x[interest_index,1]
 			interest_y = y[interest_index,1]
     
-			if switches[3] == "yes" # if user asks for the experimental baseline
+			if switches[3] == "double" # if user asks for the experimental mode
         		
 				if switches[4] == "yes"
+					
+					# If the Long correction is asked, then it will use the two smoothing spline factors and perform a "traditional" internal baseline fit with gcvspline
 					x, y_long, ~ = tlcorrection([x[:] y[:]],temperature,laser) # Long correction
 					y_long=y_long./maximum(y_long).*scale
-				
-					### THE FOLLOWING IS PURELY EXPERIMENTAL
 				
 					lb = roi[:,1,i]
 					hb = roi[:,2,i]
@@ -75,66 +75,51 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					y_lf = y_long[x.<lb_break]
 				
 					# A first linear baseline in signals between ~1300 and ~ 2000 cm-1
-					#y_calc_hf, baseline_hf = baseline(x,y_long,[2600. 3100.;3775. 3900.],"gcvspline",p=smo_hf[i])
-					#y_calc_hf, baseline_hf = baseline(x,y_long,[roi_hf[end-1,1] roi_hf[end-1,2];roi_hf[end,1] roi_hf[end,2]],"poly",p=3.0)
-					y_calc_hf, baseline_hf = baseline(x,y_long,[3000. 3100;3750. 3800.],"poly",p=1.0)
-				
-					x_fit = [x[0 .< x .< 150];x[1250. .< x .< 1500]]
-					y_fit = [y_long[0 .< x .< 150];y_long[1250. .< x .< 1500.]]
-				
-					#sss = size(x_fit,1)
-					#mod = Model(solver=IpoptSolver())
-					#@variable(mod, k1 >= 0.0,start=1.0)
-					#@variable(mod, k2 >= 0.0, start = 1.0)
+					y_calc_hf, baseline_hf = baseline(x,y_long,roi_hf,basetype,p=smo_hf[i])
+					y_calc_lf, baseline_lf = baseline(x,y_long,roi_lf,basetype,p=smo_lf[i])
 					
-					#@NLexpression(mod, base[k=1:sss],k1*x_fit[k] + k2*x_fit[k]*x_fit[k])
-					#@NLobjective(mod,Min,sum{(base[k] - y_fit[k])^2,k=sss})
-					#status = solve(mod)
-					
-					#p1 = getvalue(k1)
-					#p2 = getvalue(k2)
-					
-					#fit_bas = curve_fit(baseline_lfmodel, , [y_long[0 .< x .< 100];y_long[1250. .< x .< 1500.]], [0.5,0.5,0.5])
-					#coef_bas = fit_bas.param
-					#baseline_lf = baseline_lfmodel(x,[p1;p2])
-					#y_calc_lf = y_long - baseline_lf
-					
-					y_calc_lf, baseline_lf = baseline(x,y_long,[0. 150;1250. 1600.],"poly",p=3.0)
-					#y_calc_lf, baseline_lf = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
-					
-					y_calc2 = [y_calc_lf[x.<=1600.];y_calc_hf[x.>1600.]]
-					bas2 = [baseline_lf[x.<=1600.];baseline_hf[x.>1600.]]
+					y_calc2 = [y_calc_lf[x.<=lb_break];y_calc_hf[x.>lb_break]]
+					bas2 = [baseline_lf[x.<=lb_break];baseline_hf[x.>lb_break]]
 					#y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*scale # area normalisation
 		
 					figure(figsize=(20,20))
-					suptitle("Baseline sub. with Long corr., sp. $(names[i])")
-				
+					suptitle("LL2012 method, sp. $(names[i])")
+					
 					subplot(3,2,(1,2))
 					plot(x,y,"black",label="Raw sp.")
 					plot(x,y_long,"blue",label="Long corr. sp.")
 					scatter(interest_x,y_long[interest_index,1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 					plot(x,bas2,"red",label="Baseline")
 					legend(loc="best",fancybox="true")
-			
+					
+					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
+				
 					subplot(3,2,3)
 					plot(x[x.<1500],y_long[x.<1500],"blue",label="Long corr. sp.")
 					scatter(interest_x[interest_x.<1500],y_long[interest_index[interest_x.<1500],1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 					plot(x[x.<1500],bas2[x.<1500],"red",label="Baseline")
 					xlim(0,1500)
 					legend(loc="best",fancybox="true")
-			
+					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
+				
 					subplot(3,2,4)
 					plot(x[x.>2800],y_long[x.>2800],"blue",label="Long corr. sp.")
 					scatter(interest_x[interest_x.>2800],y_long[interest_index[interest_x.>2800],1],s=10.,color="red",label="ROI") # the ROI signals after first baseline and long correction
 					plot(x[x.>2800],bas2[x.>2800],"red",label="Baseline")
-					xlim(2800,4000)
+					xlim(2600,4000)
 					legend(loc="best",fancybox="true")
-			
+					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
+				
 					subplot(3,2,(5,6))
 					plot(x,y_calc2,"cyan",label="Final sp.")
 					xlabel(L"Raman shift, cm$^{-1}$")
 					ylabel("Intensity, area normalised")
 					legend(loc="best",fancybox="true")
+					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
+					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
 					
 				else
 					# ALSO FULLY EXPERIMENTAL!!!! IT DOES NOT WORK!
