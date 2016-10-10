@@ -10,7 +10,20 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
-# Under construction: 0.2.1
+# Under construction: 0.2.2
+
+Additions:
+
+- Addition of the double baseline feature in Rameau in the experimental mode
+
+Corrections:
+
+- Corrections for removing the warning messages going with Julia 0.5.0
+
+- Use of Compat and Compat.String to avoid warning in Julia 0.4
+
+
+# 0.2.1
 
 Corrections:
 
