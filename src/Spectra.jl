@@ -37,7 +37,7 @@ const linear_model = PyNULL()
 
 # some initial setup for calling the GCVSPL.f library
 unixpath = "../deps/src/gcvspline/libgcvspl"
-winpath = "../deps/bin$WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
+winpath = "../deps/bin$Sys.WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
 
 const gcvspl = joinpath(dirname(@__FILE__), Compat.@static is_unix()? unixpath : winpath)
 
