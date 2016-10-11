@@ -70,4 +70,4 @@ Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
 
-Last modified 14/09/2016
+Last modified 11/10/2016
