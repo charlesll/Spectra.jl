@@ -220,34 +220,14 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			#Saving the generated figure (specified directory should exist)
 			savefig(string(paths[4],"baseline_",names[i],".pdf"))
     		close()
-			if switches[3] == "yes"
+			if switches[3] == "double"
 				# calc=ulating the areas under silicate and water bands
-				
-				if switches[4] == "yes"
-					As = (trapz(x[150 .<x.<600],y_calc2[150 .<x.<600])+trapz(x[1000 .<x.<1250],y_calc2[1000 .<x.<1250]))
-					
-					Aw = trapz(x[3100 .< x .<3750],y_calc2[3100 .< x .<3750])
-				else
-					
-					#idx1a = find(y[400 .<x.<600] .== maximum(y[400 .<x.<600]))
-					#idx1b = find(y[600 .<x.<1000] .== minimum(y[600 .<x.<1000]))
-					
-					#idx2a = find( y[900 .<x.<1250] .== maximum(y[900 .<x.<1250]))
-					#idx2b = find( y[1000 .<x.<1250] .== minimum(y[1000 .<x.<1250]))
-					
-					#idx3a = find( y[3000 .<x.<3700] .== maximum(y[3000 .<x.<3700]))
-					#idx3b = find( y[3700 .<x.<3800] .== minimum(y[3700 .<x.<3800]))
-					
-					#As = mean(y[(idx1a[1]-4):(idx1a[1]+4),1]) - mean(y[(idx1b[1]-4):(idx1b[1]+4),1]) + mean(y[(idx2a[1]-4):(idx2a[1]+4),1]) - mean(y[(idx2b[1]-4):(idx2b[1]+4),1])
-					#Aw = mean(y[idx3a[1]-4 : idx3a[1]+4,1]) - mean(y[idx3b[1]-4 : idx3b[1]+4,1])
-					
-					As = maximum(y[400 .<x.<600]) - minimum(y[600 .<x.<1000]) + maximum(y[900 .<x.<1250]) - minimum(y[1000 .<x.<1250])
-					Aw = maximum(y[3000 .<x.<3700]) - minimum(y[3700 .<x.<3800])
-				end
+				As = trapz(x[150 .< x .<1300],y_calc2[150 .< x .<1300])
+				Aw = trapz(x[2800 .< x .<3800],y_calc2[2800 .< x .<3800])
 			else
 				# calc=ulating the areas under silicate and water bands
 				As = trapz(x[150 .< x .<1300],y_calc2[150 .< x .<1300])
-				Aw = trapz(x[2800 .< x .<3750],y_calc2[2800 .< x .<3750])
+				Aw = trapz(x[2800 .< x .<3800],y_calc2[2800 .< x .<3800])
 			end
     
 			# recording them
