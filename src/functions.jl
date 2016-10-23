@@ -40,7 +40,7 @@ function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arra
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = poly(squeeze(amplitude[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2)
+            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
         end	    	
     else
         error("Not implemented, see documentation")
@@ -56,7 +56,7 @@ function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Ar
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = poly(squeeze(amplitude[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2)
+            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) ./ (1 + ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
         end	    	
     else
         error("Not implemented, see documentation")
@@ -72,7 +72,7 @@ function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::A
         end
     elseif style == "poly"
         for i = 1:size(a1)[1]
-            segments[:,i] = poly(squeeze(a1[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(a2[i,:],1),x[:,2])))./poly(squeeze(a3[i,:],1),x[:,2])).^2 .* (2.0.^(1./squeeze(a4[i,:],1)) - 1.0))
+            segments[:,i] = poly(vec(a1[i,:]),x[:,2]) ./ (1 + ((x[:,1]-(poly(vec(a2[i,:]),x[:,2])))./poly(vec(a3[i,:]),x[:,2])).^2 .* (2.0.^(1./vec(a4[i,:])) - 1.0))
         end	    	
     else
         error("Not implemented, see documentation")
@@ -93,7 +93,7 @@ function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arr
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-			segments[:,i] =  squeeze(lorentzian_fraction[i,:]) .* (poly(squeeze(amplitude[i,:],1),x[:,2]) ./ (1 + ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2))     +      (1- squeeze(lorentzian_fraction[i,:])) .* poly(squeeze(amplitude[i,:],1),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(squeeze(centre[i,:],1),x[:,2])))./poly(squeeze(hwhm[i,:],1),x[:,2])).^2) 
+			segments[:,i] =  vec(lorentzian_fraction[i,:]) .* (poly(vec(amplitude[i,:]),x[:,2]) ./ (1 + ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2))     +      (1- vec(lorentzian_fraction[i,:])) .* poly(vec(amplitude[i,:]),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2) 
         end	    	
     else
         error("Not implemented, see documentation") 
