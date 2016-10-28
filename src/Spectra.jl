@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-VERSION >= v"0.4.0" && __precompile__()
+VERSION >= v"0.5.0" && __precompile__()
 
 module Spectra
 
@@ -22,8 +22,6 @@ using PyCall
 using Dierckx
 using Ipopt
 using JuMP
-using Compat
-import Compat.String
 
 # For PyCall modules
 const preprocessing = PyNULL()
@@ -39,7 +37,7 @@ const linear_model = PyNULL()
 unixpath = "../deps/src/gcvspline/libgcvspl"
 winpath = "../deps/bin$Sys.WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
 
-const gcvspl = joinpath(dirname(@__FILE__), Compat.@static is_unix()? unixpath : winpath)
+const gcvspl = joinpath(dirname(@__FILE__), @static is_unix()? unixpath : winpath)
 
 function __init__()
     # Ensure library is available.
