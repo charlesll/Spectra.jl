@@ -275,7 +275,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 		end
 
 	elseif switches[1] == "external"
-		liste=readcsv(paths[1], skipstart=1)
+		liste=readcsv(paths[1], skipstart=1,use_mmap = mmap_switch)
 
 		reference = liste[:,1]
 		# reference product names are in first column for record
