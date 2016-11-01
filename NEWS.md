@@ -12,6 +12,10 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 # 0.2.4
 
+Additions:
+
+- mmap_switch option in rameau added to overpass the problem of memory mapping error when calling readcsv/readdlm in virtual environments
+
 Corrections:
 
 - A few corrections for better support of Julia versions >= 0.5
