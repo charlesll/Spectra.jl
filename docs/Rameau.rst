@@ -29,7 +29,7 @@ Function rameau
 
 Call rameau as
 
-    rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.035,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,mmap_switch=true)
+    rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.035,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
 
 INPUTS:
 
@@ -70,6 +70,8 @@ OPTIONS:
 	lb_break: Float64, for double baseline correction, the breaking point before which the software will consider the BIRs in the low frequency region. Default = 2010.0.
 
 	hb_start: Float64, for double baseline correction, the breaking point after which the software will consider the BIRs in the high frequency region. Default = 1000.0.
+
+  roi_hf_external: Array{Float64}, the roi for fitting the linear baseline in the external calibration mode. Default = [3000. 3100.; 3800. 3900.].
 
 	basetype: String, the type of baseline you want to fit. Corresponds to the "basetype" parameter of the baseline function.  Default = "gcvspline".
 

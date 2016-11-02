@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,basetype="gcvspline",mmap_switch=true)
+function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
 
 	# some function definition
 	calibration_model(x, p) = p[1].*x
@@ -307,17 +307,16 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			x_sp, sample_sp_long, ~ = tlcorrection(sample_sp,temperature,laser,correction="hehlen",normalisation="no",density=sample_density[i])
 
 			# Linear baseline subtraction
-			roi_hf = [3000. 3100.; 3800. 3900.] # the region where the basline is constrained
-			reference_sp_corr2, reference_baseline = baseline(x_ref,reference_sp_long,roi_hf,"poly",p=1.0)
-			sample_sp_corr2, sample_baseline = baseline(x_sp,sample_sp_long,roi_hf,"poly",p=1.0)
+			reference_sp_corr2, reference_baseline = baseline(x_ref,reference_sp_long,roi_hf_external,"poly",p=1.0)
+			sample_sp_corr2, sample_baseline = baseline(x_sp,sample_sp_long,roi_hf_external,"poly",p=1.0)
 
 			# Area calculation between 3100 and 3800 cm-1
-			Area_reference = trapz(x_ref[3100. .<x_ref[:,1].<3800.],reference_sp_corr2[3100. .<x_ref[:,1].<3800.])
-			Area_sample = trapz(x_sp[3100. .<x_sp[:,1].<3800.],sample_sp_corr2[3100. .<x_sp[:,1].<3800.])
+			Area_reference = trapz(x_ref[roi_hf_external[1,2] .<x_ref[:,1].<roi_hf_external[2,1]],reference_sp_corr2[roi_hf_external[1,2] .<x_ref[:,1].<roi_hf_external[2,1]])
+			Area_sample = trapz(x_sp[roi_hf_external[1,2] .<x_sp[:,1].<roi_hf_external[2,1]],sample_sp_corr2[roi_hf_external[1,2] .<x_sp[:,1].<roi_hf_external[2,1]])
 
 			# With the intensity
-			Intensity_reference = maximum(reference_sp_corr2[3100. .<x_ref[:,1].<3800])
-			Intensity_sample = maximum(sample_sp_corr2[3100. .<x_ref[:,1].<3800])
+			Intensity_reference = maximum(reference_sp_corr2[roi_hf_external[1,2] .<x_ref[:,1].<roi_hf_external[2,1]])
+			Intensity_sample = maximum(sample_sp_corr2[roi_hf_external[1,2] .<x_ref[:,1].<roi_hf_external[2,1]])
 
 			# Water calculation
 			water[i] = (reference_water[i]./1.8*reference_density[i]) .*Area_sample./Area_reference # water is in mol/L
@@ -353,7 +352,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			writecsv(string(paths[5]), ["Spectrum" "Sample Name" "Estimated water content";liste[:,5] liste[:,6] water])
 
 			#Saving the generated figure (specified directory should exist)
-			savefig(string(paths[4],"Internal_Std_",sample[i],".pdf"))
+			savefig(string(paths[4],"External_Std_",sample[i],".pdf"))
 
 		end
 

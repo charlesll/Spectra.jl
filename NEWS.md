@@ -10,23 +10,25 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
-# 0.2.4
+# 0.2.4 (in development)
 
-Additions:
-
-- mmap_switch option in rameau added to overpass the problem of memory mapping error when calling readcsv/readdlm in virtual environments
-
-Corrections:
-
-- A few corrections for better support of Julia versions >= 0.5
-
-Changes in requirements:
+Important changes in requirements:
 
 - Compat removed
 
 - Julia >= 0.5 (dropping 0.4.x)
 
-# 0.2.3 (includes 0.2.2)
+Additions:
+
+- mmap_switch option in rameau added to overpass the problem of memory mapping error when calling readcsv/readdlm in virtual environments
+
+- roi_hf_external is a new option that allows to setup where the baseline is fitted when using the "External" calibration methods
+
+Corrections:
+
+- A few corrections for better support of Julia versions >= 0.5
+
+# 0.2.3 (includes 0.2.2; stable release)
 
 Additions:
 
