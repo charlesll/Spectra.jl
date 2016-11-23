@@ -10,7 +10,7 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
-# 0.2.4 (in development)
+# 0.2.4
 
 Critical changes in requirements:
 
