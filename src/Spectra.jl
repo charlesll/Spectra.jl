@@ -25,8 +25,8 @@ using JuMP
 
 # For PyCall modules
 const preprocessing = PyNULL()
-const grid_search = PyNULL()
-const cross_validation = PyNULL()
+const model_selection = PyNULL()
+#const cross_validation = PyNULL()
 const decomposition = PyNULL()
 const kernel_ridge = PyNULL()
 const svm = PyNULL()
@@ -46,8 +46,8 @@ function __init__()
     end
 
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
-	copy!(grid_search, pyimport_conda("sklearn.grid_search", "scikit-learn"))
-	copy!(cross_validation, pyimport_conda("sklearn.cross_validation", "scikit-learn"))
+	copy!(model_selection, pyimport_conda("sklearn.model_selection", "scikit-learn"))
+	#copy!(cross_validation, pyimport_conda("sklearn.", "scikit-learn"))
 	copy!(decomposition, pyimport_conda("sklearn.decomposition", "scikit-learn"))
 	copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "scikit-learn"))
 	copy!(svm, pyimport_conda("sklearn.svm","scikit-learn"))

@@ -78,13 +78,11 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 	######## DIERCKX SPLINE BASELINE
 	elseif basetype == "Dspline"
-		warn("New baseline version requires the revision of old smoothing p values for splines.")
 		spl = Spline1D(x_bas_sc[:,1],y_bas_sc[:,1],s=p[1],bc="extrapolate",k=SplOrder)
 		y_calc_sc = evaluate(spl,x_sc[:,1])
 
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
-		warn("New baseline version requires the revision of old smoothing p values for splines.")
 		c, WK, IER = gcvspl_julia(x_bas_sc[:,1],y_bas_sc[:,1],ese_interest_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
 		y_calc_sc = splderivative_julia(x_sc[:,1],x_bas_sc[:,1],c,SplineOrder= Int32(SplOrder-1))
 
@@ -92,7 +90,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	elseif basetype == "KRregression"
 		
 		clf = kernel_ridge[:KernelRidge](kernel="rbf", gamma=0.1)
-		kr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3,1e-4],"gamma"=> logspace(-4, 4, 9)))# GridSearchCV for best parameters
+		kr = model_selection[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3,1e-4],"gamma"=> logspace(-4, 4, 9)))# GridSearchCV for best parameters
 		kr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_calc_sc = kr[:predict](x_sc)
 		
@@ -100,7 +98,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	elseif basetype == "SVMregression"
 	
 		clf = svm[:SVR](kernel="rbf", gamma=0.1)
-		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-4, 4, 9))) # GridSearchCV for best parameters
+		svr = model_selection[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-4, 4, 9))) # GridSearchCV for best parameters
 		svr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
 		y_calc_sc = svr[:predict](x_sc)
 		

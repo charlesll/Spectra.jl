@@ -54,7 +54,7 @@ This function is still under test and experimental. Further details on the code 
 
 Spectra.jl contains a function that helps removing the signal from crystals in the Raman spectra of glasses. Two spectra are needed: that of the mixed crystal+glass signals, and that of the pure cristal signals. Please note that it also can be used to remove signal from epoxy.
 
-	function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
+	function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),algorithm = "FastICA",plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
 	
 INPUTS
 
@@ -97,6 +97,8 @@ INPUTS
 OPTIONS
 
 	input_properties: Tuple, this tuple contains the delimiter and the number of lines to skip in the raw data files. Default = ('\t',0);
+	
+	algorithm: String, This indicates if the FastICA or the Non-negative Matrix Factorisation algorithms from SciKit Learn will be used. Default = "FastICA";
 	
 	plot_intermediate_show: String, This should be equal to "yes" or "no". It displays the intermediate figures. Default = "no";
 	

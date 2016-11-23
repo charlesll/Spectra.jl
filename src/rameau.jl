@@ -20,7 +20,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 	if switches[1] == "internal"
 
 
-		scale = 1
+		scale = 1 # no scaling, keeping that for history
 
 		liste=readcsv(paths[1], skipstart=1,use_mmap = mmap_switch)
 		names = liste[:,1]
@@ -36,7 +36,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 		rws = ones(size(liste,1),3)
 
 		for i = 1:size(liste,1)
-			spectra = readdlm(string(paths[2],names[i]),input_properties[1],skipstart=input_properties[2],use_mmap = mmap_switch)
+			spectra = Array{Float64}(readdlm(string(paths[2],names[i]),input_properties[1],skipstart=input_properties[2],use_mmap = mmap_switch))
 
 			if spectra[end,1] < spectra[1,1]
 				spectra = flipdim(spectra,1)
@@ -44,7 +44,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 
 			x = spectra[:,1]
 			spectra[:,2] = spectra[:,2] - minimum(spectra[:,2])
-			y = spectra[:,2]./maximum(spectra[:,2]).*scale + 0.1# area normalisation, and we avoid any 0
+			y = spectra[:,2]./maximum(spectra[:,2]).*scale + 0.1# area normalisation, and we avoid any 0 by putting the smallest value to 1e-20
 			ratio_bkg = minimum(y)/maximum(y) # to keep a record of the ratio of maximum signal intensity over minimum background intensity
 
 			#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI

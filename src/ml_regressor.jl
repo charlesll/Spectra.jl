@@ -13,7 +13,7 @@
 function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],scaler="MinMaxScaler",rand_state=42,validation_size = 0.33,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
     
 	if size(X_test,1) == 1
-		X_train, X_test, y_train, y_test = cross_validation.train_test_split(x, reshape(y,size(y,1),1), test_size=test_sz, random_state=rand_state) 
+		X_train, X_test, y_train, y_test = model_selection.train_test_split(x, reshape(y,size(y,1),1), test_size=test_sz, random_state=rand_state) 
 	elseif size(X_test,2) == size(x,2)
 		X_train = x[:,:]
 		y_train = y[:,:]
@@ -36,7 +36,6 @@ function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractStri
 		error("Choose the scaler between MinMaxScaler and StandardScaler")
 	end
 		
-	
 	X_scaler[:fit](X_train)
 	Y_scaler[:fit](y_train)
 	
@@ -49,15 +48,15 @@ function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractStri
 	
 	if algorithm=="KernelRidge"
 		clf_kr = kernel_ridge[:KernelRidge](kernel=user_kernel, gamma=0.1)
-		model = grid_search[:GridSearchCV](clf_kr,cv=5,param_grid=param_grid_kr)
+		model = model_selection[:GridSearchCV](clf_kr,cv=5,param_grid=param_grid_kr)
 	elseif algorithm=="SVM"
 		clf_svm = svm[:SVR](kernel=user_kernel, gamma=0.1)
-		model = grid_search[:GridSearchCV](clf_svm,cv=5,param_grid=param_grid_svm)
+		model = model_selection[:GridSearchCV](clf_svm,cv=5,param_grid=param_grid_svm)
 	elseif algorithm=="LinearRegression"
 		model = linear_model[:LinearRegression]()
 	end
 	
-	model[:fit](X_train_sc, squeeze(y_train_sc,2))
+	model[:fit](X_train_sc, vec(y_train_sc))
 	predict_train_sc = model[:predict](X_train_sc)
 	prediction_train = Y_scaler[:inverse_transform](predict_train_sc)
 	predict_test_sc = model[:predict](X_test_sc)

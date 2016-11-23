@@ -17,7 +17,7 @@
 """
 The 'ctxremoval' function allows to remove the signal of a cristal from the glass Raman signal.
 """
-function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
+function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),algorithm="FastICA",plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
 	
 	# Model for final adjustement
 	model_ctx_adj(x, p) = p[1]*x
@@ -48,7 +48,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    end
     
 	    # THE COMMON X AXIS, TAKEN AS THE GLASS ONE
-	    true_x = collect(minimum(glass[:,1]):0.8:maximum(glass[:,1]))
+	    true_x = collect(minimum(glass[:,1]):0.8: maximum(glass[:,1]))
         
 	    # RESAMPLING THE TWO SPECTRA WITH THE SAME X
 	    data = zeros(size(true_x,1),2)
@@ -66,14 +66,14 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    smo_water = liste[i,3]
     
 	    # BASELINE CTX
-	    ycorr_ctx_1, baseline1_ctx = baseline(true_x[true_x.<roi_ctx[1,2]], data[true_x.<roi_ctx[1,2],1],roi_ctx[1,:],"poly",p=1.0)
-	    ycorr_ctx_2, baseline2_ctx = baseline(true_x[true_x.>=roi_ctx[1,2]],data[true_x.>=roi_ctx[1,2],1],roi_ctx[2,:],"gcvspline",p=smo_water)
+	    ycorr_ctx_1, baseline1_ctx = baseline(true_x[true_x[:].<roi_ctx[1,2]], data[true_x[:].<roi_ctx[1,2],1],reshape(roi_ctx[1,:],1,2),"poly",p=1.0)
+	    ycorr_ctx_2, baseline2_ctx = baseline(true_x[true_x[:].>=roi_ctx[1,2]],data[true_x[:].>=roi_ctx[1,2],1],reshape(roi_ctx[2,:],1,2),"gcvspline",p=smo_water)
 	    baseline_ctx = [baseline1_ctx;baseline2_ctx]
 	    bas_matrix[:,1] = [ycorr_ctx_1;ycorr_ctx_2]
     
 	    # BASELINE GLASS
-	    ycorr_gls_1, baseline1_gls = baseline(true_x[true_x.<roi_glass[1,2]], data[true_x.<roi_glass[1,2],2],roi_glass[1,:],"poly",p=1.0)
-	    ycorr_gls_2, baseline2_gls = baseline(true_x[true_x.>=roi_glass[1,2]],data[true_x.>=roi_glass[1,2],2],roi_glass[2:end,:],"gcvspline",p=smo_water)
+	    ycorr_gls_1, baseline1_gls = baseline(true_x[true_x[:].<roi_glass[1,2]], data[true_x[:].<roi_glass[1,2],2],reshape(roi_glass[1,:],1,2),"poly",p=1.0)
+	    ycorr_gls_2, baseline2_gls = baseline(true_x[true_x[:].>=roi_glass[1,2]],data[true_x[:].>=roi_glass[1,2],2],roi_glass[2:end,:],"gcvspline",p=smo_water)
 	    baseline_gls = [baseline1_gls;baseline2_gls]
 	    bas_matrix[:,2] = [ycorr_gls_1;ycorr_gls_2]
     
@@ -217,24 +217,39 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 			show()
 		end
     
-	    # PREPROCESSING (STANDARDIZATION), maybe not needed...
-	    X_scaler = preprocessing[:StandardScaler]()
-	    X_scaler[:fit](y_for_ica)
-	    y_for_ica_sc = X_scaler[:transform](y_for_ica)
+		# We test the algorithm wanted by the user
+		if algorithm == "FastICA"
+			
+		    # PREPROCESSING (STANDARDIZATION)
+		    X_scaler = preprocessing[:StandardScaler]()
+		    X_scaler[:fit](y_for_ica)
+		    y_for_ica_sc = X_scaler[:transform](y_for_ica)
+			
+	    	# USING FastICA ON THE G SIGNALS
+	    	model = decomposition[:FastICA](n_components=2, fun = "cube")
+	    	S = model[:fit_transform](y_for_ica_sc)
     
-	    # USING FastICA ON THE G SIGNALS
-	    model = decomposition[:FastICA](n_components=2, fun = "cube")
-	    S = model[:fit_transform](y_for_ica_sc)
-    
-	    # TREATING THE OUTPUTS, FastICA can return negative components so we treat the S array for that
-	    S_corr = S[:,:]
-	    for col = 1:2
-	        if maximum(S[990. .< x_for_ica .< 1050,col]) < maximum(S[1200 .< x_for_ica .<shutdown,col]) # checking if something is negative
-	            S_corr[:,col] = -S[:,col]
-	        end
-	        S_corr[:,col] = (S_corr[:,col]-minimum(S_corr[:,col])) / maximum(S_corr[:,col]-minimum(S_corr[:,col])) # normalisation
-	    end
-    
+	    	# TREATING THE OUTPUTS, FastICA can return negative components so we treat the S array for that
+	    	S_corr = S[:,:]
+	    	for col = 1:2
+	        	if maximum(S[990. .< x_for_ica .< 1050,col]) < maximum(S[1200 .< x_for_ica .<shutdown,col]) # checking if something is negative
+	            	S_corr[:,col] = -S[:,col]
+	        	end
+	        	S_corr[:,col] = (S_corr[:,col]-minimum(S_corr[:,col])) / maximum(S_corr[:,col]-minimum(S_corr[:,col])) # normalisation
+	    	end
+		elseif algorithm == "NMF"
+			
+		    # PREPROCESSING (STANDARDIZATION)
+		    X_scaler = preprocessing[:MinMaxScaler]()
+		    X_scaler[:fit](y_for_ica)
+		    y_for_ica_sc = X_scaler[:transform](y_for_ica)
+			
+	    	model = decomposition[:NMF](n_components=2)
+	    	S_corr = model[:fit_transform](y_for_ica_sc)
+		else
+			error("Not implemented, choose between NMF and FastICA")
+		end
+		
 	    # WHICH SIGNAL IS WAHT? Now we determine who is the glass? => the Boson peak is more intense!
 	    if maximum(S_corr[40 .< x_for_ica .< 100,2]) < maximum(S_corr[40 .< x_for_ica .<100,1])
 	        glass_ica = S_corr[:,1] - minimum(S_corr[:,1])
@@ -261,7 +276,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),plo
 	    legend(loc="best",fancybox=true)
 		
 	    subplot(3,2,3)
-	    title("FastICA results",fontsize=18,fontname="Arial")
+	    title("results from the algorithm "*algorithm,fontsize=18,fontname="Arial")
 	    plot(x_for_ica,glass_ica,color="black")
 	    plot(x_for_ica,ctx_ica,color="blue")
 	    ylabel("Intensity, counts",fontsize=18,fontname="Arial")
