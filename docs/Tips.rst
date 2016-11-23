@@ -11,7 +11,7 @@ Installation
 
 1) You need the gfortran, gcc and g++ compilers. ifort also works. Check that you have them on your system. Even Ubuntu does not necessary come with those compilers out of the box. If you don't know anything about installing them, ask Google: "Installing gcc/gfortran/g++ on my mac/linux/windows"
 
-2) Windows users probably need to manually compile the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.
+2) Windows users probably need to manually compile the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that. I actually recommand to either use JuliaBox or to install a Linux distribution in a virtual box to smoothly run Julia and Spectra.
 
 3) If you see errors messages linked to PyCall, you may have a problem with your environment variable. To solve it, tyope the following commands in the Julia prompt:
 

@@ -15,7 +15,7 @@ With those algorithm, you can predict a y value (for instance, the concentration
 mlregressor
 ------------
 
-	function mlregressor(x,y,algorithm;X_test=[0.0],y_test=[0.0],rand_state=42,test_sz = 0.33,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.1, 1e-2, 1e-3],"gamma"=> logspace(-4, 4, 5)),param_grid_svm=Dict("C"=> [1e0, 1e1, 1e2, 1e3, 1e4],"gamma"=> logspace(-4, 4, 5)))
+	function mlregressor(x,y,algorithm;X_test=[0.0],y_test=[0.0],scaler="MinMaxScaler",rand_state=42,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.1, 1e-2, 1e-3],"gamma"=> logspace(-4, 4, 5)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 5)))
 	
 INPUTS
 
@@ -31,10 +31,10 @@ OPTIONS
 	
 	y_test: Array{Float64}, the target that you want to use as a testing dataset. Those targets should not be present in the y (training) dataset;
 	
-	rand_state: Float64, the random seed that is used for reproductibility of the results;
+	scaler: String, the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see http://scikit-learn.org/stable/modules/preprocessing.html for details. Default = "MinMaxScaler";
 	
-	validation_size: Float64, the splitting size of the validation part of the data. Not used for now, as the splitting is done by folding the x/y datasets;
-
+	rand_state: Float64, the random seed that is used for reproductibility of the results. Default = 42;
+	
 	param_grid_kr: Dictionary, containg the values of the hyperparameters that should be checked by gridsearch for the Kernel Ridge regression algorithm;
 	
 	param_grid_svm: Dictionary, containg the values of the hyperparameters that should be checked by gridsearch for the Support Vector regression algorithm.
@@ -57,7 +57,9 @@ OUTPUTS
 	
 	Y_scaler: A Scikit Learn scaler object for the y values;
 	
-	
+NOTES 
 
+	For Support Vector and Kernel Ridge regressions, mlregressor performs a cross_validation search with using 5 KFold cross validators. 
 
+	If the results are poor with Support Vector and Kernel Ridge regressions, you will have to tune the param_grid_kr or param_grid_svm dictionnary that records the hyperparameter space to investigate during the cross validation.
 	

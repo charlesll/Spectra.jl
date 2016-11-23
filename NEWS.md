@@ -12,7 +12,7 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 # 0.2.4 (in development)
 
-Important changes in requirements:
+Critical changes in requirements:
 
 - Compat removed
 
@@ -24,9 +24,13 @@ Additions:
 
 - roi_hf_external is a new option that allows to setup where the baseline is fitted when using the "External" calibration methods
 
+- scaler option in mlregressor allows to choose between two ways of standardizing the data for machine learning
+
 Corrections:
 
 - A few corrections for better support of Julia versions >= 0.5
+
+- A few corrections and documentation improvements
 
 # 0.2.3 (includes 0.2.2; stable release)
 

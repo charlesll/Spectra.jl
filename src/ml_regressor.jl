@@ -10,7 +10,7 @@
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, #INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 #############################################################################
-function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],scaler="MinMaxScaler",rand_state=42,validation_size = 0.33,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
+function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],scaler="MinMaxScaler",rand_state=42,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
     
 	if size(X_test,1) == 1
 		X_train, X_test, y_train, y_test = model_selection.train_test_split(x, reshape(y,size(y,1),1), test_size=test_sz, random_state=rand_state) 
