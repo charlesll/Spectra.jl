@@ -29,7 +29,7 @@ Function rameau
 
 Call rameau as
 
-    rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=0.035,temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
+    rameau(paths::Tuple,input_properties::Tuple,switches::Tuple;prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=2010.0,hb_start=1000.0,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
 
 INPUTS:
 
@@ -61,7 +61,7 @@ INPUTS:
 
 OPTIONS:
 
-	prediction_coef: Float64, this is the calibration coefficient that will be used in the predictions, if you use the predictive mode (i.g., calibration switch is NOT set to "yes"). Default = 0.069.
+	prediction_coef: Array{Float64}, this array contains the calibration coefficient with its error bar. Those values will be used in the predictions, if you use the predictive mode (i.g., calibration switch is not set to "yes"). Default = [0.0059;0.0005].
 
 	temperature: Float64, the temperature for the temperature-laser wavelength correction in Celsius. Default = 23.0.
 
