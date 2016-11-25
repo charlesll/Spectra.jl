@@ -10,6 +10,12 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
+# 0.3.1
+
+Corrections:
+
+- In the documentation of the rameau function, the prediction coefficient was badly indicated. This is an array containing the coefficient and its error, not a single float value.
+
 # 0.3.0
 
 Critical changes in requirements:
