@@ -1,7 +1,7 @@
 if is_unix()
     cd(joinpath(dirname(@__FILE__), "src", "gcvspline"))
 
-    suffix = @osx? "dylib" : "so"
+    suffix = @static is_apple()? "dylib" : "so"
     try
        run(`make FC=ifort SUFFIX=$suffix`)
     catch
