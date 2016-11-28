@@ -1,4 +1,4 @@
-if @static is_unix()
+if is_unix()
     cd(joinpath(dirname(@__FILE__), "src", "gcvspline"))
 
     suffix = @osx? "dylib" : "so"
