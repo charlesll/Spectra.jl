@@ -20,6 +20,18 @@ https://www.continuum.io/downloads
 
 ## IMPORTANT INFORMATION REGARDING GCVSPLINE ON WINDOWS
 
-Windows users probably need to compile manually the gcvspl.f library if they want to use the GCV spline function. This compilation is automatic on Max OSX and Linux. Please report any problem with that.
+For Windows users, Spectra.jl will issue a WARNING message saying that GCVSPL.F is not compiled automatically upon installation, and will point to this page. You will need to compile GCVSPL.F by yourself for now. If you want to avoid this step, I recommand using JuliaBox.org where everything can run smoothly, or using Julia inside a free virtualbox Linux installation (https://www.virtualbox.org/). This makes things pretty easy. If you want to run Julia directly on your Windows system, you can try the following steps to compile GCVSPL.F with cygwin:
+
+	1) create bin32 and bin64 folders in the /deps forlder;
+	
+	2) compile GCVSPL.F as a shared libgcvspl.dll library in ./bin32 or ./bin64. Using cygwin, this can be done as:
+	
+	i686-w64-mingw32-gfortran -o bin32/libgcvspl.dll -O3 -shared -static-libgfortran -static-libgcc src/gcvspline/*.f
+	
+	x86_64-w64-mingw32-gfortran -o bin64/libgcvspl.dll -O3 -shared -static-libgfortran -static-libgcc src/gcvspline/*.f
+	
+	3) if this is not working, you may want to also change the winpath in Spectra.jl,  see /Spectra/src/Spectra.jl line 38.
+	
+I never tested those steps because I do not have a Windows system available, so I am not sure if they fully work. You might have to tweak things a little bit. This will be corrected soon. If anybody would like to help me with that, please submit a pull request of a working Windows installation procedure.
 
 ## If you see various errors messages when trying to install Spectra or after a Pkg.update() command, please see the Tips_ section!
