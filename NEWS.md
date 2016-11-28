@@ -16,6 +16,8 @@ Corrections:
 
 - In the documentation of the rameau function, the prediction coefficient was badly indicated. This is an array containing the coefficient and its error, not a single float value.
 
+- /deps/build.jl was badly written. This is now corrected.
+
 # 0.3.0
 
 Critical changes in requirements:
