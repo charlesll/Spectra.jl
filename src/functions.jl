@@ -133,3 +133,53 @@ function xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64
 	parameters = fit.param
 	return xshift_direct(full_x, full_shifted_y, parameters[1])
 end
+
+"""
+Savitzky-Golay filter of window half-width M and degree N
+M is the number of points before and after to interpolate, i.e. the full width
+of the window is 2M+1
+Code from https://medium.com/@acidflask/smoothing-data-with-julia-s-generated-functions-c80e240e05f3#.45v03x6it
+"""
+immutable SavitzkyGolayFilter{M,N} end
+
+@generated function Base.call{M,N,T}(::Type{SavitzkyGolayFilter{M,N}},
+     data::AbstractVector{T})
+
+     #Create Jacobian matrix
+     J = zeros(2M+1, N+1)
+     for i=1:2M+1, j=1:N+1
+         J[i, j] = (i-M-1)^(j-1)
+     end
+     e₁ = zeros(N+1) 
+     e₁[1] = 1.0
+    
+     #Compute filter coefficients
+     C = J' \ e₁
+
+     #Evaluate filter on data matrix
+
+     To = typeof(C[1] * one(T)) #Calculate type of output
+     expr = quote
+         n = size(data, 1)
+         smoothed = zeros($To, n)
+         @inbounds for i in eachindex(smoothed)
+             smoothed[i] += $(C[M+1])*data[i]
+         end
+         smoothed
+     end
+
+     for j=1:M
+         insert!(expr.args[6].args[2].args[2].args, 1,
+             :(if i - $j ≥ 1
+                 smoothed[i] += $(C[M+1-j])*data[i-$j]
+               end)
+         )
+         push!(expr.args[6].args[2].args[2].args,
+             :(if i + $j ≤ n
+                 smoothed[i] += $(C[M+1+j])*data[i+$j]
+               end)
+         )
+     end
+
+     return expr
+end

@@ -15,35 +15,14 @@
 #############################################################################
 
 # this function smooths a peak and measures its height and its half-width
-function peakhw(x::Array{Float64},y::Array{Float64},p=0.0001;y_smo_out=false)
+function peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     if x[end,1] < x[1,1]
         x = flipdim(x,1)
     y = flipdim(y,1)
     end
 
-    # To help the splines and the machine learning methods, we scale all the dataset between 0 and 1
-  	x = reshape(x,size(x,1),1)
-  	y = reshape(y,size(y,1),1)
-
-    # First a small smoothing of the spectrum
-    # Initialising the preprocessor scaler
-  	X_scaler = preprocessing[:StandardScaler]()
-  	Y_scaler = preprocessing[:StandardScaler]()
-
-  	X_scaler[:fit](x)
-  	Y_scaler[:fit](y)
-
-  	# Scaling the data
-  	x_sc = X_scaler[:transform](x)
-  	y_sc = Y_scaler[:transform](y)
-
-    clf = svm[:SVR](kernel="rbf", gamma=0.1)
-		svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-4, 4, 9))) # GridSearchCV for best parameters
-		svr[:fit](x_sc, squeeze(y_sc,2)) #SciKit learn is expecting a y vector, not an array...
-		y_smo_sc = svr[:predict](x_sc)
-
-    y_smo = Y_scaler[:inverse_transform](y_smo_sc)
+    y_smo = SavitzkyGolayFilter{M,N}(vec(y))
 
     x_maximum = x[y_smo .== maximum(y_smo)]
     x_1 = x[x .<x_maximum]
