@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A Julia library to help treating spectroscopic data.">
+  <meta name="author" content="Charles Le Losq">
+  <link rel="shortcut icon" href="./img/favicon.ico">
+  <title>Home - Spectra.jl</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="./css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="./css/highlight.css">
+  <link href="./assets/Documenter.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Home";
+    var mkdocs_page_input_path = "index.md";
+    var mkdocs_page_url = "/";
+  </script>
+  
+  <script src="./js/jquery-2.1.1.min.js"></script>
+  <script src="./js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="./js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="." class="icon icon-home"> Spectra.jl</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href=".">Home</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#welcome-to-spectrajls-documentation">Welcome to Spectra.jl's documentation!</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#introduction">Introduction</a></li>
+        
+            <li><a class="toctree-l3" href="#starting-notes">Starting Notes</a></li>
+        
+            <li><a class="toctree-l3" href="#citing-spectra">Citing Spectra</a></li>
+        
+            <li><a class="toctree-l3" href="#index">Index</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="Installation/">Installation</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="PreProcessing/">Pre-Processing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="GeneralFunctions/">General Functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="Rameau/">Rameau</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="MLregressor/">Machine Learning Regression</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="PeakFitting/">Peak Fitting</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="Tutorial/">Tutorial</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="Tips/">Tips</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="ToDo/">Todo</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="References/">References</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href=".">Spectra.jl</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Home</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/charlesll/Spectra.jl/edit/master/docs/index.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><a id='Welcome-to-Spectra.jl's-documentation!-1'></a></p>
+<h1 id="welcome-to-spectrajls-documentation">Welcome to Spectra.jl's documentation!</h1>
+<p><a id='Introduction-1'></a></p>
+<h2 id="introduction">Introduction</h2>
+<p>Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment written with the <a href="http://julialang.org/">Julia programming language</a>. It's aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding. Therefore, Spectra.jl is aimed to be used explicitly with other packages like <a href="http://www.juliaopt.org/">JuMP</a> for building models. The key is to provide functions for simplifying the life of the spectroscopist, while still leaving him all the freedom offered by treating data with a performant computer language.</p>
+<p>Spectra.jl is particularly focused on large datasets because of the high speed of Julia's, e.g. for performing peak fitting along Infrared diffusion profiles. For peak fitting for instance, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with solvers such as Ipopt or NLopt.</p>
+<p>Please consult this documentation to learn using Spectra, do not forget to check the Tips_ section if you have issues, and please report anything you want!</p>
+<p><a id='Starting-Notes-1'></a></p>
+<h2 id="starting-notes">Starting Notes</h2>
+<p>Using Julia and Spectra.jl for processing your data is quite similar to Matlab, with the flexibility offered by the open-source and free character of Julia. Reading the docs is strongly recommended. A good start will be to read the <a href="http://docs.julialang.org/en/release-0.5/">docs of Julia itself</a>.</p>
+<p>Programming can be done locally using your browser and the <a href="https://github.com/JuliaLang/IJulia.jl">IJulia notebooks</a>, very similar to the IPython ones. For a Matlab-like interface, you can use <a href="http://junolab.org/">Atom with Juno</a>.</p>
+<p>For maintaining your packages up-to-date, something critical with the fast evolution of Julia packages, I suggest running each day of Julia use the update command:</p>
+<div class="codehilite"><pre><span></span>Pkg.update()
+</pre></div>
+
+
+<p>Installation of Spectra is easy:</p>
+<div class="codehilite"><pre><span></span>Pkg.add(&quot;Spectra&quot;)
+</pre></div>
+
+
+<p>See the Installation section for further details, in particular for Windows users.</p>
+<p>Any help developing and maintaining this Spectra.jl package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra.jl are not exhaustive, and a little help to add new ones will be more that welcome.</p>
+<p><a id='Citing-Spectra-1'></a></p>
+<h2 id="citing-spectra">Citing Spectra</h2>
+<p>You can cite Spectra as </p>
+<div class="codehilite"><pre><span></span>LE LOSQ, C. (2016) Spectra.jl: a Julia package for processing spectroscopic data. Zenodo. 10.5281/zenodo.53940
+</pre></div>
+
+
+<p><a id='Index-1'></a></p>
+<h2 id="index">Index</h2>
+<p>The functions that are in Spectra.jl are listed below. See the other part of the documentation for further information.</p>
+<ul>
+<li><a href="PreProcessing/#Spectra.SavitzkyGolayFilter"><code>Spectra.SavitzkyGolayFilter</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.bandarea-Tuple{Array{Float64,N},Array{Float64,N}}"><code>Spectra.bandarea</code></a></li>
+<li><a href="PreProcessing/#Spectra.baseline-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},AbstractString}"><code>Spectra.baseline</code></a></li>
+<li><a href="PeakFitting/#Spectra.bootperf-Tuple{Array{Float64,N}}"><code>Spectra.bootperf</code></a></li>
+<li><a href="PeakFitting/#Spectra.bootsample-Tuple{Array{Float64,N},Array{Float64,N}}"><code>Spectra.bootsample</code></a></li>
+<li><a href="PreProcessing/#Spectra.ctxremoval-Tuple{Any,Any,Any,Any}"><code>Spectra.ctxremoval</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.gaussiennes-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.gaussiennes</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.gcvspl_julia-Tuple{Array{Float64,1},Array{Float64,1},Array{Float64,1},Float64}"><code>Spectra.gcvspl_julia</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.lorentziennes-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.lorentziennes</code></a></li>
+<li><a href="MLregressor/#Spectra.mlregressor-Tuple{Array{Float64,N},Array{Float64,N},AbstractString}"><code>Spectra.mlregressor</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.normal_dist-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.normal_dist</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.peakhw-Tuple{Array{Float64,N},Array{Float64,N}}"><code>Spectra.peakhw</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.pearson7-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.pearson7</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.poly-Tuple{Array{Float64,1},Array{Float64,N}}"><code>Spectra.poly</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.polyfit-Tuple{Array{Float64,N},Array{Float64,N},Int64}"><code>Spectra.polyfit</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.pseudovoigts-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.pseudovoigts</code></a></li>
+<li><a href="Rameau/#Spectra.rameau-Tuple{Tuple,Tuple}"><code>Spectra.rameau</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.splderivative_julia-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.splderivative_julia</code></a></li>
+<li><a href="PreProcessing/#Spectra.tlcorrection-Tuple{Array{Float64,N},Float64,Float64}"><code>Spectra.tlcorrection</code></a></li>
+<li><a href="GeneralFunctions/#Spectra.trapz-Tuple{Array{Tx&lt;:Number,1},Array{Ty&lt;:Number,1}}"><code>Spectra.trapz</code></a></li>
+<li><a href="PreProcessing/#Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}"><code>Spectra.xshift_correction</code></a></li>
+<li><a href="PreProcessing/#Spectra.xshift_direct-Tuple{Array{Float64,N},Array{Float64,N},Float64}"><code>Spectra.xshift_direct</code></a></li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Installation/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/charlesll/Spectra.jl" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+      
+        <span style="margin-left: 15px"><a href="Installation/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="./js/theme.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="./assets/mathjaxhelper.js"></script>
+
+</body>
+</html>
+
+<!--
+MkDocs version : 0.16.3
+Build Date UTC : 2017-05-16 23:43:44
+-->

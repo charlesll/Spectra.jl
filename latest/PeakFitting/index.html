@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Charles Le Losq">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Peak Fitting - Spectra.jl</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../assets/Documenter.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Peak Fitting";
+    var mkdocs_page_input_path = "PeakFitting.md";
+    var mkdocs_page_url = "/PeakFitting/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Spectra.jl</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Installation/">Installation</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../PreProcessing/">Pre-Processing</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../GeneralFunctions/">General Functions</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Rameau/">Rameau</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../MLregressor/">Machine Learning Regression</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Peak Fitting</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#peak-fitting">Peak fitting</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#model-adjustment">Model adjustment</a></li>
+        
+            <li><a class="toctree-l3" href="#error-calculation-with-bootstrapping">error calculation with bootstrapping</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Tutorial/">Tutorial</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Tips/">Tips</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../ToDo/">Todo</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../References/">References</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Spectra.jl</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Peak Fitting</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/charlesll/Spectra.jl/edit/master/docs/PeakFitting.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><a id='Peak-fitting-1'></a></p>
+<h1 id="peak-fitting">Peak fitting</h1>
+<p><a id='Model-adjustment-1'></a></p>
+<h2 id="model-adjustment">Model adjustment</h2>
+<p>Peak fitting is done with the JuMP framework (https://jump.readthedocs.org/en/latest/). Spectra.jl actually does not provide any peak fitting capacities by itself, but the combination of its functionality with JuMP helps making fitting procedure quite easy. An example is visible in the example section of Spectra.jl. </p>
+<p>One goal of Spectra is to promote the use of global optimisation models, where peak parameters are actually calculated from variation in other parameters (chemistry, temperature, etc.), or are shared between several spectra. I will provide very soon an example of such an approach. It can be implemented in a few lines of code with combining Spectra and JuMP, and has the advantage of greatly reducing the errors of the fits.</p>
+<p><a id='error-calculation-with-bootstrapping-1'></a></p>
+<h2 id="error-calculation-with-bootstrapping">error calculation with bootstrapping</h2>
+<p>Error calculation can be done with using bootstrapping. Spectra provides a function that allows generating K new datasetes, by resampling the existing dataset in a non-parametric or parametric way. </p>
+<p><a id='Spectra.bootsample-Tuple{Array{Float64,N},Array{Float64,N}}' href='#Spectra.bootsample-Tuple{Array{Float64,N},Array{Float64,N}}'>#</a>
+<strong><code>Spectra.bootsample</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span><span class="nt">bootsample</span><span class="o">(</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span> <span class="nt">y</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span> <span class="nt">boottype</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;np&quot;</span><span class="o">,</span> <span class="nt">ese</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span> <span class="o">=</span> <span class="cp">[</span><span class="mf">0.0</span><span class="cp">]</span><span class="o">)</span>
+</pre></div>
+
+
+<p>INPUTS</p>
+<div class="codehilite"><pre><span></span><span class="n">x</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">x</span> <span class="n">axis</span><span class="o">.</span> <span class="n">It</span> <span class="n">can</span> <span class="n">have</span> <span class="n">multiple</span> <span class="n">columns</span><span class="o">.</span>
+
+<span class="n">y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">y</span> <span class="n">axis</span><span class="o">.</span> <span class="n">It</span> <span class="n">can</span> <span class="n">have</span> <span class="n">multiple</span> <span class="n">columns</span><span class="o">.</span>
+</pre></div>
+
+
+<p>OPTIONS</p>
+<div class="codehilite"><pre><span></span><span class="n">boottype</span><span class="o">:</span> <span class="n">ASCIIString</span><span class="o">,</span> <span class="n">either</span> <span class="s2">&quot;np&quot;</span> <span class="n">or</span> <span class="s2">&quot;p&quot;</span><span class="o">,</span> <span class="k">this</span> <span class="k">is</span> <span class="n">the</span> <span class="n">type</span> <span class="n">of</span> <span class="n">bootstrapping</span> <span class="n">performed</span><span class="o">.</span> <span class="s2">&quot;np&quot;</span> <span class="n">performes</span> <span class="n">a</span> <span class="n">non</span><span class="o">-</span><span class="n">parametric</span> <span class="n">resampling</span> <span class="n">fo</span> <span class="n">the</span> <span class="n">dataset</span> <span class="k">with</span> <span class="n">replacement</span><span class="o">.</span> <span class="s2">&quot;p&quot;</span> <span class="n">performs</span> <span class="n">a</span> <span class="n">parametric</span> <span class="n">resampling</span><span class="o">.</span> <span class="n">The</span> <span class="n">data</span> <span class="n">are</span> <span class="n">resample</span> <span class="n">from</span> <span class="n">a</span> <span class="n">gaussian</span> <span class="n">distribution</span> <span class="n">centered</span> <span class="n">on</span> <span class="n">the</span> <span class="n">y</span> <span class="n">values</span> <span class="k">with</span> <span class="n">errors</span> <span class="n">that</span> <span class="n">should</span> <span class="n">be</span> <span class="n">provided</span> <span class="k">in</span> <span class="n">the</span> <span class="n">ese</span> <span class="n">variable</span><span class="o">.</span>
+
+<span class="n">ese</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">errors</span> <span class="n">affecting</span> <span class="n">the</span> <span class="n">y</span> <span class="n">values</span> <span class="n">that</span> <span class="n">are</span> <span class="n">used</span> <span class="n">during</span> <span class="n">parametric</span> <span class="n">bootstrapping</span><span class="o">.</span>
+</pre></div>
+
+
+<p>OUTPUTS</p>
+<div class="codehilite"><pre><span></span><span class="n">b_x_f</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">bootstrapped</span> <span class="n">x</span> <span class="n">values</span>
+
+<span class="n">b_y_f</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">bootstrapped</span> <span class="n">y</span> <span class="n">values</span>
+</pre></div>
+
+
+<p>The bootstrap function can be embedded in a for loop, and will each time produce a different dataset. Performing K times the bootstrapping and fitting each time the model will allow to estimate the error distribution on the peak parameters. This technic has the advantage of making no prior assumption on the probability distribution functions of parameters errors. However, it is  much more time consuming that using the covariance matrix.</p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/41f6a9095c8184059cfb4fc29bfc08a81944e125/src/bootstrap.jl#L17-L41' class='documenter-source'>source</a><br></p>
+<p><a id='Spectra.bootperf-Tuple{Array{Float64,N}}' href='#Spectra.bootperf-Tuple{Array{Float64,N}}'>#</a>
+<strong><code>Spectra.bootperf</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span><span class="nt">bootperf</span><span class="o">(</span><span class="nt">params_boot</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span> <span class="nt">plotting</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span><span class="o">,</span> <span class="nt">parameter</span><span class="p">::</span><span class="nd">Int64</span> <span class="o">=</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">feature</span><span class="p">::</span><span class="nd">Int64</span> <span class="o">=</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">histogram_step</span><span class="p">::</span><span class="nd">Int64</span> <span class="o">=</span> <span class="nt">100</span><span class="o">,</span> <span class="nt">savefigures</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;False&quot;</span><span class="o">,</span> <span class="nt">save_bootrecord</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;Boot_record.pdf&quot;</span><span class="o">,</span> <span class="nt">save_histogram</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;Boot_histogram.pdf&quot;</span><span class="o">)</span>
+</pre></div>
+
+
+<p>params_boot[i,j] or [i,j,k]: array with i the bootstrrap experiment, j the parameter and k the feature being calculated (e.g., a peak during peak fitting)</p>
+<p>plotting: switch to plotting mode ("True") or not ("False"). If true, parameter and feature must be provided, otherwise an error message is returned. </p>
+<p>histogram_step is an integer value to control the histogram X axis division.</p>
+<p>savefigures: "True" or "False", explicit, save in the current working directory.</p>
+<p>save_bootrecord: Name for the graphic showing the bootstrap mean and std evolutions, with extension.</p>
+<p>save_histogram: Name for the graphic showing the histogram for the parameter and feature of interest, with extension.</p>
+<p>RETURN: std_record, mean_record, the arrays recording how the standard deviation and mean of the parameters as a function of the bootstrap advance. </p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/41f6a9095c8184059cfb4fc29bfc08a81944e125/src/bootstrap.jl#L62-L79' class='documenter-source'>source</a><br></p>
+<p>For further details, see the following references</p>
+<p>Efron, B. 1979. “Bootstrap Methods: Another Look at the Jackknife.” The Annals of Statistics 7 (1): 1–26.</p>
+<p>Efron, Bradley. 1981. “Nonparametric Estimates of Standard Error: The Jackknife, the Bootstrap and Other Methods.” Biometrika 68 (3): 589–99. doi:10.1093/biomet/68.3.589.</p>
+<p>Efron, B., and Tibshirani, R. 1994. An Introduction to the Bootstrap. CRC press.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Tutorial/" class="btn btn-neutral float-right" title="Tutorial">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../MLregressor/" class="btn btn-neutral" title="Machine Learning Regression"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/charlesll/Spectra.jl" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../MLregressor/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../Tutorial/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../assets/mathjaxhelper.js"></script>
+
+</body>
+</html>
