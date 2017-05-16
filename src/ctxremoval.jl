@@ -304,7 +304,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 		    X_scaler[:fit](y_for_ica)
 		    y_for_ica_sc = X_scaler[:transform](y_for_ica)
 			
-	    	model = decomposition[:NMF](n_components=2)
+	    	model = decomposition[:NMF](n_components=2,init="nndsvda")
 	    	S_corr = model[:fit_transform](y_for_ica_sc)
 		else
 			error("Not implemented, choose between NMF and FastICA")
