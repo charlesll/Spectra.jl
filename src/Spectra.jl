@@ -22,6 +22,7 @@ using PyCall
 using Dierckx
 using Ipopt
 using JuMP
+using NMF
 
 # For PyCall modules
 const preprocessing = PyNULL()

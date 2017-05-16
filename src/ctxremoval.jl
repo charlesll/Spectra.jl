@@ -59,7 +59,7 @@ OPTIONS
 
 	input_properties: Tuple, this tuple contains the delimiter and the number of lines to skip in the raw data files. Default = ('\t',0);
 	
-	algorithm: String, This indicates if the FastICA or the Non-negative Matrix Factorisation algorithms from SciKit Learn will be used. Default = "FastICA";
+	algorithm: String, This indicates if the FastICA or the Non-negative Matrix Factorisation (NMF) algorithms from SciKit Learn will be used. Default = "FastICA";
 	
 	plot_intermediate_show: String, This should be equal to "yes" or "no". It displays the intermediate figures. Default = "no";
 	
@@ -235,6 +235,7 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 	        else
 	            results[:,1] = K.*bas_matrix[:,1]
 	            results[:,2] = f1(K,bas_matrix[:,1],bas_matrix[:,2])
+				#results[:,2] = f2(K,bas_matrix[:,1],bas_matrix[:,2])
 	            results[true_x.>shutdown,2] = bas_matrix[true_x.>shutdown,2]
 	        end
         
@@ -268,10 +269,13 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 	            
 	        end
         
+			y_for_ica[:,iter] = results[true_x.<shutdown,2] # old way: actually works well
+			#y_for_ica[:,iter] = K*bas_matrix[true_x.<shutdown,1] + bas_matrix[true_x.<shutdown,2]# New trial: only positive addition: may improve NMF
+		
 	        # INCREMENTING K
 	        K = K + K_increment
         
-	        y_for_ica[:,iter] = results[true_x.<shutdown,2]
+			
 	    end
 		if plot_mixing_show == "yes"
 			show()
@@ -304,8 +308,14 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 		    X_scaler[:fit](y_for_ica)
 		    y_for_ica_sc = X_scaler[:transform](y_for_ica)
 			
-	    	model = decomposition[:NMF](n_components=2,init="nndsvda")
-	    	S_corr = model[:fit_transform](y_for_ica_sc)
+			# with sklearn
+	    	#model = decomposition[:NMF](n_components=2,init="nndsvda")
+	    	#S_corr = model[:fit_transform](y_for_ica_sc)
+			
+			# with julia NMF implementation: nndsvda init + alspgrad algo
+			r = nnmf(transpose(y_for_ica), 2; init=:nndsvda, alg=:alspgrad, maxiter=100, verbose=false)			 
+			H = r.H; W = r.W; S_corr = transpose(H./maximum(H,2))
+			
 		else
 			error("Not implemented, choose between NMF and FastICA")
 		end
