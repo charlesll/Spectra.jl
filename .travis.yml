@@ -4,7 +4,6 @@ os:
   - linux
   - osx
 julia:
-  - 0.4
   - 0.5
   - nightly
 addons:
@@ -15,3 +14,6 @@ notifications:
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - PYTHON="" julia -e 'Pkg.clone(pwd()); Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)'
+after_success:
+  - julia -e 'Pkg.add("Documenter")'
+  - julia -e 'cd(Pkg.dir("Spectra")); include(joinpath("docs", "make.jl"))'

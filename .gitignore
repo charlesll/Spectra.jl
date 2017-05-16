@@ -5,3 +5,5 @@
 gcvspl.o
 libgcvspl.so
 libgcvspl.dylib
+docs/build/
+docs/site/

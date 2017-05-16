@@ -30,6 +30,46 @@
 # Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.
 #############################################################################
 
+"""
+	tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",normalisation="area",density=2210.0)
+
+INPUTS:
+
+	data: Array{Float64}, input spectrum with x and y in first and second columns respectively;
+
+	temp: Float64, the temperature in °C;
+
+	wave: Float64, the wavenumber at which the spectrum was acquirred in nm.
+
+OPTIONS:
+
+	correction: String, the equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
+	
+	normalisation: String, indicate if you want to normalise your signal or not. Choose between "intensity", "area", or "no". Default = "area".
+	
+	density: Float64, the density of the studied material in kg m-3, to be used with the "hehlen" equation. Default = 2210.0 (density of silica).
+
+OUTPUTS:
+
+(are combined in one array if only one output name is given)
+
+	x: Array{Float64}, containing the x values;
+
+	long: Array{Float64}, containing the corrected y values;
+
+	eselong: Array{Float64}, containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
+	
+NOTES:
+
+This correction uses the formula reported in Galeener and Sen (1978), Mysen et al. (1982), Brooker et al. (1988) and Hehlen et al. (2010).
+
+The "galeener" equation is the exact one reported in Galeener and Sen (1978), which is a modification from Shuker and Gammon (1970) for accounting of (vo - v)^4 dependence of the Raman intensity. See also Brooker et al. (1988) for further discussion.
+
+The "long" equation is that of Galeener and Sen (1978) corrected by a vo^3 coefficient for removing the cubic meter dimension of the equation of "galeener". This equation has been used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012).
+
+The "hehlen" equation is that reported in Hehlen et al. (2010). It actually originates before this publication (Brooker et al. 1988). It uses a different correction that avoid crushing the signal below 500 cm-1. THerefore, it has the advantage of keeping intact the Boson peak signal in glasses.
+"""
+
 function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",normalisation="area",density=2210.0)
 
     h::Float64 = 6.626070040e-34   # J S    Plank constant from NIST

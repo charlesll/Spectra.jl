@@ -15,7 +15,67 @@
 #############################################################################
 
 """
-The 'ctxremoval' function allows to remove the signal of a cristal from the glass Raman signal.
+	ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),algorithm="FastICA",plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
+	
+INPUTS
+
+	liste: Array{Float64}, an array contaning the information for getting the spectra. 
+	
+		Column 1: the name and relative path for the crystal spectra; 
+		
+		Column 2: the name and relative path for the (mixed) glass spectra;
+		
+		Column 3: smo_water, the coefficient of smothing for the spline that fits the backgrous below the signal of water (if any) in the glass spectra
+		
+		Column 4: number of iteration for the generation of new mixed spectra
+		
+		Column 5: the K_Start parameter, set at 0.0
+		
+		Column 6: the K_increament parameter, for mixing the signals
+
+	in_path: String, the relative location of the data, e.g. "./raw/"
+
+	out_path: String, the relative location where you want to save the corrected spectra, e.g. "./treated/" 
+	
+	roi_all: Tuple, contains 2 arrays and 2 Float64 numbers. The 2 arrays indicate the regions of interest where the background correction is applied, for the cristal and the glass. The  2 float numbers indicate the starting and ending frequency of the peak used to correct the spectra from any shift in frequency. For instance:
+	
+		Those are the roi for fitting the baseline on the crystal (roi_ctx) and glass (roi_glass) signals:
+		
+		roi_ctx = [1260. 2000.;2000. 4000.]
+		
+		roi_glass = [1260. 2000.;2000. 3000.;3750. 4000.]
+		
+		We have a strong peak from the crystal at ~650 cm-1 that we can use to correct the spectra from any shift in frequency. So we indicate the values here:
+		
+		roi_xshift_low = 655.
+		
+		roi_xshift_high = 670.
+		
+		Then we construct the final tuple as:
+		
+		roi_all = (roi_ctx,roi_glass,roi_xshift_low,roi_xshift_high)
+
+OPTIONS
+
+	input_properties: Tuple, this tuple contains the delimiter and the number of lines to skip in the raw data files. Default = ('\t',0);
+	
+	algorithm: String, This indicates if the FastICA or the Non-negative Matrix Factorisation algorithms from SciKit Learn will be used. Default = "FastICA";
+	
+	plot_intermediate_show: String, This should be equal to "yes" or "no". It displays the intermediate figures. Default = "no";
+	
+	plot_mixing_show: String, This should be equal to "yes" or "no". It displays the figures showing the mixing step. Default = "yes";
+	
+	plot_final_show: String, This should be equal to "yes" or "no". It displays the final figures, showing the background subtraction and the retrieved signals. Default = "yes";
+
+	save_fig_switch: String, This should be equal to "yes" or "no". It indicates if you want to save the final figures in the location indicated by out_path;
+	
+	shutdown: Float64, indicates where you consider the signals from silicate units to stop. Default = 1300.0;
+	
+	scaling: Float64, the retrieved spectra are scaled to the original spectra using the Boson peak, located ~ 60-80 cm-1. This parameters indicates where you consider the Boson peak to stop for the scaling procedure. No need to put a too high value, as you might get strong crystal signals at frequencies > 100-150 cm-1.
+
+OUTPUTS
+
+	All the corrected spectra and figures are saved in the location indicated in out_path. No direct outputs in Julia.
 """
 function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),algorithm="FastICA",plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
 	

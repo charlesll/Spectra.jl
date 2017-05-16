@@ -16,7 +16,96 @@
 using JuMP
 using Ipopt
 
-include("gcvspl_wrapper.jl")
+"""
+	baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,SplOrder=3,roi_out="no")
+	
+Baseline subtraction can be made with using the baseline function:
+
+INPUTS:
+
+	x: Array{Float64}, containing the x values;
+	
+	y: Array{Float64}, containing the y values;
+	
+	roi: Array{Float64}, containing the "region of interest", i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];
+
+	basetype: AbstractString, the type of baseline that you want to use. For now, polynomial and cubic spline baselines are available. Indicate the type you want as:
+
+		Polynomial baseline: enter "poly" for basetype, then the polynomial degree as p.
+
+		Dierckx cubic spline baseline: enter "Dspline" for basetype, then the smoothing degree as p.
+
+		Generalised Cross-Validated baseline: enter "gsvspline" for basetype, then the smoothing degree as p. 
+		
+		Kernel Ridge Regression: enter "KRregression" for basetype, no need to provide p.
+		
+		Support Vector Machines regression: enter "SVMregression" for basetype, no need to provide p.
+
+OPTIONS:
+
+	p:: Float64, if using gcvspline or Dspline, this number indicates the spline smoothing coefficient. If using "poly", it is the degree of the polynomial function to be fitted. Please enter a float number (1.0, 2.0 or 3.0 for splines of order 1, 2 or 3), and it is automatically converted to an Integer for the polyfit function. Default = 1.0.
+
+	SplOrder: Integer, the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.
+	
+	roi_out: String, "no" or "yes". This will result in an additional output matrix containing the y signal in the roi regions of interest, which can then be used to plot and to evaluate the roi provided to the baseline function.
+	
+OUTPUTS:
+
+(are combined in a tuple in one array if only one output variable is provided)
+
+	y_corr: Array{Float64}, the spectrum corrected from its baseline;
+	
+	bass: Array{Float64}, the baseline.
+	
+OPTIONAL OUTPUT:
+
+	y_roi_out: Array{Float64}, an 2 column array containing the initial x-y pairs of the signal in the roi regions of interest.
+	
+NOTES:
+
+Errors on measurenements are automatically provided as sqrt(y) in gcvspline. For further options, please use the gcvspl and splderivative functions that directly call the GCVSPL and SPLDER function of the gcvspl.f program (Holtring, 1986). Further informations for the use of splines are given in the Splines section, see :ref:`Splines`.
+
+The Kernel Ridge and Support Vector Machines regression algorithms call the Scikit Learn library, available in Python. This library thus SHOULD be installed. They are machine learning algorithms that will try to automatically fit the baseline in the provided regions of interest. They are slower that splines, but have the advantage of avoiding the (sometimes painful) tuning of the spline coefficients.
+
+The Kernel Ridge and Support Vector Machines regression algorithms used a Cross-Validated approach to increase the generalisation and avoid overfitting. The GridSearchCV function of SciKit Learn is called, with 5 fold cross-validation and the following gridsearch parameters:
+
+	- For KRregression: param_grid=Dict("alpha"=> [1e0, 0.1, 1e-2, 1e-3],"gamma"=> logspace(-4, 4, 9));
+	- For SVMregression: param_grid=Dict("C"=> [1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-4, 4, 9)).
+	
+Please see the SciKit Learn documentation at http://scikit-learn.org/stable/index.html for further details on the implementation of those technics, together with the source code of Spectra.jl.
+
+EXAMPLES:
+
+For instance, for subtracting a constant baseline between 1250 and 1300 cm^{-1}:
+
+    roi = [1250. 1300.]
+	
+    basetype = "poly"
+	
+    y_corr, bas = baseline(x,y,roi,"poly",p=0.0)
+	
+
+For a linear baseline,
+	
+    bas = baseline(x,y,roi,"poly",p=1.0)
+
+For a second order polynomial baseline,
+	
+    bas = baseline(x,y,roi,"poly",p=2.0)
+
+with the last coefficient will be the one in front of x^2. This can continue as you want by adding more 1.0 values to p.
+
+For a cubic spline baseline fitting the basis of a peak centered at 1100 cm^{-1} and with basis at 900 and 1250 cm^{-1}:
+
+    roi = [890. 910.; 1250. 1300.]
+	
+    basetype = "Dspline"
+	
+    bas = baseline(x,y,roi,basetype,p=0.01)
+
+p there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl
+
+"""
 
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,SplOrder=3,roi_out="no")
     ### PRELIMINARY CHECK: INCREASING SIGNAL

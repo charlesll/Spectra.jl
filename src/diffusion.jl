@@ -32,58 +32,101 @@ Normalisation to the area between the norm_low_x and norm_high_x frequency is al
 The code returns the x and the y arrays, plus arrays for optimisation: x_input_fit contains the frequency-distance couples and y_input_fit their corresponding y values.
 """
 
-function IRdataprep(data::Array{Float64},distance_step::Float64,start_sp::Int,stop_sp::Int,low_x::Float64,high_x::Float64,norm_low_x::Float64,norm_high_x::Float64,ese_low_x::Float64,ese_high_x::Float64)
+function IRdataprep(data::Array{Float64},distance_step::Float64,spectra_numbers::Array{Int64}, portion_interest::Array{Float64}, normalization_region::Array{Float64},integration_regions::Array{Float64},polarizer_orientation::AbstractString;fig_select::Int64=1,bas_switch::AbstractString = "No",roi::Array{Float64} = [3000. 3100.; 3425. 3530.; 3630. 3650.],baseline_type = "gcvspline", smoothing_coef = 10.0, Spline_Order = 3,noise_estimation = "No", noise_calculation_portion::Array{Float64} = [3000. 3100.])
+	
    
-   if data[end,1] <= data[1,1]
-      data=data[end:-1:1,:]
-      data[data[:,:] .== 0]= 1e-20# to avoid pure 0 values
-   end
+    start_sp::Int = spectra_numbers[1]
+    stop_sp::Int = spectra_numbers[2]
+    low_x::Float64 = portion_interest[1]
+    high_x::Float64 = portion_interest[2]
+    norm_low_x::Float64 = normalization_region[1]
+    norm_high_x::Float64 = normalization_region[2]
+    ese_low_x::Float64 = noise_calculation_portion[1]
+    ese_high_x::Float64 = noise_calculation_portion[2]
+	
+    if data[end,1] <= data[1,1]
+        data=data[end:-1:1,:]
+        data[data[:,:] .== 0]= 1e-20# to avoid pure 0 values
+    end
    
-   x::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),1]
-   x_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),1]
+    x::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),1]
+    x_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),1]
  
-   if stop_sp .>= size(data)[2]
+    if stop_sp .>= size(data,2)
         y::Array{Float64} = data[find(low_x .< data[:,1] .< high_x),start_sp:end]
         y_sili::Array{Float64} = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:end]
-        ese::Array{Float64} =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:end],1) #relative error
-        y_ese_r::Array{Float64} = ese[1,:]./y[:,:]  
-   else
+        if noise_estimation == "Yes"
+            ese::Array{Float64} =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:end],1) #relative error
+            y_ese_r::Array{Float64} = ese[1,:]./y[:,:]  
+        end
+    else
         y = data[find(low_x .< data[:,1] .< high_x),start_sp:stop_sp]
         y_sili = data[find(norm_low_x .< data[:,1] .< norm_high_x),start_sp:stop_sp]
-        ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:stop_sp],1) #relative error
-        y_ese_r = ese[1,:]./y[:,:]
+		if noise_estimation == "Yes"
+            ese =  std(data[find(ese_low_x .< data[:,1] .< ese_high_x),start_sp:stop_sp],1) #relative error
+        	y_ese_r = ese[1,:]./y[:,:]
+        end
         
-   end
+    end
+	
+	nb_exp = size(y,2)
+	nb_points = size(y,1)
    
-   for i = 1:size(y)[2]
-       y[:,i] = y[:,i]/trapz(x_sili[:,1],y_sili[:,i]); # integration of silicate bands for normalisation
-   end
+   # integration of silicate bands for normalisation depending on the polariser orientation, we use different thickness determination
+    if polarizer_orientation == "A"
+        K1 = -4.702790323345388e-04
+        K2 = 1.232195900605357e-04
+    elseif polarizer_orientation == "C"
+        K1 = -0.009520859717694
+        K2 = 2.160999910417261e-04
+    end
+   
+    for i = 1:nb_exp
+        y[:,i] = y[:,i]./(K1 + K2 .* trapz(x_sili[:,1],y_sili[:,i])) # integration of silicate bands for normalisation
+    end
 
-   # constructing the good distance vector + x and Y associated values
-   steps::Float64 = 0.0
-   x_input_fit::Array{Float64} = zeros(length(x),2)
-   y_input_fit::Array{Float64} = zeros(length(x),1)
-   ese_input_fit::Array{Float64} = zeros(length(x),1)
-   for i = 1:size(y)[2]
-      x_temp::Array{Float64} = zeros(length(x),2)
-      if i == 1
-         x_input_fit[:,1] = steps
-         x_input_fit[:,2] = x
-         y_input_fit[:,1] = y[:,i]
-         ese_input_fit[:,1]  = y[:,i] .* y_ese_r[:,i]
-      else
-         x_temp[:,1] = steps
-         x_temp[:,2] = x
+    if (bas_switch == "Yes") && (roi[1,1] != 0)
+        data_bas = ones(size(y))
+        base = ones(size(y))
+        for i = 1:nb_exp
+			data_bas[:,i], base[:,i] = baseline(x, y[:,i],roi,baseline_type,p=smoothing_coef,SplOrder=Spline_Order)
+			#for k = 1:size(roi,1)-1
+			#	data_bas[roi[k,1] .<= x .<= roi[k+1,2],i], base[roi[k,1] .<= x .<= roi[k+1,2],i] = baseline(x[roi[k,1] .<= x .<= roi[k+1,2]], y[roi[k,1] .<= x .<= roi[k+1,2],i],roi[k:k+1,:],baseline_type,p=smoothing_coef)
+			#end
+        end
+	   
+        figure()
+        plot(x,y[:,fig_select],"k-",label="Data")
+        plot(x,base[:,fig_select+1],"b-",label="Baseline")
+        y = data_bas
+        plot(x,y[:,fig_select],"g-",label="Corrected")
+		legend(loc="best")
+    end
+
+   # constructing the good distance vector + X and Y associated values
+    steps::Float64 = 0.0
+	integrale_matrix::Array{Float64} = zeros(nb_exp,size(integration_regions,1))
+	distance_vector::Array{Float64} = zeros(nb_exp)
+    y_interest::Array{Float64} = zeros(nb_points,nb_exp)
+    ese_y_interest::Array{Float64} = zeros(length(x),1)
+	
+    for i = 1:nb_exp
         
-         x_input_fit = vcat(x_input_fit,x_temp)
-         y_input_fit = vcat(y_input_fit,y[:,i])
-         ese_input_fit = vcat(ese_input_fit,y[:,i] .* y_ese_r[:,i])
-      end
-   steps = steps + distance_step
-   end
+		distance_vector[i] = steps # individual distance vector
+		for k = 1:size(integration_regions,1)
+			integrale_matrix[i,k] = trapz(x[integration_regions[k,1] .<= x .<= integration_regions[k,2]],y[integration_regions[k,1] .<= x .<= integration_regions[k,2],i])
+		end
+		
+        steps = steps + distance_step
+    end
    
-    return x, y, y_ese_r, x_input_fit, y_input_fit, ese_input_fit
+	if noise_estimation == "Yes"
+        #return x, y, y_ese_r, distance_vector, integrale_matrix
+    else
+        return x, y, distance_vector, integrale_matrix
+	end
 end
+
 
 """
 The `peak_diffusion` function allows to fit/plot gaussian peaks for which the amplitude is defined by a 1D diffusion law

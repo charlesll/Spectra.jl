@@ -14,7 +14,37 @@
 #
 #############################################################################
 
-# this function smooths a peak and measures its height and its half-width
+"""
+	peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
+
+The peakhw function allows performing measurements of the position, width and intensity of a peak.
+
+It also allows smoothing the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity, see the options.
+
+INPUTS:
+	
+	x: Array{Float64}, the x values;
+
+	y: Array{Float64}, the y values.
+
+OPTIONS:
+
+	M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
+
+	N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
+
+	y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, using the SavitzkyGolayFilter function with the M and N values. y_smo output will also be provided.
+	
+OUTPUTS:
+
+	x_maximum: the position of the peak;
+	
+	hwhm: the half-width at half-maximum of the peak;
+	
+	if y_smo_out is set to true, then another output is provided:
+	
+	y_smo: the smoothed y signal.
+"""
 function peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     if x[end,1] < x[1,1]

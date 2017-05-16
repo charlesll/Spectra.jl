@@ -1,6 +1,4 @@
-**************
-References
-**************
+# References
 
 Behrens, Harald, Jacques Roux, Daniel R. Neuville, and Michael Siemann. 2006. “Quantification of Dissolved H2O in Silicate Glasses Using Confocal microRaman Spectroscopy.” Chemical Geology 229 (1-3): 96–112. doi:10.1016/j.chemgeo.2006.01.014.
 

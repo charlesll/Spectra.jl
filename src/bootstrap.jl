@@ -15,20 +15,28 @@
 #############################################################################
 
 """
-Bootstrap data generation function
+	bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np", ese::Array{Float64} = [0.0])
+	
+INPUTS
 
-    bootstrap(x::Array{Float64}, y::Array{Float64};boottype = "np")
+	x: Array{Float64}, the x axis. It can have multiple columns.
 
-Bootstrap of data. We generate new datapoints with the basis of existing data. Two options: non-parametric and parametric bootstrapping.
+	y: Array{Float64}, the y axis. It can have multiple columns.
+	
+OPTIONS
 
-type = "np": Non-parametric bootstrap is made by re-sampling with replacement the data.
+	boottype: ASCIIString, either "np" or "p", this is the type of bootstrapping performed. "np" performes a non-parametric resampling fo the dataset with replacement. "p" performs a parametric resampling. The data are resample from a gaussian distribution centered on the y values with errors that should be provided in the ese variable.
+	
+	ese: Array{Float64}, containing the errors affecting the y values that are used during parametric bootstrapping.
 
-type = "p": Parametric bootstrapping is made by re-sampling the data from randowmly picking new values in their probability density distribution.
-For now, only normal PDF are supported.
+OUTPUTS
 
-RETURN: b_x_f, b_y_f, the arrays with bootstrapped x and y values.
+	b_x_f: Array{Float64}, the bootstrapped x values
+	
+	b_y_f: Array{Float64}, the bootstrapped y values
+	
+The bootstrap function can be embedded in a for loop, and will each time produce a different dataset. Performing K times the bootstrapping and fitting each time the model will allow to estimate the error distribution on the peak parameters. This technic has the advantage of making no prior assumption on the probability distribution functions of parameters errors. However, it is  much more time consuming that using the covariance matrix.
 
-TODO: proposing other error PDF for parametric bootstrapping.
 
 """
 function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np", ese::Array{Float64} = [0.0])
@@ -52,9 +60,7 @@ function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np
 end
 
 """
-bootperf: reading the bootstrap parameter array for peak fitting
-
-    bootperf(params_boot::Array{Float64}; plotting::String = "True", parameter::Int64 = 0, feature::Int64 = 0, histogram_step::Int64 = 100, savefigures::String = "False", save_bootrecord::String = "Boot_record.pdf", save_histogram::String = "Boot_histogram.pdf")
+	bootperf(params_boot::Array{Float64}; plotting::String = "True", parameter::Int64 = 1, feature::Int64 = 1, histogram_step::Int64 = 100, savefigures::String = "False", save_bootrecord::String = "Boot_record.pdf", save_histogram::String = "Boot_histogram.pdf")
 
 params_boot[i,j] or [i,j,k]: array with i the bootstrrap experiment, j the parameter and k the feature being calculated (e.g., a peak during peak fitting)
 

@@ -26,7 +26,6 @@ using JuMP
 # For PyCall modules
 const preprocessing = PyNULL()
 const model_selection = PyNULL()
-#const cross_validation = PyNULL()
 const decomposition = PyNULL()
 const kernel_ridge = PyNULL()
 const svm = PyNULL()
@@ -47,7 +46,6 @@ function __init__()
 
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
 	copy!(model_selection, pyimport_conda("sklearn.model_selection", "scikit-learn"))
-	#copy!(cross_validation, pyimport_conda("sklearn.", "scikit-learn"))
 	copy!(decomposition, pyimport_conda("sklearn.decomposition", "scikit-learn"))
 	copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "scikit-learn"))
 	copy!(svm, pyimport_conda("sklearn.svm","scikit-learn"))
@@ -59,6 +57,7 @@ end
 include("diffusion.jl")
 include("integrale.jl")
 include("functions.jl")
+include("gcvspl_wrapper.jl")
 include("baseline.jl")
 include("bootstrap.jl")
 include("tlcorrection.jl")
@@ -80,8 +79,8 @@ export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal
 #From baseline.jl
 export baseline
 
-#From gcvspl.jl
-export gcvspl, splderivative
+#From gcvspl_wrapper.jl
+export gcvspl_julia, splderivative_julia
 
 #From bootstrap
 export bootsample, bootperf
