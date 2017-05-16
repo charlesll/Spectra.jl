@@ -5,7 +5,6 @@ os:
   - osx
 julia:
   - 0.5
-  - nightly
 addons:
   apt_packages:
     - gfortran
