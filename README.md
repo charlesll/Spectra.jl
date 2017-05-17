@@ -20,7 +20,11 @@ The version hosted on Github is bleeding-edge, and will probably NOT WORK well a
 
 # Documentation
 
-Front page for the project is available at http://charlesll.github.io/Spectra.jl/ and full documentation is also available online at http://spectrajl.readthedocs.io/en/latest/ . The latter link provides installation instructions.
+Full documentation for the stable release is hosted at http://spectrajl.readthedocs.io/en/stable/ .
+
+Documentation for the latest nighty version is available below:
+
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://USER_NAME.github.io/PACKAGE_NAME.jl/latest)
 
 # News
 
@@ -31,43 +35,20 @@ See the NEWS.md file for following the evolution of Spectra.jl.
 A common problem is baseline subtraction and peak fitting when dealing with spectra. After calling the libraries and importing a spectrum like:
 
 
-	using JuMP
-	using PyPlot
-	using Ipopt
-	using Spectra
-	inputsp = readdlm("./examples/data/LS4.txt", '\t') # we import the spectra
+	using JuMP, PyPlot, Ipopt, Spectra
+
+	data = readdlm("./examples/data/LS4.txt", '\t') # we import the spectra
+	x = data[:,1]
+	y = data[:,2]
 
 
 We can remove a baseline with the Spectra function "baseline" in two lines:
 
 	roi = [860.0 870.0; 1300.0 1400.0] # the frequencies of the region where we want to fit the baseline
-	y_corr, y_bas = baseline(inputsp[:,1],inputsp[:,2],roi,"poly",p=2.0)
-
-A model for fitting gaussian peaks to the spectrum can be easily built with JuMP (https://jump.readthedocs.org/en/latest/):
-
-	mod = Model(solver=IpoptSolver(print_level=0)) # we build a model, initialising the optimiser to Ipopt (https://projects.coin-or.org/Ipopt)
-	n = size(x)[1] # number of data
-	m = 5 #number of peaks, can be modified!
-	@variable(mod,g_amplitudes[i=1:m] >= 0.0) # we declare a first variable containing the amplitudes of peaks
-	@variable(mod,g_frequency[i=1:m]) # this one contains the Raman shifts of peaks
-	@variable(mod,20.0 <= g_hwhm[i=1:m] <= 40.0) # and this one the hwhm shifts of peaks
-	# we set initial values for parameters
-	setvalue(g_amplitudes[i=1:m],[1,1,1,1,1])
-	setvalue(g_frequency[i=1:m],[950,1050,1090,1140,1190])
-	setvalue(g_hwhm[i=1:m],[30,30,30,30,30])
-	#We write the model expression that is a sum of Gaussian peaks, and then the objective function that is the least-square deviation function:
-	@NLexpression(g_mod[j=1:n],sum{g_amplitudes[i] *exp(-log(2) * ((x[j]-g_frequency[i])/g_hwhm[i])^2), i = 1:m})
-	@NLObjective(mod,Min,sum{(g_mod[j] - y[j])^2, j=1:n})
-	#And we ask to solve it:
-	status = solve(mod)
-
-
-The "gaussiennes" function allows to get the values fo the peaks after the fit for instance:
-
-	model_peaks, peaks = gaussiennes(amplitudes,frequency,hwhm,x) # we construct the model representation and the individual peaks
+	y_corr, y_bas = baseline(x,y,roi,"poly",p=2.0)
 
 Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
 
-Last modified 11/10/2016
+Last modified May 2017
