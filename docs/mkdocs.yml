@@ -3,7 +3,7 @@ repo_url:         https://github.com/charlesll/Spectra.jl
 site_description: A Julia library to help treating spectroscopic data.
 site_author:      Charles Le Losq
 
-theme: mkdocs
+theme: readthedocs
 
 extra:
   palette:
