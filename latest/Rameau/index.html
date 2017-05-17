@@ -1,168 +1,128 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <meta name="author" content="Charles Le Losq">
-  <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Rameau - Spectra.jl</title>
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="Charles Le Losq">
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Rameau - Spectra.jl</title>
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+        <link href="../assets/Documenter.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+	
+	<script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script> 
+    </head>
 
-  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
-  <link rel="stylesheet" href="../css/highlight.css">
-  <link href="../assets/Documenter.css" rel="stylesheet">
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "Rameau";
-    var mkdocs_page_input_path = "Rameau.md";
-    var mkdocs_page_url = "/Rameau/";
-  </script>
-  
-  <script src="../js/jquery-2.1.1.min.js"></script>
-  <script src="../js/modernizr-2.8.3.min.js"></script>
-  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
-  
-</head>
+    <body>
 
-<body class="wy-body-for-nav" role="document">
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
 
-  <div class="wy-grid-for-nav">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="..">Spectra.jl</a>
+        </div>
 
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-      <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> Spectra.jl</a>
-        <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-  </form>
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                    <li >
+                        <a href="..">Home</a>
+                    </li>
+                    <li >
+                        <a href="../Installation/">Installation</a>
+                    </li>
+                    <li >
+                        <a href="../PreProcessing/">Pre-Processing</a>
+                    </li>
+                    <li >
+                        <a href="../GeneralFunctions/">General Functions</a>
+                    </li>
+                    <li class="active">
+                        <a href="./">Rameau</a>
+                    </li>
+                    <li >
+                        <a href="../MLregressor/">Machine Learning Regression</a>
+                    </li>
+                    <li >
+                        <a href="../PeakFitting/">Peak Fitting</a>
+                    </li>
+                    <li >
+                        <a href="../Tutorial/">Tutorial</a>
+                    </li>
+                    <li >
+                        <a href="../Tips/">Tips</a>
+                    </li>
+                    <li >
+                        <a href="../ToDo/">Todo</a>
+                    </li>
+                    <li >
+                        <a href="../References/">References</a>
+                    </li>
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                    <li >
+                        <a rel="next" href="../GeneralFunctions/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../MLregressor/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/charlesll/Spectra.jl">
+                                <i class="fa fa-github"></i>GitHub
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
 </div>
-      </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-	<ul class="current">
-	  
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="..">Home</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../Installation/">Installation</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../PreProcessing/">Pre-Processing</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../GeneralFunctions/">General Functions</a>
-	    </li>
-          
-            <li class="toctree-l1 current">
-		
-    <a class="current" href="./">Rameau</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l2"><a href="#rameau">RamEau</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l3" href="#introductory-notes">Introductory notes</a></li>
-        
-            <li><a class="toctree-l3" href="#function-rameau">Function rameau</a></li>
-        
-            <li><a class="toctree-l3" href="#quick-examples">Quick examples</a></li>
-        
-            <li><a class="toctree-l3" href="#input-file-liste">Input file liste</a></li>
-        
-            <li><a class="toctree-l3" href="#temperature-and-excitation-line-effects-corrections">Temperature and excitation line effects corrections</a></li>
-        
-            <li><a class="toctree-l3" href="#experimental-mode">Experimental mode</a></li>
-        
-            <li><a class="toctree-l3" href="#krregression-baseline-fitting-vs-gcv-splines">KRregression baseline fitting vs GCV splines</a></li>
-        
-        </ul>
-    
-
+        <div class="container">
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="main active"><a href="#rameau">RamEau</a></li>
+            <li><a href="#introductory-notes">Introductory notes</a></li>
+            <li><a href="#function-rameau">Function rameau</a></li>
+            <li><a href="#quick-examples">Quick examples</a></li>
+            <li><a href="#input-file-liste">Input file liste</a></li>
+            <li><a href="#temperature-and-excitation-line-effects-corrections">Temperature and excitation line effects corrections</a></li>
+            <li><a href="#experimental-mode">Experimental mode</a></li>
+            <li><a href="#krregression-baseline-fitting-vs-gcv-splines">KRregression baseline fitting vs GCV splines</a></li>
     </ul>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../MLregressor/">Machine Learning Regression</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../PeakFitting/">Peak Fitting</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../Tutorial/">Tutorial</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../Tips/">Tips</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../ToDo/">Todo</a>
-	    </li>
-          
-            <li class="toctree-l1">
-		
-    <a class="" href="../References/">References</a>
-	    </li>
-          
-        </ul>
-      </div>
-      &nbsp;
-    </nav>
+</div></div>
+                <div class="col-md-9" role="main">
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">Spectra.jl</a>
-      </nav>
-
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href="..">Docs</a> &raquo;</li>
-    
-      
-    
-    <li>Rameau</li>
-    <li class="wy-breadcrumbs-aside">
-      
-        <a href="https://github.com/charlesll/Spectra.jl/edit/master/docs/Rameau.md"
-          class="icon icon-github"> Edit on GitHub</a>
-      
-    </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main">
-            <div class="section">
-              
-                <p><a id='RamEau-1'></a></p>
+<p><a id='RamEau-1'></a></p>
 <h1 id="rameau">RamEau</h1>
 <p><a id='Introductory-notes-1'></a></p>
 <h2 id="introductory-notes">Introductory notes</h2>
@@ -235,7 +195,7 @@
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/41f6a9095c8184059cfb4fc29bfc08a81944e125/src/rameau.jl#L14-L67' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/rameau.jl#L14-L67' class='documenter-source'>source</a><br></p>
 <p><a id='Quick-examples-1'></a></p>
 <h2 id="quick-examples">Quick examples</h2>
 <p>In this example, the Julia code and the csv liste (myliste.csv) of spectra are in the working folder, the data are in ./raw/, and we want to output the corrected spectra and the figures in the ./treated/ and ./figures/ folders. So we set things like:</p>
@@ -343,55 +303,41 @@ rameau(paths,switches,input_properties = (&#39;\t&#39;,0))
 <h2 id="krregression-baseline-fitting-vs-gcv-splines">KRregression baseline fitting vs GCV splines</h2>
 <p>This is to be used with the internal calibration mode.</p>
 <p>Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). From experience, using a spline carefully adjusted provides better result. However, using KRregression may provide good results without headache to adjust any parameter. For now this is an experimental feature.</p>
-<p>Updates Spetember 2016: A well-adjusted gcvspline usually outperforms the KRregression mode. I advise sticking with the gcvspline for now.</p>
-              
-            </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../MLregressor/" class="btn btn-neutral float-right" title="Machine Learning Regression">Next <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-        <a href="../GeneralFunctions/" class="btn btn-neutral" title="General Functions"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-      
-    </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-    
-  </div>
-
-  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-</footer>
-	  
+<p>Updates Spetember 2016: A well-adjusted gcvspline usually outperforms the KRregression mode. I advise sticking with the gcvspline for now.</p></div>
         </div>
-      </div>
 
-    </section>
-    
-  </div>
-
-  <div class="rst-versions" role="note" style="cursor: pointer">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-          <a href="https://github.com/charlesll/Spectra.jl" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
-      
-      
-        <span><a href="../GeneralFunctions/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../MLregressor/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../assets/mathjaxhelper.js"></script><div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>
-    <script src="../js/theme.js"></script>
-      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      <script src="../assets/mathjaxhelper.js"></script>
 
-</body>
+    </body>
 </html>
