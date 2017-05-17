@@ -24,7 +24,7 @@ Full documentation for the stable release is hosted at http://spectrajl.readthed
 
 Documentation for the latest nighty version is available below:
 
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://USER_NAME.github.io/PACKAGE_NAME.jl/latest)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://charlesll.github.io/Spectra.jl/latest)
 
 # News
 
