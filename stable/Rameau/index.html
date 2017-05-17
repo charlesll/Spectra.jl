@@ -1,0 +1,745 @@
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A Julia library to help treating spectroscopic data.">
+      
+      
+      
+        <meta name="author" content="Charles Le Losq">
+      
+      
+        <link rel="shortcut icon" href="../assets/images/favicon.png">
+      
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.6.3">
+    
+    
+      
+        <title>Rameau - Spectra.jl</title>
+      
+    
+    
+      <script src="../assets/javascripts/modernizr-56ade86843.js"></script>
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application-e2807e330f.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-f78e5cb881.palette.css">
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+      <link rel="stylesheet" href="../assets/Documenter.css">
+    
+    
+  </head>
+  
+  
+  
+  
+    <body data-md-color-primary="indigo" data-md-color-accent="blue">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search">
+    <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <a href=".." title="Spectra.jl" class="md-icon md-icon--home md-header-nav__button">
+          </a>
+        
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <span class="md-flex__ellipsis md-header-nav__title">
+          
+            
+              
+            
+            Rameau
+          
+        </span>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
+          
+<div class="md-search" data-md-component="search">
+  <label class="md-search__overlay" for="search"></label>
+  <div class="md-search__inner">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" required placeholder="Search" accesskey="s" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
+      <label class="md-icon md-search__icon" for="search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset">close</button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta" data-md-lang-result-none="No matching documents" data-md-lang-result-one="1 matching document" data-md-lang-result-other="# matching documents">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <div class="md-header-nav__source">
+          
+            
+
+
+  
+
+
+  <a href="https://github.com/charlesll/Spectra.jl" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+          
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="drawer">
+    
+      <i class="md-icon md-icon--home md-nav__button"></i>
+    
+    Spectra.jl
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/charlesll/Spectra.jl" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Installation/" title="Installation" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../PreProcessing/" title="Pre-Processing" class="md-nav__link">
+      Pre-Processing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../GeneralFunctions/" title="General Functions" class="md-nav__link">
+      General Functions
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="toc">
+        Rameau
+      </label>
+    
+    <a href="./" title="Rameau" class="md-nav__link md-nav__link--active">
+      Rameau
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introductory-notes" title="Introductory notes" class="md-nav__link">
+    Introductory notes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-rameau" title="Function rameau" class="md-nav__link">
+    Function rameau
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-examples" title="Quick examples" class="md-nav__link">
+    Quick examples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-file-liste" title="Input file liste" class="md-nav__link">
+    Input file liste
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temperature-and-excitation-line-effects-corrections" title="Temperature and excitation line effects corrections" class="md-nav__link">
+    Temperature and excitation line effects corrections
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimental-mode" title="Experimental mode" class="md-nav__link">
+    Experimental mode
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#krregression-baseline-fitting-vs-gcv-splines" title="KRregression baseline fitting vs GCV splines" class="md-nav__link">
+    KRregression baseline fitting vs GCV splines
+  </a>
+  
+</li>
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../MLregressor/" title="Machine Learning Regression" class="md-nav__link">
+      Machine Learning Regression
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../PeakFitting/" title="Peak Fitting" class="md-nav__link">
+      Peak Fitting
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Tutorial/" title="Tutorial" class="md-nav__link">
+      Tutorial
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../Tips/" title="Tips" class="md-nav__link">
+      Tips
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../ToDo/" title="Todo" class="md-nav__link">
+      Todo
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../References/" title="References" class="md-nav__link">
+      References
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introductory-notes" title="Introductory notes" class="md-nav__link">
+    Introductory notes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#function-rameau" title="Function rameau" class="md-nav__link">
+    Function rameau
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-examples" title="Quick examples" class="md-nav__link">
+    Quick examples
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-file-liste" title="Input file liste" class="md-nav__link">
+    Input file liste
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#temperature-and-excitation-line-effects-corrections" title="Temperature and excitation line effects corrections" class="md-nav__link">
+    Temperature and excitation line effects corrections
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#experimental-mode" title="Experimental mode" class="md-nav__link">
+    Experimental mode
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#krregression-baseline-fitting-vs-gcv-splines" title="KRregression baseline fitting vs GCV splines" class="md-nav__link">
+    KRregression baseline fitting vs GCV splines
+  </a>
+  
+</li>
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/charlesll/Spectra.jl/edit/master/docs/Rameau.md" title="Edit this page" class="md-icon md-content__icon">edit</a>
+                
+                
+                <p><a id='RamEau-1'></a></p>
+<h1 id="rameau">RamEau</h1>
+<p><a id='Introductory-notes-1'></a></p>
+<h2 id="introductory-notes">Introductory notes</h2>
+<p>This is the Julia version of the RamEau software. It allows quantification of the water content of glasses following the internal and external protocols described in:</p>
+<p>Thomas, R. 2000. “Determination of Water Contents of Granite Melt Inclusions by Confocal Laser Raman Microprobe Spectroscopy.” American Mineralogist 85 (5-6): 868–72.</p>
+<p>Behrens, Harald, Jacques Roux, Daniel R. Neuville, and Michael Siemann. 2006. “Quantification of Dissolved H2O in Silicate Glasses Using Confocal microRaman Spectroscopy.” Chemical Geology 229 (1-3): 96–112. doi:10.1016/j.chemgeo.2006.01.014.</p>
+<p>Le Losq, Neuville, Moretti, Roux, 2012. Determination of water content in silicate glasses using Raman spectrometry: Implications for the study of explosive volcanism. American Mineralogist 97, 779-790.</p>
+<p>The Rameau Pascal/fortran initial software is available through the american mineralogist website. This version goes much beyond the previous version. It allows using various modes for internal calibration, and further allows using external calibrations too.</p>
+<p>Internal calibration mode refers to the technic of using the silicate peaks to scale the water peak, before relating this ratio to the sample water concentration. External calibrations directly refer the integrated intensity of peak height of the O-H stretching band to the water content, through the use of a standard glass for which this relationship is well constrained. It assumes a linear relationship between the water peak height and the glass water content. See the references listed above for more details.</p>
+<p>Please read carefully the following description, and after that jump into the examples section of Spectra.jl to see Spectra.rameau in action on a fraction of the dataset published in 2012. For the full dataset, please consult the American Mineralogist website. To conclude, any bug report, contributions on Github and suggestions will help improving this software and Spectra.jl in general. So you're very welcome to provide any feedback!</p>
+<p>NOTE ON ABREVIATIONS: Rws in the following refers to the ratio between the area of the water peak and that of the silicate bands.</p>
+<p><a id='Function-rameau-1'></a></p>
+<h2 id="function-rameau">Function rameau</h2>
+<p><a id='Spectra.rameau-Tuple{Tuple,Tuple}' href='#Spectra.rameau-Tuple{Tuple,Tuple}'>#</a>
+<strong><code>Spectra.rameau</code></strong> &mdash; <em>Method</em>.</p>
+<div class="codehilite"><pre><span></span><span class="nt">rameau</span><span class="o">(</span><span class="nt">paths</span><span class="p">::</span><span class="nd">Tuple</span><span class="o">,</span><span class="nt">switches</span><span class="p">::</span><span class="nd">Tuple</span><span class="o">;</span><span class="nt">input_properties</span><span class="o">=(</span><span class="s1">&#39; &#39;</span><span class="o">,</span><span class="nt">0</span><span class="o">),</span><span class="nt">prediction_coef</span><span class="o">=</span><span class="cp">[</span><span class="mf">0.0059</span><span class="p">;</span><span class="mf">0.0005</span><span class="cp">]</span><span class="o">,</span><span class="nt">temperature</span><span class="o">=</span><span class="nt">23</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span><span class="nt">laser</span><span class="o">=</span><span class="nt">532</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span><span class="nt">lb_break</span><span class="o">=</span><span class="nt">1600</span><span class="o">.,</span><span class="nt">hb_start</span><span class="o">=</span><span class="nt">2600</span><span class="o">.,</span><span class="nt">roi_hf_external</span> <span class="o">=</span> <span class="cp">[</span><span class="mi">3000</span><span class="nx">.</span> <span class="mi">3100</span><span class="nx">.</span><span class="p">;</span> <span class="mi">3800</span><span class="nx">.</span> <span class="mi">3900</span><span class="nx">.</span><span class="cp">]</span><span class="o">,</span><span class="nt">basetype</span><span class="o">=</span><span class="s2">&quot;gcvspline&quot;</span><span class="o">,</span><span class="nt">mmap_switch</span><span class="o">=</span><span class="nt">true</span><span class="o">)</span>
+</pre></div>
+
+
+<p>INPUTS:</p>
+<div class="codehilite"><pre><span></span><span class="n">paths</span><span class="o">:</span> <span class="n">Tuple</span><span class="o">{</span><span class="n">Strings</span><span class="o">},</span> <span class="n">it</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">following</span> <span class="n">strings</span><span class="o">:</span>
+
+    <span class="n">in_liste</span><span class="o">:</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">of</span> <span class="n">your</span> <span class="n">liste</span> <span class="n">of</span> <span class="n">spectra</span> <span class="o">(</span><span class="n">see</span> <span class="n">the</span> <span class="n">description</span> <span class="n">of</span> <span class="k">this</span> <span class="n">liste</span> <span class="n">below</span><span class="o">),</span> <span class="n">e</span><span class="o">.</span><span class="na">g</span><span class="o">.</span> <span class="s2">&quot;./liste_2012.csv&quot;</span>
+
+    <span class="n">in_path</span> <span class="o">=</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">of</span> <span class="n">the</span> <span class="n">repertory</span> <span class="n">where</span> <span class="n">your</span> <span class="n">raw</span> <span class="n">spectra</span> <span class="n">are</span> <span class="n">stored</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">g</span><span class="o">.</span> <span class="s2">&quot;./raw/&quot;</span>
+
+    <span class="n">out_path</span> <span class="o">=</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">of</span> <span class="n">the</span> <span class="n">repertory</span> <span class="n">where</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">output</span> <span class="n">the</span> <span class="n">corrected</span> <span class="n">spectra</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">g</span><span class="o">.</span> <span class="s2">&quot;./treated/&quot;</span> <span class="o">(</span><span class="n">THIS</span> <span class="n">FOLDER</span> <span class="n">MUST</span> <span class="n">EXIST</span> <span class="n">PRIOR</span> <span class="n">TO</span> <span class="n">RUN</span><span class="o">)</span>
+
+    <span class="n">fig_path</span><span class="o">=</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">of</span> <span class="n">the</span> <span class="n">repertory</span> <span class="k">for</span> <span class="n">saving</span> <span class="n">the</span> <span class="n">figures</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">g</span><span class="o">.</span> <span class="s2">&quot;./figures/&quot;</span>
+
+    <span class="n">rws_save_file</span> <span class="o">=</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">of</span> <span class="n">the</span> <span class="n">csv</span> <span class="n">file</span> <span class="n">where</span> <span class="n">the</span> <span class="n">results</span> <span class="n">will</span> <span class="n">be</span> <span class="n">stored</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">g</span><span class="o">.</span> <span class="s2">&quot;rws_calculated.csv&quot;</span><span class="o">.</span> <span class="n">If</span> <span class="n">calibration</span> <span class="k">is</span> <span class="kd">set</span> <span class="n">to</span> <span class="s2">&quot;yes&quot;</span><span class="o">,</span> <span class="n">it</span> <span class="n">outputs</span> <span class="n">an</span> <span class="n">array</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">Rws</span><span class="o">,</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">water</span> <span class="n">content</span> <span class="n">and</span> <span class="n">the</span> <span class="n">calculated</span> <span class="n">water</span> <span class="n">content</span> <span class="k">in</span> <span class="n">columns</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span> <span class="n">and</span> <span class="mi">3</span><span class="o">,</span> <span class="n">respectively</span><span class="o">.</span> <span class="n">If</span> <span class="n">calibration</span> <span class="k">is</span> <span class="kd">set</span> <span class="n">to</span> <span class="n">anything</span> <span class="k">else</span><span class="o">,</span> <span class="n">it</span> <span class="n">outputs</span> <span class="n">the</span> <span class="n">rws</span> <span class="n">and</span> <span class="n">the</span> <span class="n">water</span> <span class="n">content</span> <span class="n">predicted</span> <span class="k">with</span> <span class="n">the</span> <span class="n">provided</span> <span class="n">prediction_coef</span>
+
+    <span class="n">rws_save_fig</span> <span class="o">=</span> <span class="n">the</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">of</span> <span class="n">the</span> <span class="n">figure</span> <span class="k">for</span> <span class="n">the</span> <span class="n">calibration</span><span class="o">,</span> <span class="n">e</span><span class="o">.</span><span class="na">g</span><span class="o">.</span> <span class="s2">&quot;rws_calculated.jpg&quot;</span><span class="o">.</span> <span class="n">Note</span><span class="o">:</span> <span class="n">It</span> <span class="n">only</span> <span class="n">works</span> <span class="n">when</span> <span class="n">calibration</span> <span class="k">is</span> <span class="n">on</span> <span class="s2">&quot;yes&quot;</span><span class="o">,</span> <span class="n">and</span> <span class="n">Type_of_calibration</span> <span class="k">is</span> <span class="kd">set</span> <span class="n">on</span> <span class="s2">&quot;internal&quot;</span><span class="o">.</span> <span class="n">Just</span> <span class="kd">set</span> <span class="n">it</span> <span class="n">to</span> <span class="s2">&quot;trash.jpg&quot;</span> <span class="k">if</span> <span class="n">you</span> <span class="n">are</span> <span class="n">not</span> <span class="n">going</span> <span class="n">to</span> <span class="n">use</span> <span class="n">it</span><span class="o">.</span>
+
+<span class="n">input_properties</span><span class="o">:</span> <span class="n">Tuple</span><span class="o">,</span> <span class="n">it</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">delimiter</span> <span class="n">of</span> <span class="n">the</span> <span class="n">columns</span> <span class="k">in</span> <span class="n">your</span> <span class="n">spectra</span> <span class="n">files</span><span class="o">,</span> <span class="n">and</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">starting</span> <span class="n">lines</span> <span class="n">to</span> <span class="n">skip</span><span class="o">.</span> <span class="n">For</span> <span class="n">instance</span><span class="o">,</span> <span class="n">use</span> <span class="o">(</span><span class="s1">&#39; &#39;</span><span class="o">,</span><span class="mi">1</span><span class="o">)</span> <span class="k">if</span> <span class="n">your</span> <span class="n">files</span> <span class="n">have</span> <span class="n">one</span> <span class="n">header</span> <span class="n">line</span> <span class="n">and</span> <span class="n">the</span> <span class="n">columns</span> <span class="n">are</span> <span class="n">separated</span>  <span class="n">by</span> <span class="n">tabulations</span><span class="o">,</span> <span class="n">or</span> <span class="o">(</span><span class="s1">&#39;,&#39;</span><span class="o">,</span><span class="mi">0</span><span class="o">)</span> <span class="k">if</span> <span class="n">you</span> <span class="n">use</span> <span class="n">CSV</span> <span class="n">files</span> <span class="n">without</span> <span class="n">header</span><span class="o">.</span>
+
+<span class="n">switches</span><span class="o">:</span> <span class="n">Tuple</span><span class="o">,</span> <span class="n">it</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">different</span> <span class="n">switches</span> <span class="k">as</span> <span class="o">(</span><span class="n">Type_of_calibration</span><span class="o">,</span> <span class="n">calibration</span><span class="o">?,</span> <span class="n">experimental</span><span class="o">?,</span> <span class="n">temperature_laser_correction</span><span class="o">?).</span>
+
+    <span class="n">Type_of_calibration</span><span class="o">:</span> <span class="n">should</span> <span class="n">be</span> <span class="kd">set</span> <span class="n">to</span> <span class="s2">&quot;internal&quot;</span> <span class="n">or</span> <span class="s2">&quot;external&quot;</span><span class="o">.</span> <span class="n">The</span> <span class="n">external</span> <span class="n">mode</span> <span class="n">requires</span> <span class="n">standards</span><span class="o">,</span> <span class="k">as</span> <span class="n">described</span> <span class="k">in</span> <span class="n">Behrens</span> <span class="n">et</span> <span class="n">al</span><span class="o">.</span> <span class="o">(</span><span class="mi">2006</span><span class="o">)</span> <span class="n">and</span> <span class="n">Thomas</span> <span class="n">et</span> <span class="n">al</span><span class="o">.</span> <span class="o">(</span><span class="mi">2008</span><span class="o">).</span> <span class="n">If</span> <span class="n">you</span> <span class="n">use</span> <span class="n">the</span> <span class="n">external</span> <span class="n">mode</span><span class="o">,</span> <span class="n">you</span> <span class="n">can</span> <span class="n">leave</span> <span class="n">blanks</span> <span class="k">for</span> <span class="n">the</span> <span class="n">other</span> <span class="n">switches</span><span class="o">.</span> <span class="n">For</span> <span class="n">instance</span><span class="o">,</span> <span class="n">enter</span> <span class="o">(</span><span class="s2">&quot;external&quot;</span><span class="o">,</span><span class="s2">&quot;&quot;</span><span class="o">,</span><span class="s2">&quot;&quot;</span><span class="o">,</span><span class="s2">&quot;&quot;</span><span class="o">).</span>
+
+    <span class="n">calibration</span><span class="o">?</span> <span class="o">:</span>  <span class="n">use</span> <span class="n">only</span> <span class="k">with</span> <span class="n">the</span> <span class="s2">&quot;internal&quot;</span> <span class="n">mode</span><span class="o">,</span> <span class="k">this</span> <span class="n">should</span> <span class="n">be</span> <span class="n">equal</span> <span class="n">to</span> <span class="s2">&quot;yes&quot;</span> <span class="n">or</span> <span class="s2">&quot;no&quot;</span><span class="o">.</span> <span class="n">Enter</span> <span class="n">yes</span> <span class="k">if</span> <span class="n">you</span> <span class="n">are</span> <span class="n">setting</span> <span class="n">up</span> <span class="n">a</span> <span class="k">new</span> <span class="n">calibration</span><span class="o">,</span> <span class="n">or</span> <span class="s2">&quot;no&quot;</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span> <span class="n">a</span> <span class="n">previously</span> <span class="n">determined</span> <span class="n">calibration</span> <span class="n">coefficient</span> <span class="k">with</span> <span class="n">providing</span> <span class="n">the</span> <span class="n">later</span> <span class="k">in</span> <span class="n">the</span> <span class="n">prediction_coef</span> <span class="n">variable</span> <span class="o">(</span><span class="n">see</span> <span class="n">options</span><span class="o">).</span>
+
+    <span class="n">experimental</span><span class="o">?</span> <span class="o">:</span> <span class="n">use</span> <span class="n">only</span> <span class="k">with</span> <span class="n">the</span> <span class="s2">&quot;internal&quot;</span> <span class="n">mode</span><span class="o">,</span> <span class="k">this</span> <span class="k">is</span> <span class="n">an</span> <span class="n">experimental</span> <span class="n">code</span><span class="o">.</span> <span class="n">For</span> <span class="n">now</span><span class="o">,</span> <span class="n">only</span> <span class="n">the</span> <span class="s2">&quot;double&quot;</span> <span class="n">feature</span> <span class="k">is</span> <span class="n">advised</span><span class="o">.</span> <span class="n">It</span> <span class="n">allows</span> <span class="n">using</span> <span class="n">different</span> <span class="n">smoothing</span> <span class="n">spline</span> <span class="n">coefficients</span> <span class="k">for</span> <span class="n">the</span> <span class="n">water</span> <span class="n">and</span> <span class="n">silicate</span> <span class="n">bands</span><span class="o">,</span> <span class="n">delimited</span> <span class="n">by</span> <span class="n">the</span> <span class="n">lb_break</span> <span class="n">and</span> <span class="n">hb_start</span> <span class="n">variables</span> <span class="o">(</span><span class="n">see</span> <span class="n">below</span><span class="o">).</span>
+
+    <span class="n">temperature_laser_correction</span><span class="o">?</span> <span class="o">:</span> <span class="n">use</span> <span class="n">only</span> <span class="k">with</span> <span class="n">the</span> <span class="s2">&quot;internal&quot;</span> <span class="n">mode</span><span class="o">,</span> <span class="k">this</span> <span class="n">should</span> <span class="n">be</span> <span class="n">equal</span> <span class="n">to</span> <span class="s2">&quot;yes&quot;</span> <span class="n">or</span> <span class="s2">&quot;no&quot;</span><span class="o">.</span> <span class="n">This</span> <span class="n">asks</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span> <span class="n">the</span> <span class="n">temperature</span><span class="o">-</span><span class="n">laser</span> <span class="n">wavelength</span> <span class="n">correction</span> <span class="k">as</span> <span class="n">done</span> <span class="k">in</span> <span class="n">Le</span> <span class="n">Losq</span> <span class="n">et</span> <span class="n">al</span><span class="o">.</span> <span class="o">(</span><span class="mi">2012</span><span class="o">).</span> <span class="n">If</span> <span class="n">you</span> <span class="n">use</span> <span class="n">the</span> <span class="n">double</span> <span class="n">baseline</span> <span class="n">mode</span><span class="o">,</span> <span class="k">this</span> <span class="n">correction</span> <span class="k">is</span> <span class="n">applied</span> <span class="n">after</span> <span class="n">removing</span> <span class="n">the</span> <span class="n">background</span> <span class="n">under</span> <span class="n">the</span> <span class="n">water</span> <span class="n">peak</span><span class="o">.</span>
+</pre></div>
+
+
+<p>OPTIONS:</p>
+<div class="codehilite"><pre><span></span><span class="n">prediction_coef</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="k">this</span> <span class="n">array</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">calibration</span> <span class="n">coefficient</span> <span class="k">with</span> <span class="n">its</span> <span class="n">error</span> <span class="n">bar</span><span class="o">.</span> <span class="n">Those</span> <span class="n">values</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span> <span class="k">in</span> <span class="n">the</span> <span class="n">predictions</span><span class="o">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">use</span> <span class="n">the</span> <span class="n">predictive</span> <span class="n">mode</span> <span class="o">(</span><span class="n">i</span><span class="o">.</span><span class="na">g</span><span class="o">.,</span> <span class="n">calibration</span> <span class="k">switch</span> <span class="k">is</span> <span class="n">not</span> <span class="kd">set</span> <span class="n">to</span> <span class="s2">&quot;yes&quot;</span><span class="o">).</span> <span class="n">Default</span> <span class="o">=</span> <span class="o">[</span><span class="mf">0.0059</span><span class="o">;</span><span class="mf">0.0005</span><span class="o">].</span>
+
+<span class="n">temperature</span><span class="o">:</span> <span class="n">Float64</span><span class="o">,</span> <span class="n">the</span> <span class="n">temperature</span> <span class="k">for</span> <span class="n">the</span> <span class="n">temperature</span><span class="o">-</span><span class="n">laser</span> <span class="n">wavelength</span> <span class="n">correction</span> <span class="k">in</span> <span class="n">Celsius</span><span class="o">.</span> <span class="n">Default</span> <span class="o">=</span> <span class="mf">23.0</span><span class="o">.</span>
+
+<span class="n">laser</span><span class="o">:</span> <span class="n">Float64</span><span class="o">,</span> <span class="n">the</span> <span class="n">laser</span> <span class="n">wavelength</span> <span class="k">in</span> <span class="n">nm</span> <span class="k">for</span> <span class="n">the</span> <span class="n">temperature</span><span class="o">-</span><span class="n">laser</span> <span class="n">wavelength</span> <span class="n">correction</span><span class="o">.</span> <span class="n">Default</span> <span class="o">=</span> <span class="mf">532.0</span><span class="o">.</span>
+
+<span class="n">lb_break</span><span class="o">:</span> <span class="n">Float64</span><span class="o">,</span> <span class="k">for</span> <span class="n">double</span> <span class="n">baseline</span> <span class="n">correction</span><span class="o">,</span> <span class="n">the</span> <span class="n">breaking</span> <span class="n">point</span> <span class="n">before</span> <span class="n">which</span> <span class="n">the</span> <span class="n">software</span> <span class="n">will</span> <span class="n">consider</span> <span class="n">the</span> <span class="n">BIRs</span> <span class="k">in</span> <span class="n">the</span> <span class="n">low</span> <span class="n">frequency</span> <span class="n">region</span><span class="o">.</span> <span class="n">Default</span> <span class="o">=</span> <span class="mf">2010.0</span><span class="o">.</span>
+
+<span class="n">hb_start</span><span class="o">:</span> <span class="n">Float64</span><span class="o">,</span> <span class="k">for</span> <span class="n">double</span> <span class="n">baseline</span> <span class="n">correction</span><span class="o">,</span> <span class="n">the</span> <span class="n">breaking</span> <span class="n">point</span> <span class="n">after</span> <span class="n">which</span> <span class="n">the</span> <span class="n">software</span> <span class="n">will</span> <span class="n">consider</span> <span class="n">the</span> <span class="n">BIRs</span> <span class="k">in</span> <span class="n">the</span> <span class="n">high</span> <span class="n">frequency</span> <span class="n">region</span><span class="o">.</span> <span class="n">Default</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="o">.</span>
+</pre></div>
+
+
+<p>roi_hf_external: Array{Float64}, the roi for fitting the linear baseline in the external calibration mode. Default = [3000. 3100.; 3800. 3900.].</p>
+<div class="codehilite"><pre><span></span><span class="n">basetype</span><span class="o">:</span> <span class="n">String</span><span class="o">,</span> <span class="n">the</span> <span class="n">type</span> <span class="n">of</span> <span class="n">baseline</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">fit</span><span class="o">.</span> <span class="n">Corresponds</span> <span class="n">to</span> <span class="n">the</span> <span class="s2">&quot;basetype&quot;</span> <span class="n">parameter</span> <span class="n">of</span> <span class="n">the</span> <span class="n">baseline</span> <span class="kd">function</span><span class="o">.</span>  <span class="n">Default</span> <span class="o">=</span> <span class="s2">&quot;gcvspline&quot;</span><span class="o">.</span>
+</pre></div>
+
+
+<p>mmap_switch: false or true, this allows to switch on or off the memory mapping in the <code>readcsv</code>/<code>readdlm</code> functions that <code>rameau</code> uses. Default = "true".</p>
+<p>OUTPUTS:</p>
+<div class="codehilite"><pre><span></span>Rameau does not provide any outputs directly in Julia, but saves everything in the folders you indicate in the variable &quot;paths&quot;.
+</pre></div>
+
+
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/8194b1310093efd47502fed301c5b3e7a9410d7f/src/rameau.jl#L14-L67' class='documenter-source'>source</a><br></p>
+<p><a id='Quick-examples-1'></a></p>
+<h2 id="quick-examples">Quick examples</h2>
+<p>In this example, the Julia code and the csv liste (myliste.csv) of spectra are in the working folder, the data are in ./raw/, and we want to output the corrected spectra and the figures in the ./treated/ and ./figures/ folders. So we set things like:</p>
+<div class="codehilite"><pre><span></span>in_liste: &quot;./myliste.csv&quot;
+
+in_path = &quot;./raw/&quot;
+
+out_path = &quot;./treated/&quot;
+
+fig_path= &quot;./figures/&quot;
+
+rws_save_file = &quot;./treated/&quot;
+
+rws_save_fig = &quot;./figures/mycalibration.pdf&quot;
+
+paths = (in_liste,in_path,out_path,fig_path,rws_save_file,rws_save_fig)
+</pre></div>
+
+
+<p>Now, for performing an internal calibration as explained in Le Losq et al. (2012), enter:</p>
+<div class="codehilite"><pre><span></span>switches = (&quot;internal&quot;,&quot;&quot;yes&quot;,&quot;no&quot;,&quot;yes&quot;)
+</pre></div>
+
+
+<p>and call Rameau:</p>
+<div class="codehilite"><pre><span></span>rameau(paths,switches,input_properties = (&#39;\t&#39;,0))
+</pre></div>
+
+
+<p>This will allow you to get your prediction coefficient prediction_coef With this knowledge, you can predict values from the spectra of new glasses with the names in "myliste_newglasses.csv" with using the commands:</p>
+<div class="codehilite"><pre><span></span>in_liste = &quot;myliste_newglasses.csv&quot;
+
+switches = (&quot;internal&quot;,&quot;&quot;no&quot;,&quot;no&quot;,&quot;yes&quot;)
+
+rameau(paths,switches,prediction_coef = 0.0059, input_properties = (&#39;\t&#39;,0))
+</pre></div>
+
+
+<p>For an external calibration, you need a standard glass with known water concentration. You also need the knowledge of the densities of the standard and sample glasses. Then, the following commands allow you to calculate the water content of your sample with using the protocol described in Thomas et al. (2008; see also references cited therein):</p>
+<div class="codehilite"><pre><span></span>in_liste: &quot;./myliste.csv&quot;
+
+in_path = &quot;./raw/&quot;
+
+out_path = &quot;./treated/&quot;
+
+fig_path= &quot;./figures/&quot;
+
+rws_save_file = &quot;water_contents_external_calibration.csv&quot; # this will save the output values
+
+rws_save_fig = &quot;&quot; # not used in the external mode
+
+paths = (in_liste,in_path,out_path,fig_path,rws_save_file,rws_save_fig)
+
+switches = (&quot;external&quot;,&quot;no&quot;,&quot;no&quot;,&quot;no&quot;)
+
+rameau(paths,switches,input_properties = (&#39;\t&#39;,0))
+</pre></div>
+
+
+<p><a id='Input-file-liste-1'></a></p>
+<h2 id="input-file-liste">Input file liste</h2>
+<p>The great news about RamEau in Julia is that you can work your file liste in Excel, as it is now a CSV file. It makes it much more pleasant to use, and readable.</p>
+<p>If using the "internal" mode, this file liste MUST contain:</p>
+<div class="codehilite"><pre><span></span><span class="nt">column</span> <span class="nt">1</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">file</span> <span class="nt">name</span> <span class="nt">and</span> <span class="nt">extensions</span><span class="o">,</span> <span class="nt">e</span><span class="p">.</span><span class="nc">g</span><span class="o">.</span> <span class="nt">myspectrum</span><span class="p">.</span><span class="nc">txt</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">2</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">name</span> <span class="nt">of</span> <span class="nt">your</span> <span class="nt">product</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">3</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">water</span> <span class="nt">content</span><span class="o">,</span> <span class="nt">if</span> <span class="nt">known</span><span class="o">.</span> <span class="nt">If</span> <span class="nt">unknow</span><span class="o">,</span> <span class="nt">put</span> <span class="nt">0</span><span class="p">.</span><span class="nc">0</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">4</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">coefficient</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">silicate</span> <span class="nt">part</span><span class="o">.</span> <span class="nt">Note</span><span class="o">:</span> <span class="nt">this</span> <span class="nt">value</span> <span class="nt">is</span> <span class="nt">used</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">single</span> <span class="nt">baseline</span> <span class="nt">procedure</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">whole</span> <span class="nt">spectrum</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">5</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">coefficient</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">water</span> <span class="nt">part</span><span class="o">,</span> <span class="nt">in</span> <span class="nt">case</span> <span class="nt">you</span> <span class="nt">use</span> <span class="nt">the</span> <span class="nt">experimental</span> <span class="nt">mode</span> <span class="nt">with</span> <span class="nt">the</span> <span class="nt">double</span> <span class="nt">baseline</span> <span class="nt">fitting</span> <span class="nt">procedure</span> <span class="o">(</span><span class="nt">experimental</span><span class="o">?</span> <span class="o">=</span> <span class="s2">&quot;yes&quot;</span> <span class="o">+</span> <span class="nt">temperature_laser_correction</span><span class="o">?</span> <span class="o">=</span> <span class="s2">&quot;yes&quot;</span><span class="o">);</span>
+
+<span class="nt">columns</span> <span class="nt">6</span> <span class="nt">to</span> <span class="nt">end</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">beginning</span> <span class="nt">and</span> <span class="nt">ends</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">BIRs</span><span class="o">,</span> <span class="nt">paired</span><span class="o">.</span> <span class="nt">Please</span> <span class="nt">keep</span> <span class="nt">the</span> <span class="nt">same</span> <span class="nt">number</span> <span class="nt">of</span> <span class="nt">BIRs</span> <span class="nt">for</span> <span class="nt">all</span> <span class="nt">the</span> <span class="nt">spectra</span> <span class="nt">in</span> <span class="nt">one</span> <span class="nt">batch</span><span class="o">.</span>
+</pre></div>
+
+
+<p>If using the "external" mode, this file liste MUST contain:</p>
+<div class="codehilite"><pre><span></span><span class="nt">column</span> <span class="nt">1</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">file</span> <span class="nt">name</span> <span class="nt">and</span> <span class="nt">extensions</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">references</span><span class="o">,</span> <span class="nt">e</span><span class="p">.</span><span class="nc">g</span><span class="o">.</span> <span class="nt">myreference</span><span class="p">.</span><span class="nc">txt</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">2</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">name</span> <span class="nt">of</span> <span class="nt">your</span> <span class="nt">references</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">3</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">water</span> <span class="nt">content</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">references</span><span class="o">,</span> <span class="nt">in</span> <span class="nt">wt</span><span class="o">%;</span>
+
+<span class="nt">column</span> <span class="nt">4</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">density</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">references</span><span class="o">,</span> <span class="nt">in</span> <span class="nt">kg</span> <span class="nt">m-3</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">5</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">file</span> <span class="nt">name</span> <span class="nt">and</span> <span class="nt">extensions</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">samples</span><span class="o">,</span> <span class="nt">e</span><span class="p">.</span><span class="nc">g</span><span class="o">.</span> <span class="nt">mysample</span><span class="p">.</span><span class="nc">txt</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">6</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">name</span> <span class="nt">of</span> <span class="nt">your</span> <span class="nt">samples</span><span class="o">;</span>
+
+<span class="nt">column</span> <span class="nt">7</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">estimated</span> <span class="nt">density</span> <span class="nt">of</span> <span class="nt">your</span> <span class="nt">samples</span><span class="o">,</span> <span class="nt">in</span> <span class="nt">kg</span> <span class="nt">m-3</span><span class="o">.</span>
+</pre></div>
+
+
+<p>WARNING: BE SURE THAT THE NUMBER YOU PROVIDE ARE FLOAT NUMBER!</p>
+<p><a id='Temperature-and-excitation-line-effects-corrections-1'></a></p>
+<h2 id="temperature-and-excitation-line-effects-corrections">Temperature and excitation line effects corrections</h2>
+<p>The "internal" mode uses the "long" mode of the tlcorrection function, whereas the "external" mode uses the "hehlen", which takes into account the sample density (see tlcorrection function documentation). This allows to intrisically correct the intensity from density effects.</p>
+<p><a id='Experimental-mode-1'></a></p>
+<h2 id="experimental-mode">Experimental mode</h2>
+<p>The experimental mode contains code for solutions that are currently under development. You may prefer not using it.</p>
+<p>However, an interesting feature is provided there, the "double" mode:</p>
+<p>When setting the switch experimental? to "double" and combining it with the switch tlcorrection "yes", it allows you to use different smoothing coefficients for the silicate and water signals. In order to use it, you must set the wavenumber of the first ROI for the water band above 2500 cm-1, and the last fo the silicate band below 1600 cm-1 (see the example file for instance). The two different smoothing coefficients are indicated in the dataliste csv file.</p>
+<p><a id='KRregression-baseline-fitting-vs-GCV-splines-1'></a></p>
+<h2 id="krregression-baseline-fitting-vs-gcv-splines">KRregression baseline fitting vs GCV splines</h2>
+<p>This is to be used with the internal calibration mode.</p>
+<p>Back in 2012 we mostly used the Generalized Cross-Validated splines for fitting the spectral background. However, recent developments show that KRregression or SVMregression may provid better results with less headache for the user (not need to tune the spline coefficient parameter). From experience, using a spline carefully adjusted provides better result. However, using KRregression may provide good results without headache to adjust any parameter. For now this is an experimental feature.</p>
+<p>Updates Spetember 2016: A well-adjusted gcvspline usually outperforms the KRregression mode. I advise sticking with the gcvspline for now.</p>
+                
+                  
+                
+              
+              
+                
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../GeneralFunctions/" title="General Functions" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                General Functions
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../MLregressor/" title="Machine Learning Regression" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Machine Learning Regression
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="http://www.mkdocs.org" title="MkDocs">MkDocs</a>
+        and
+        <a href="http://squidfunk.github.io/mkdocs-material/" title="Material for MkDocs">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application-6b4ff16fa7.js"></script>
+      <script>app.initialize({url:{base:".."}})</script>
+      
+        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      
+        <script src="../assets/mathjaxhelper.js"></script>
+      
+    
+    
+      
+    
+  </body>
+</html>
