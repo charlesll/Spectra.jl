@@ -1,6 +1,6 @@
 # Spectra.jl
 
-Copyright (c) 2016 Dr. Charles Le Losq
+Copyright (c) 2016-2017 Dr. Charles Le Losq
 
 email: charles.lelosq@anu.edu.au
 
@@ -20,11 +20,11 @@ The version hosted on Github is bleeding-edge, and will probably NOT WORK well a
 
 # Documentation
 
-Full documentation for the stable release is hosted at http://spectrajl.readthedocs.io/en/stable/ .
+For old versions of Spectra <= 0.3.1, please see the documentation http://spectrajl.readthedocs.io/en/v0.3.1/ and earlier related versions.
 
-Documentation for the latest nighty version is available below:
+Full documentation for the stable and latest versions is now available at
 
-[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://charlesll.github.io/Spectra.jl/latest)
+[![](https://img.shields.io/badge/docs-latest-blue.svg)](https://charlesll.github.io/Spectra.jl/latest) [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://charlesll.github.io/Spectra.jl/stable)
 
 # News
 

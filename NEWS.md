@@ -1,6 +1,6 @@
 # Spectra.jl News
 
-Copyright (c) 2016 Dr. Charles Le Losq
+Copyright (c) 2016-2017 Dr. Charles Le Losq
 
 email: charles.lelosq@anu.edu.au
 
@@ -9,6 +9,12 @@ email: charles.lelosq@anu.edu.au
 Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
+
+# 0.3.2
+
+- Various slight corrections in the code
+
+- Documentation is now generated using Documenter.jl
 
 # 0.3.1
 
