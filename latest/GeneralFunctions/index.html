@@ -1,126 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        <meta name="author" content="Charles Le Losq">
-        
-        <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>General Functions - Spectra.jl</title>
-        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
-        <link href="../css/font-awesome-4.5.0.css" rel="stylesheet">
-        <link href="../css/base.css" rel="stylesheet">
-        <link rel="stylesheet" href="../css/highlight.css">
-        <link href="../assets/Documenter.css" rel="stylesheet">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-        <![endif]-->
-	
-	<script src="../js/jquery-1.10.2.min.js"></script>
-        <script src="../js/bootstrap-3.0.3.min.js"></script>
-        <script src="../js/highlight.pack.js"></script> 
-    </head>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Charles Le Losq">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>General Functions - Spectra.jl</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
-    <body>
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../assets/Documenter.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "General Functions";
+    var mkdocs_page_input_path = "GeneralFunctions.md";
+    var mkdocs_page_url = "/GeneralFunctions/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
 
-        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-    <div class="container">
+<body class="wy-body-for-nav" role="document">
 
-        <!-- Collapsed navigation -->
-        <div class="navbar-header">
-            <!-- Expander button -->
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="..">Spectra.jl</a>
-        </div>
+  <div class="wy-grid-for-nav">
 
-        <!-- Expanded navigation -->
-        <div class="navbar-collapse collapse">
-                <!-- Main navigation -->
-                <ul class="nav navbar-nav">
-                    <li >
-                        <a href="..">Home</a>
-                    </li>
-                    <li >
-                        <a href="../Installation/">Installation</a>
-                    </li>
-                    <li >
-                        <a href="../PreProcessing/">Pre-Processing</a>
-                    </li>
-                    <li class="active">
-                        <a href="./">General Functions</a>
-                    </li>
-                    <li >
-                        <a href="../Rameau/">Rameau</a>
-                    </li>
-                    <li >
-                        <a href="../MLregressor/">Machine Learning Regression</a>
-                    </li>
-                    <li >
-                        <a href="../PeakFitting/">Peak Fitting</a>
-                    </li>
-                    <li >
-                        <a href="../Tutorial/">Tutorial</a>
-                    </li>
-                    <li >
-                        <a href="../Tips/">Tips</a>
-                    </li>
-                    <li >
-                        <a href="../ToDo/">Todo</a>
-                    </li>
-                    <li >
-                        <a href="../References/">References</a>
-                    </li>
-                </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
-                        <i class="fa fa-search"></i> Search
-                    </a>
-                </li>
-                    <li >
-                        <a rel="next" href="../PreProcessing/">
-                            <i class="fa fa-arrow-left"></i> Previous
-                        </a>
-                    </li>
-                    <li >
-                        <a rel="prev" href="../Rameau/">
-                            Next <i class="fa fa-arrow-right"></i>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/charlesll/Spectra.jl">
-                                <i class="fa fa-github"></i>GitHub
-                        </a>
-                    </li>
-            </ul>
-        </div>
-    </div>
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Spectra.jl</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
 </div>
+      </div>
 
-        <div class="container">
-                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#general-functions">General Functions</a></li>
-            <li><a href="#peak-shapes">Peak shapes</a></li>
-            <li><a href="#peak-measurement">Peak measurement</a></li>
-            <li><a href="#integration">Integration</a></li>
-            <li><a href="#polynomials">Polynomials</a></li>
-            <li><a href="#splines">Splines</a></li>
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Installation/">Installation</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../PreProcessing/">Pre-Processing</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">General Functions</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#general-functions">General Functions</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#peak-shapes">Peak shapes</a></li>
+        
+            <li><a class="toctree-l3" href="#peak-measurement">Peak measurement</a></li>
+        
+            <li><a class="toctree-l3" href="#integration">Integration</a></li>
+        
+            <li><a class="toctree-l3" href="#polynomials">Polynomials</a></li>
+        
+            <li><a class="toctree-l3" href="#splines">Splines</a></li>
+        
+        </ul>
+    
+
     </ul>
-</div></div>
-                <div class="col-md-9" role="main">
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Rameau/">Rameau</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../MLregressor/">Machine Learning Regression</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../PeakFitting/">Peak Fitting</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Tutorial/">Tutorial</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../Tips/">Tips</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../ToDo/">Todo</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../References/">References</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
 
-<p><a id='General-Functions-1'></a></p>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Spectra.jl</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>General Functions</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="https://github.com/charlesll/Spectra.jl/edit/master/docs/GeneralFunctions.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><a id='General-Functions-1'></a></p>
 <h1 id="general-functions">General Functions</h1>
 <p><a id='Peak-shapes-1'></a></p>
 <h2 id="peak-shapes">Peak shapes</h2>
@@ -193,7 +231,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 
 
 <p>This should provide you how the shape of the peak is as a function of both the frequency and the chemical composition there. If you want to go further, you might just want to stick gaussiennes in a loop, and play with creating various peaks with changing the chemical parameter in the x[:,2] column!</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L63-L129' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L63-L129' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.lorentziennes-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.lorentziennes-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.lorentziennes</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">lorentziennes</span><span class="o">(</span><span class="nt">amplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">centre</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">hwhm</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">style</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="o">)</span>
@@ -221,7 +259,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L146-L167' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L146-L167' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.pearson7-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.pearson7-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.pearson7</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">pearson7</span><span class="o">(</span><span class="nt">a1</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">a2</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">a3</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">a4</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">style</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="o">)</span>
@@ -252,7 +290,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L185-L211' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L185-L211' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.pseudovoigts-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.pseudovoigts-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.pseudovoigts</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">pseudovoigts</span><span class="o">(</span><span class="nt">amplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">centre</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">hwhm</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">lorentzian_fraction</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">style</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="o">)</span>
@@ -283,7 +321,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L229-L254' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L229-L254' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.normal_dist-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.normal_dist-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.normal_dist</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
@@ -314,7 +352,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L277-L303' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L277-L303' class='documenter-source'>source</a><br></p>
 <p><a id='Peak-measurement-1'></a></p>
 <h2 id="peak-measurement">Peak measurement</h2>
 <p><a id='Spectra.peakhw-Tuple{Array{Float64,N},Array{Float64,N}}' href='#Spectra.peakhw-Tuple{Array{Float64,N},Array{Float64,N}}'>#</a>
@@ -352,7 +390,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/peakmeasurement.jl#L17-L47' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/peakmeasurement.jl#L17-L47' class='documenter-source'>source</a><br></p>
 <p><a id='Integration-1'></a></p>
 <h2 id="integration">Integration</h2>
 <p>Spectra.jl provides functions that allow one to integrate the area under a region of a spectrum, or to calculate the area under Gaussian, Lorentzian or other bands.</p>
@@ -376,7 +414,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 
 
 <p>This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/integrale.jl#L17-L34' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/integrale.jl#L17-L34' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.bandarea-Tuple{Array{Float64,N},Array{Float64,N}}' href='#Spectra.bandarea-Tuple{Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.bandarea</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">bandarea</span><span class="o">(</span><span class="nt">Amplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">HWHM</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span> <span class="nt">peak_shape</span> <span class="o">=</span> <span class="s2">&quot;Gaussian&quot;</span><span class="o">,</span> <span class="nt">error_switch</span> <span class="o">=</span> <span class="s2">&quot;no&quot;</span><span class="o">,</span> <span class="nt">eseAmplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span> <span class="o">=</span> <span class="cp">[</span><span class="mf">0.0</span><span class="cp">]</span><span class="o">,</span> <span class="nt">eseHWHM</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span> <span class="o">=</span> <span class="cp">[</span><span class="mf">0.0</span><span class="cp">]</span><span class="o">)</span>
@@ -416,7 +454,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/integrale.jl#L50-L82' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/integrale.jl#L50-L82' class='documenter-source'>source</a><br></p>
 <p><a id='Polynomials-1'></a></p>
 <h2 id="polynomials">Polynomials</h2>
 <p><a id='Spectra.poly-Tuple{Array{Float64,1},Array{Float64,N}}' href='#Spectra.poly-Tuple{Array{Float64,1},Array{Float64,N}}'>#</a>
@@ -438,7 +476,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L16-L30' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L16-L30' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.polyfit-Tuple{Array{Float64,N},Array{Float64,N},Int64}' href='#Spectra.polyfit-Tuple{Array{Float64,N},Array{Float64,N},Int64}'>#</a>
 <strong><code>Spectra.polyfit</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
@@ -460,7 +498,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/functions.jl#L39-L56' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/functions.jl#L39-L56' class='documenter-source'>source</a><br></p>
 <p><a id='Splines-1'></a></p>
 <h2 id="splines">Splines</h2>
 <p>Not all the splines packages provide the same performances for data smoothing and interpolation. By experience, the Dierckx spline package ("Dspline" option in the baseline() function) provides a good starting point, but is not as usefull as other spline packages.</p>
@@ -540,7 +578,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 
 
 <p>SEE GCVSPL.f and Woltring (1986) for even more information.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/gcvspl_wrapper.jl#L14-L83' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/gcvspl_wrapper.jl#L14-L83' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.splderivative_julia-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.splderivative_julia-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.splderivative_julia</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">splderivative_julia</span><span class="o">(</span><span class="nt">xfull</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">xparse</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">cparse</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">SplineOrder</span><span class="p">::</span><span class="nd">Int32</span> <span class="o">=</span> <span class="nt">Int32</span><span class="o">(</span><span class="nt">2</span><span class="o">),</span> <span class="nt">L</span><span class="p">::</span><span class="nd">Int32</span> <span class="o">=</span> <span class="nt">Int32</span><span class="o">(</span><span class="nt">1</span><span class="o">),</span> <span class="nt">IDER</span><span class="p">::</span><span class="nd">Int32</span> <span class="o">=</span> <span class="nt">Int32</span><span class="o">(</span><span class="nt">0</span><span class="o">))</span>
@@ -569,41 +607,55 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 
 
 <p>SEE gcvspl.f FOR MORE INFORMATION</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/3fd64c73ddefe692068bbabd82f91e24582a227e/src/gcvspl_wrapper.jl#L114-L138' class='documenter-source'>source</a><br></p></div>
-        </div>
-
-        <footer class="col-md-12">
-            <hr>
-            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
-        </footer>
-        <script>var base_url = '..';</script>
-        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
-        <script src="../js/base.js"></script>
-        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script src="../assets/mathjaxhelper.js"></script><div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4d8f0c36ede698438de07bcc3c1bb87a5955c507/src/gcvspl_wrapper.jl#L114-L138' class='documenter-source'>source</a><br></p>
+              
             </div>
-            <div class="modal-body">
-                <p>
-                    From here you can search these documents. Enter
-                    your search terms below.
-                </p>
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
-                    </div>
-                </form>
-                <div id="mkdocs-search-results"></div>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Rameau/" class="btn btn-neutral float-right" title="Rameau">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../PreProcessing/" class="btn btn-neutral" title="Pre-Processing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
     </div>
-</div>
+  
 
-    </body>
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/charlesll/Spectra.jl" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../PreProcessing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../Rameau/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../assets/mathjaxhelper.js"></script>
+
+</body>
 </html>
