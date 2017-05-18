@@ -11,6 +11,7 @@ addons:
 notifications:
   email: false
 script:
+  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - PYTHON="" julia -e 'Pkg.clone(pwd()); Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)'
 after_success:
