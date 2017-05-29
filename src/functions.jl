@@ -61,11 +61,17 @@ end
 
 
 """
-	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64},style::String = "None")
+	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
 
 gaussiennes, written in the plural french form there, is a function that allows to build gaussian peaks. The gaussian function used there is:
 
     y = amplitude x exp(-ln(2) x [(x-centre)/hwhm]^2 )
+
+	You can enter the amplitude, centre and half-width at half-maximum (hwhm) values as arrays of float 64 (even containing one float value), without specifying style. hwhm is proportional to the standard deviation sigma:
+
+	hwhm= sqrt(2xln(2)) x sigma
+	
+that is used in a normal distribution (see function normal_dist).
 
 INPUTS:
 
@@ -83,13 +89,9 @@ OPTIONS:
 
 OUTPUTS:
 
-	y: Array{Float64} containing the calculated y values.
-
-You can enter the amplitude, centre and half-width at half-maximum (hwhm) values as arrays of float 64 (even containing one float value), without specifying style. hwhm is proportional to the standard deviation sigma:
-
-	hwhm= sqrt(2xln(2)) x sigma
+	y_calc: Array{Float64} containing the calculated y values;
 	
-that is used in a normal distribution (see function normal_dist).
+	y_peaks: Array{Float64} containing the y values of the different peaks.
 
 ----------
  Examples
@@ -162,7 +164,10 @@ OPTIONS:
 
 OUTPUTS:
 
-	y: Array{Float64} containing the calculated y values.
+	y_calc: Array{Float64} containing the calculated y values;
+
+	y_peaks: Array{Float64} containing the y values of the different peaks.
+	
 
 """
 
@@ -205,8 +210,9 @@ OPTIONS:
 
 OUTPUTS:
 
-	y: Array{Float64} containing the calculated y values.
+	y_calc: Array{Float64} containing the calculated y values;
 
+	y_peaks: Array{Float64} containing the y values of the different peaks.
 
 """
 
@@ -249,7 +255,9 @@ OPTIONS:
 
 OUTPUTS:
 
-	y: Array{Float64} containing the calculated y values.
+	y_calc: Array{Float64} containing the calculated y values;
+
+	y_peaks: Array{Float64} containing the y values of the different peaks.
 
 """
 function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},lorentzian_fraction::Array{Float64},x::Array{Float64};style::String = "None")
@@ -297,8 +305,9 @@ OPTIONS:
 
 OUTPUTS:
 
-	y: Array{Float64} containing the calculated y values.
-	
+	y_calc: Array{Float64} containing the calculated y values;
+
+	y_peaks: Array{Float64} containing the y values of the different peaks.
 	
 """
 function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
