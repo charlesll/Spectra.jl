@@ -21,6 +21,8 @@ The peakhw function allows performing measurements of the position, width and in
 
 It also allows smoothing the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity, see the options.
 
+It is advised to check that the M and N values of the Savitzky-Golay filter are adequate for your problem before trusting the results from peakhw. For that, just use the y_smo_out option. 
+
 INPUTS:
 	
 	x: Array{Float64}, the x values;
@@ -37,13 +39,13 @@ OPTIONS:
 	
 OUTPUTS:
 
-	x_maximum: the position of the peak;
+	x_maximum: Float64, the position of the peak;
 	
-	hwhm: the half-width at half-maximum of the peak;
+	hwhm: Float64, the half-width at half-maximum of the peak;
 	
 	if y_smo_out is set to true, then another output is provided:
 	
-	y_smo: the smoothed y signal.
+	y_smo: Array{Float64}, the smoothed y signal.
 """
 function peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
@@ -62,12 +64,12 @@ function peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
     half_int = maximum(y_smo)/2
     idx_1 = findmin(abs(y_first_portion-half_int))
     idx_2 = findmin(abs(y_second_portion-half_int))
-    hwhm = x_2[idx_2[2]]-x_1[idx_1[2]]
+    hwhm = (x_2[idx_2[2]]-x_1[idx_1[2]])./2
 
     if y_smo_out == true
-      return x_maximum, hwhm, y_smo
+      return x_maximum[1], hwhm, y_smo
     elseif y_smo_out ==false
-      return x_maximum, hwhm
+      return x_maximum[1], hwhm
     else
       error("Set y_smo_out to true or false.")
     end

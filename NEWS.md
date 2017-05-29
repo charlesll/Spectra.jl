@@ -10,6 +10,12 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
+# 0.3.3
+
+- Critical change in peakhw that was returning the full width of the peaks instead of the half-width. This is now corrected. A test of the peakhw function was further added.
+
+- Merged pull request #6 from staticfloat/updated_ci_url
+
 # 0.3.2
 
 - Various slight corrections in the code
