@@ -99,6 +99,6 @@ export mlregressor
 export ctxremoval
 
 # From peakmeasurement
-export peakhw
+export peakmeas
 
 end # module

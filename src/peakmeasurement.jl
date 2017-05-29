@@ -15,13 +15,15 @@
 #############################################################################
 
 """
-	peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
+	peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2,y_smo_out=false)
 
-The peakhw function allows performing measurements of the position, width and intensity of a peak.
+The peakmeas function allows performing measurements of the position, width, intensity and centroïd of a dominant peak in a provided x-y signal.
 
-It also allows smoothing the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity, see the options.
+It smooths the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity. It is advised to check that the M and N values of the Savitzky-Golay filter are adequate for your problem before trusting the results from peakmeas. For that, just use the y_smo_out option. 
 
-It is advised to check that the M and N values of the Savitzky-Golay filter are adequate for your problem before trusting the results from peakhw. For that, just use the y_smo_out option. 
+half-width at half-maximum are calculated as the width of the peak at half its maximum intensity. This calculation is not affected by any asumption of peak symmetry (no fitting is done).
+
+Centroïd is calculated as sum(y./sum(y).*x).
 
 INPUTS:
 	
@@ -31,6 +33,8 @@ INPUTS:
 
 OPTIONS:
 
+	smoothing, String, triggers the smoothing of the spectrum if set to yes (default value).
+
 	M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
 
 	N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
@@ -39,37 +43,56 @@ OPTIONS:
 	
 OUTPUTS:
 
-	x_maximum: Float64, the position of the peak;
+	position: Float64, the position of the peak;
 	
 	hwhm: Float64, the half-width at half-maximum of the peak;
+	
+	intensity: Float64, the intensity of the peak;
+	
+	centroïd: Float64, the centroïd of the peak;
 	
 	if y_smo_out is set to true, then another output is provided:
 	
 	y_smo: Array{Float64}, the smoothed y signal.
 """
-function peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
+function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2,y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     if x[end,1] < x[1,1]
         x = flipdim(x,1)
-    y = flipdim(y,1)
+        y = flipdim(y,1)
     end
 
-    y_smo = SavitzkyGolayFilter{M,N}(vec(y))
+	if smoothing == "yes"
+    	y_smo = SavitzkyGolayFilter{M,N}(vec(y))
+	else
+		y_smo = collect(y)
+	end
 
     x_maximum = x[y_smo .== maximum(y_smo)]
-    x_1 = x[x .<x_maximum]
-    x_2 = x[x .>=x_maximum]
-    y_first_portion = y_smo[x .<x_maximum]
-    y_second_portion = y_smo[x .>=x_maximum]
+	
+	if size(x_maximum,1) >= 2
+		error("Something went wrong, is there two peaks with identical intensities in the signal? This function treats signal with one main peak...")
+	end
+	
+
+    x_1 = x[x .<x_maximum]; 
+	x_2 = x[x .>=x_maximum];
+    y_first_portion = y_smo[x .<x_maximum]; 
+	y_second_portion = y_smo[x .>=x_maximum];
+	
     half_int = maximum(y_smo)/2
     idx_1 = findmin(abs(y_first_portion-half_int))
     idx_2 = findmin(abs(y_second_portion-half_int))
+    
     hwhm = (x_2[idx_2[2]]-x_1[idx_1[2]])./2
-
+    position = x_maximum[1]
+    intensity = maximum(y_smo)
+    centroid = sum(y_smo./sum(y_smo).*x)
+	
     if y_smo_out == true
-      return x_maximum[1], hwhm, y_smo
+      return intensity, position, hwhm, centroid, y_smo
     elseif y_smo_out ==false
-      return x_maximum[1], hwhm
+      return intensity, position, hwhm, centroid 
     else
       error("Set y_smo_out to true or false.")
     end
