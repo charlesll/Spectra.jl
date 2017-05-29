@@ -12,7 +12,7 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 # 0.3.3
 
-- Critical change in peakhw that was returning the full width of the peaks instead of the half-width. This is now corrected. A test of the peakhw function was further added.
+- Critical change in peakhw that was returning the full width of the peaks instead of the half-width. This is now corrected. Name of peakhw is changed in peakmeas. This also outputs the peak intensity and centroid.
 
 - Merged pull request #6 from staticfloat/updated_ci_url
 

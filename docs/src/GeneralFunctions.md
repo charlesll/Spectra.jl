@@ -15,7 +15,7 @@ normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::
 ## Peak measurement
 
 ```@docs
-peakhw(x::Array{Float64},y::Array{Float64};M=5,N=2,y_smo_out=false)
+peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2,y_smo_out=false)
 ```
 
 ## Integration
