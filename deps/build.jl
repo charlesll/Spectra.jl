@@ -1,15 +1,15 @@
 if is_unix()
     
     try
-       run(`pip install gcvspline`)
+       run(`sudo pip install gcvspline`)
     catch
-       run(`pip not install. Please install pip`)
+       error("pip not install. Please install pip")
     end
 else # windows
     try
        run(`pip install gcvspline`)
     catch
-       run(`pip not install. Please install pip`)
+       error("pip not install. Please install pip")
     end
 end
 	
