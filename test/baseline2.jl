@@ -17,6 +17,8 @@ y = scale.*(y_tot+bkg + randn(size(y_tot,1)))
 
 roi = [0 20.; 100. 150]
 
+y1, bas1 = baseline(x,y,roi,"gcvspline",p=0.6)
+
 rmse = sqrt(sum((bas1 - bkg).^2))./sum(bkg)
 
 @test rmse <0.05 # error inferior to 5%, should actually be arround 0.026.

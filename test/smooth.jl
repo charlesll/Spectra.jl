@@ -17,7 +17,7 @@ y_perfect = scale.*y_tot
 y = scale.*(y_tot + randn(size(y_tot,1)))
 
 y_sv = smooth(x,y,filter=:SavitzkyGolay,M=15,N=2)
-y_gcv = smooth(x,y,filter=:GCVSmoothedNSpline)
+y_gcv = smooth(x,y,filter=:GCVSmoothedNSpline, ese_y = std(y))
 
 ese_noise = sum((y - y_perfect).^2)
 ese_sg = sum((y_sv-y_perfect).^2)

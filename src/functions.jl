@@ -397,7 +397,7 @@ function xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64
 end
 
 """
-	smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2)
+	smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2,ese_y = 1.0)
 
 This function allows smoothing noisy data with Savitzky-Golay filter or GCV splines.
 
@@ -415,6 +415,8 @@ OPTIONS:
 	
 	N = 2, Int, polynomial degree of the :SavitzkyGolay filter;
 	
+	ese_y, Float64 or Array{Float64}, an estimation of the errors on y
+	
 OUTPUTS:
 
 	smoothed_y: Array{Float64}, the smoothed y values.
@@ -424,7 +426,7 @@ NOTE:
 See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.
 
 """
-function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2)
+function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2,ese_y = 1.0)
 
 	if size(y,2) > 1
 		error("This function only accepts one column arrays or vectors.")
@@ -439,7 +441,7 @@ function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=
 	
 	elseif filter == filter_names[2] || filter == filter_names[3] || filter == filter_names[4]
 		
-		w = 1.0 ./ (ones(size(y,1),1) .* std(y))
+		w = 1.0 ./ (ones(size(y,1),1) .* ese_y)
 		flt = pygcvspl[filter](vec(x),vec(y),vec(w))
 		return flt(x)
 	
