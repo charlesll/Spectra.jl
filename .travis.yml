@@ -8,7 +8,7 @@ julia:
   - 0.6
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install numpy
+  - sudo apt-get install python-numpy
 addons:
   apt_packages:
     - gfortran

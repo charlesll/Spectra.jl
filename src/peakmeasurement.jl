@@ -15,7 +15,7 @@
 #############################################################################
 
 """
-	peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,y_smo_out=false)
+	peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,ese_y=1.,y_smo_out=false)
 
 The peakmeas function allows performing measurements of the position, width, intensity and centroïd of a dominant peak in a provided x-y signal.
 
@@ -57,7 +57,7 @@ OUTPUTS:
 	
 	y_smo: Array{Float64}, the smoothed y signal.
 """
-function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,y_smo_out=false)
+function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,ese_y=1.,y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     if x[end,1] < x[1,1]
         x = flipdim(x,1)
