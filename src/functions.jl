@@ -397,6 +397,59 @@ function xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64
 end
 
 """
+	smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2)
+
+This function allows smoothing noisy data with Savitzky-Golay filter or GCV splines.
+
+INPUTS:
+
+	x: Array{Float64}, 1 column or vector array x values;
+	
+	y: Array{Float64}, 1 column or vector array y values associated with x;
+	
+OPTIONS:
+
+	filter: Symbol, the filter that will be used. Available filters are :SavitzkyGolay, :GCVSmoothedNSpline, :MSESmoothedNSpline, :DOFSmoothedNSpline. The spline filters are automatic, but the :SavitzkyGolay filter requires adjusting the M and N parameters.
+	
+	M = 5, Int, half window size of the :SavitzkyGolay filter. M is the number of points before and after to interpolate, i.e. the full width of the window is 2M+1;
+	
+	N = 2, Int, polynomial degree of the :SavitzkyGolay filter;
+	
+OUTPUTS:
+
+	smoothed_y: Array{Float64}, the smoothed y values.
+	
+NOTE:
+
+See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.
+
+"""
+function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2)
+
+	if size(y,2) > 1
+		error("This function only accepts one column arrays or vectors.")
+	end
+	
+	filter_names=[:SavitzkyGolay;:GCVSmoothedNSpline;:MSESmoothedNSpline;:DOFSmoothedNSpline]
+	
+	if filter == filter_names[1]
+		
+		flt = SavitzkyGolayFilter{M,N}()
+		return flt(vec(y))
+	
+	elseif filter == filter_names[2] || filter == filter_names[3] || filter == filter_names[4]
+		
+		w = 1.0 ./ (ones(size(y,1),1) .* std(y))
+		flt = pygcvspl[filter](vec(x),vec(y),vec(w))
+		return flt(x)
+	
+	else
+		error("Not implemented, choose between $(filter_names)")
+	end
+	
+end
+
+"""
 
 	SavitzkyGolayFilter{M,N}(data)
 	
@@ -408,8 +461,7 @@ Code from https://medium.com/@acidflask/smoothing-data-with-julia-s-generated-fu
 """
 immutable SavitzkyGolayFilter{M,N} end
 
-@generated function Base.call{M,N,T}(::Type{SavitzkyGolayFilter{M,N}},
-     data::AbstractVector{T})
+@generated  function (::SavitzkyGolayFilter{M,N}){M,N,T}(data::AbstractVector{T})
 
      #Create Jacobian matrix
      J = zeros(2M+1, N+1)

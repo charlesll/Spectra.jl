@@ -15,7 +15,7 @@
 #############################################################################
 
 """
-	peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2,y_smo_out=false)
+	peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,y_smo_out=false)
 
 The peakmeas function allows performing measurements of the position, width, intensity and centroïd of a dominant peak in a provided x-y signal.
 
@@ -33,11 +33,13 @@ INPUTS:
 
 OPTIONS:
 
-	smoothing, String, triggers the smoothing of the spectrum if set to yes (default value).
+	smoothing, String, triggers the smoothing of the spectrum if set to yes (default value);
+	
+	filter, Symbol, the filter that will be used. See the smooth function documentation;
 
-	M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
+	M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
 
-	N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
+	N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
 
 	y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, using the SavitzkyGolayFilter function with the M and N values. y_smo output will also be provided.
 	
@@ -55,7 +57,7 @@ OUTPUTS:
 	
 	y_smo: Array{Float64}, the smoothed y signal.
 """
-function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2,y_smo_out=false)
+function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     if x[end,1] < x[1,1]
         x = flipdim(x,1)
@@ -63,7 +65,7 @@ function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2
     end
 
 	if smoothing == "yes"
-    	y_smo = SavitzkyGolayFilter{M,N}(vec(y))
+    	y_smo = smooth(x,y,filter = filter, M=M, N=N)
 	else
 		y_smo = collect(y)
 	end

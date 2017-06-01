@@ -20,7 +20,13 @@ https://www.continuum.io/downloads
 
 ## Windows users
 
-For Windows users, Spectra.jl will issue a WARNING message saying that GCVSPL.F is not compiled automatically upon installation, and will point to this page. You will need to compile GCVSPL.F by yourself for now. If you want to avoid this step, I recommand using JuliaBox.org where everything can run smoothly, or using Julia inside a free virtualbox Linux installation (https://www.virtualbox.org/). This makes things pretty easy. If you want to run Julia directly on your Windows system, you can try the following steps to compile GCVSPL.F with cygwin:
+### v0.3.4 and higher
+
+The gcvspline Python library is now used and should allow one to run smoothly Spectra in a Windows environment.
+
+### Prior to v0.3.4:
+
+For Windows users, versions of Spectra.jl < 0.3.4 will issue a WARNING message saying that GCVSPL.F is not compiled automatically upon installation, and will point to this page. You will need to compile GCVSPL.F by yourself for now. If you want to avoid this step, I recommand using JuliaBox.org where everything can run smoothly, or using Julia inside a free virtualbox Linux installation (https://www.virtualbox.org/). This makes things pretty easy. If you want to run Julia directly on your Windows system, you can try the following steps to compile GCVSPL.F with cygwin:
 
 	1) create bin32 and bin64 folders in the /deps forlder;
 	

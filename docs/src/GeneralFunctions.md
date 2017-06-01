@@ -15,7 +15,7 @@ normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::
 ## Peak measurement
 
 ```@docs
-peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", M=5,N=2,y_smo_out=false)
+peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,y_smo_out=false)
 ```
 
 ## Integration
@@ -40,15 +40,5 @@ Not all the splines packages provide the same performances for data smoothing an
 
 The csaps function of Matlab uses the SMOOTH Fortran library, and provides better smoothing capabilities for noisy data. Similarly, the GCVSPL Fortran package from Woltring (1986) also provides a very robust way to smooth and interpolate noisy data.
 
-This GCVSPL spline package is called directly by Julia (through a ccall()) in the baseline function, with the options of a cubic spline with least-square data fitting. The smoothing is done with scaling the variances of the data points (VAR variable in the GCVSPL.f package) that is provided to the GCVSPL.f program.
+Starting from Spectra v0.3.4, the gcvspline Python module (https://github.com/charlesll/gcvspline) is used in the smooth and baseline function. It behaves exactly as the previous wrapping of GCVSPL.f in Julia, such that this should be transparent to users.
 
-Now, while baseline() should be well suited for most users needs, it uses cubic splines that are not always the best answers to some problems. For instance, quadratic splines may be more robust in some cases. You can change that by providing the spline order to baseline() as SplOrder = 2 for instance.
-
-In case you want to have even more control on GCVSPL.f, and use its internal tricks and tweeks, the following lines will provide you the documentation of the two functions allowing you to calculate the spline coefficients and to evaluate the spline values at specific x entries.
-
-```@docs
-gcvspl_julia(x::Array{Float64,1},y::Array{Float64,1},ese::Array{Float64,1},SmoothSpline::Float64;SplineOrder::Int32 = Int32(2),SplineMode::Int32 = Int32(3))
-
-splderivative_julia(xfull::Array{Float64},xparse::Array{Float64},cparse::Array{Float64};SplineOrder::Int32 = Int32(2), L::Int32 = Int32(1), IDER::Int32 = Int32(0))
-
-```

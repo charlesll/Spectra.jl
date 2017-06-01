@@ -33,18 +33,10 @@ const svm = PyNULL()
 const gaussian_process = PyNULL()
 const linear_model = PyNULL()
 
-# some initial setup for calling the GCVSPL.f library
-unixpath = "../deps/src/gcvspline/libgcvspl"
-winpath = "../deps/bin$Sys.WORD_SIZE/libgcvspl" # let it there as an example but I did not tried yet any build on Windows... TODO
-
-const gcvspl = joinpath(dirname(@__FILE__), @static is_unix()? unixpath : winpath)
+const pygcvspl = PyNULL()
 
 function __init__()
-    # Ensure library is available.
-    if (Libdl.dlopen_e(gcvspl) == C_NULL)
-        error("GCVSPL not properly installed. Run Pkg.build(\"Spectra\"). Windows auto-build is not setup, you might want to build the library manually.")
-    end
-
+	
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
 	copy!(model_selection, pyimport_conda("sklearn.model_selection", "scikit-learn"))
 	copy!(decomposition, pyimport_conda("sklearn.decomposition", "scikit-learn"))
@@ -52,13 +44,13 @@ function __init__()
 	copy!(svm, pyimport_conda("sklearn.svm","scikit-learn"))
 	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "scikit-learn"))
 	copy!(linear_model, pyimport_conda("sklearn.linear_model", "scikit-learn"))
+	copy!(pygcvspl, pyimport_conda("gcvspline","gcvspline"))
 
 end
 
 include("diffusion.jl")
 include("integrale.jl")
 include("functions.jl")
-include("gcvspl_wrapper.jl")
 include("baseline.jl")
 include("bootstrap.jl")
 include("tlcorrection.jl")
@@ -75,13 +67,10 @@ export trapz, bandarea
 export peak_diffusion, model, IRdataprep
 
 #From functions.jl
-export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, SavitzkyGolayFilter
+export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, SavitzkyGolayFilter, smooth
 
 #From baseline.jl
 export baseline
-
-#From gcvspl_wrapper.jl
-export gcvspl_julia, splderivative_julia
 
 #From bootstrap
 export bootsample, bootperf

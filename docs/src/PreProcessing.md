@@ -18,6 +18,14 @@ This function is still under test and experimental. Further details on the code 
 	ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),algorithm="FastICA",plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
 ```
 
+## Smoothing signals
+
+Smoothing the signal is achieved with the smooth function. Use of the GCVSplineNSmooth algorithm from the gcvspline Python library is recommended. It seems to give very reasonable smoothing signals. In the present call of GCVSplineNSmooth, errors as sqrt(y) are assumed.
+
+```@docs
+	smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2)
+```
+
 ## Baseline subtraction
 
 Baseline subtraction can be made with using the baseline function:
@@ -42,8 +50,3 @@ Sometime, two signals from the same mineral show a shift in the X axis, while th
 xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64}, ref_x::Array{Float64}, ref_y::Array{Float64},shifted_y::Array{Float64})
 ```
 	
-## Smoothing
-
-```@docs
-SavitzkyGolayFilter{M,N}
-```

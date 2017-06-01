@@ -172,8 +172,12 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
-		c, WK, IER = gcvspl_julia(x_bas_sc[:,1],y_bas_sc[:,1],ese_interest_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
-		y_calc_sc = splderivative_julia(x_sc[:,1],x_bas_sc[:,1],c,SplineOrder= Int32(SplOrder-1))
+		#c, WK, IER = gcvspl_julia(x_bas_sc[:,1],y_bas_sc[:,1],ese_interest_y[:,1],p[1];SplineOrder = Int32(SplOrder-1)) # with cubic spline as the default
+		#y_calc_sc = splderivative_julia(x_sc[:,1],x_bas_sc[:,1],c,SplineOrder= Int32(SplOrder-1))
+
+		# implementation using the Python wrapper of gcvspline.
+		flt = pygcvspl[:MSESmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],1./(p[1].*ese_interest_y[:,1]),variance_metric=p[1].^2)
+		y_calc_sc = flt(x_sc)
 
 	######## KERNEL RIDGE REGRESSION WITH SCIKIT LEARN
 	elseif basetype == "KRregression"

@@ -10,7 +10,20 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
+# 0.3.4
+
+- Wrapping of the GCVSPL.f library is dropped, we now call gcvspline, the Python package that wraps GCVSPL.f. This now should solve any trouble with Windows users! No change of API, except the drop of the gcvspl_julia and splder_julia functions. This should be transparent for users.
+
+- smooth function added, see doc; smoothing with gcvspline is provided.
+
+- Numerous tests added.
+
+- Various examples added.
+
+- Spectra works with Julia v0.6: test on Travis OK.
+
 # 0.3.3
+
 
 - Critical change in peakhw that was returning the full width of the peaks instead of the half-width. This is now corrected. Name of peakhw is changed in peakmeas. This also outputs the peak intensity and centroid.
 
