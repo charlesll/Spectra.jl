@@ -15,7 +15,7 @@
       
         <link rel="shortcut icon" href="../assets/images/favicon.png">
       
-      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.6.4">
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.7.1">
     
     
       
@@ -26,9 +26,9 @@
       <script src="../assets/javascripts/modernizr-1df76c4e58.js"></script>
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application-e2807e330f.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application-f98ca285f9.css">
       
-        <link rel="stylesheet" href="../assets/stylesheets/application-f78e5cb881.palette.css">
+        <link rel="stylesheet" href="../assets/stylesheets/application-8817cfa535.palette.css">
       
     
     
@@ -100,7 +100,7 @@
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
+        <div class="md-search-result" data-md-component="result" data-md-lang-search="">
           <div class="md-search-result__meta" data-md-lang-result-none="No matching documents" data-md-lang-result-one="1 matching document" data-md-lang-result-other="# matching documents">
             Type to start searching
           </div>
@@ -446,7 +446,7 @@
 
 
 <p>The bootstrap function can be embedded in a for loop, and will each time produce a different dataset. Performing K times the bootstrapping and fitting each time the model will allow to estimate the error distribution on the peak parameters. This technic has the advantage of making no prior assumption on the probability distribution functions of parameters errors. However, it is  much more time consuming that using the covariance matrix.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/bootstrap.jl#L17-L41' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/bootstrap.jl#L17-L41' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.bootperf-Tuple{Array{Float64,N}}' href='#Spectra.bootperf-Tuple{Array{Float64,N}}'>#</a>
 <strong><code>Spectra.bootperf</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">bootperf</span><span class="o">(</span><span class="nt">params_boot</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span> <span class="nt">plotting</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span><span class="o">,</span> <span class="nt">parameter</span><span class="p">::</span><span class="nd">Int64</span> <span class="o">=</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">feature</span><span class="p">::</span><span class="nd">Int64</span> <span class="o">=</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">histogram_step</span><span class="p">::</span><span class="nd">Int64</span> <span class="o">=</span> <span class="nt">100</span><span class="o">,</span> <span class="nt">savefigures</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;False&quot;</span><span class="o">,</span> <span class="nt">save_bootrecord</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;Boot_record.pdf&quot;</span><span class="o">,</span> <span class="nt">save_histogram</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;Boot_histogram.pdf&quot;</span><span class="o">)</span>
@@ -460,7 +460,7 @@
 <p>save_bootrecord: Name for the graphic showing the bootstrap mean and std evolutions, with extension.</p>
 <p>save_histogram: Name for the graphic showing the histogram for the parameter and feature of interest, with extension.</p>
 <p>RETURN: std_record, mean_record, the arrays recording how the standard deviation and mean of the parameters as a function of the bootstrap advance. </p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/bootstrap.jl#L62-L79' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/bootstrap.jl#L62-L79' class='documenter-source'>source</a><br></p>
 <p>For further details, see the following references</p>
 <p>Efron, B. 1979. “Bootstrap Methods: Another Look at the Jackknife.” The Annals of Statistics 7 (1): 1–26.</p>
 <p>Efron, Bradley. 1981. “Nonparametric Estimates of Standard Error: The Jackknife, the Bootstrap and Other Methods.” Biometrika 68 (3): 589–99. doi:10.1093/biomet/68.3.589.</p>
@@ -534,7 +534,9 @@
       
     </div>
     
-      <script src="../assets/javascripts/application-06a3e72efd.js"></script>
+      <script src="../assets/javascripts/application-e3caa82af6.js"></script>
+      
+      
       <script>app.initialize({url:{base:".."}})</script>
       
         <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>

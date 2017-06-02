@@ -15,7 +15,7 @@
       
         <link rel="shortcut icon" href="../assets/images/favicon.png">
       
-      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.6.4">
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.7.1">
     
     
       
@@ -26,9 +26,9 @@
       <script src="../assets/javascripts/modernizr-1df76c4e58.js"></script>
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application-e2807e330f.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application-f98ca285f9.css">
       
-        <link rel="stylesheet" href="../assets/stylesheets/application-f78e5cb881.palette.css">
+        <link rel="stylesheet" href="../assets/stylesheets/application-8817cfa535.palette.css">
       
     
     
@@ -100,7 +100,7 @@
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
+        <div class="md-search-result" data-md-component="result" data-md-lang-search="">
           <div class="md-search-result__meta" data-md-lang-result-none="No matching documents" data-md-lang-result-one="1 matching document" data-md-lang-result-other="# matching documents">
             Type to start searching
           </div>
@@ -525,7 +525,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 
 
 <p>This should provide you how the shape of the peak is as a function of both the frequency and the chemical composition there. If you want to go further, you might just want to stick gaussiennes in a loop, and play with creating various peaks with changing the chemical parameter in the x[:,2] column!</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L63-L131' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L63-L131' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.lorentziennes-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.lorentziennes-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.lorentziennes</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">lorentziennes</span><span class="o">(</span><span class="nt">amplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">centre</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">hwhm</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">style</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="o">)</span>
@@ -555,7 +555,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L148-L172' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L148-L172' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.pearson7-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.pearson7-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.pearson7</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">pearson7</span><span class="o">(</span><span class="nt">a1</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">a2</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">a3</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">a4</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">style</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="o">)</span>
@@ -588,7 +588,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L190-L217' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L190-L217' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.pseudovoigts-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.pseudovoigts-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.pseudovoigts</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">pseudovoigts</span><span class="o">(</span><span class="nt">amplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">centre</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">hwhm</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">lorentzian_fraction</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">style</span><span class="p">::</span><span class="nd">String</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span><span class="o">)</span>
@@ -621,7 +621,7 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L235-L262' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L235-L262' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.normal_dist-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.normal_dist-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.normal_dist</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
@@ -654,12 +654,12 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L285-L312' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L285-L312' class='documenter-source'>source</a><br></p>
 <p><a id='Peak-measurement-1'></a></p>
 <h2 id="peak-measurement">Peak measurement</h2>
 <p><a id='Spectra.peakmeas-Tuple{Array{Float64,N},Array{Float64,N}}' href='#Spectra.peakmeas-Tuple{Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.peakmeas</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span><span class="nt">peakmeas</span><span class="o">(</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">y</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">smoothing</span> <span class="o">=</span> <span class="s2">&quot;yes&quot;</span><span class="o">,</span> <span class="nt">M</span><span class="o">=</span><span class="nt">5</span><span class="o">,</span><span class="nt">N</span><span class="o">=</span><span class="nt">2</span><span class="o">,</span><span class="nt">y_smo_out</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
+<div class="codehilite"><pre><span></span><span class="nt">peakmeas</span><span class="o">(</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">y</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">smoothing</span> <span class="o">=</span> <span class="s2">&quot;yes&quot;</span><span class="o">,</span> <span class="nt">filter</span> <span class="o">=</span> <span class="p">:</span><span class="nd">SavitzkyGolay</span><span class="o">,</span> <span class="nt">M</span><span class="o">=</span><span class="nt">5</span><span class="o">,</span><span class="nt">N</span><span class="o">=</span><span class="nt">2</span><span class="o">,</span><span class="nt">ese_y</span><span class="o">=</span><span class="nt">1</span><span class="o">.,</span><span class="nt">y_smo_out</span><span class="o">=</span><span class="nt">false</span><span class="o">)</span>
 </pre></div>
 
 
@@ -675,11 +675,13 @@ y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
 
 
 <p>OPTIONS:</p>
-<div class="codehilite"><pre><span></span>smoothing, String, triggers the smoothing of the spectrum if set to yes (default value).
+<div class="codehilite"><pre><span></span>smoothing, String, triggers the smoothing of the spectrum if set to yes (default value);
 
-M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
+filter, Symbol, the filter that will be used. See the smooth function documentation;
 
-N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See SavitzkyGolayFilter documentation;
+M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
+
+N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
 
 y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, using the SavitzkyGolayFilter function with the M and N values. y_smo output will also be provided.
 </pre></div>
@@ -700,7 +702,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/peakmeasurement.jl#L17-L57' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/peakmeasurement.jl#L17-L59' class='documenter-source'>source</a><br></p>
 <p><a id='Integration-1'></a></p>
 <h2 id="integration">Integration</h2>
 <p>Spectra.jl provides functions that allow one to integrate the area under a region of a spectrum, or to calculate the area under Gaussian, Lorentzian or other bands.</p>
@@ -724,7 +726,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 
 
 <p>This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/integrale.jl#L17-L34' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/integrale.jl#L17-L34' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.bandarea-Tuple{Array{Float64,N},Array{Float64,N}}' href='#Spectra.bandarea-Tuple{Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.bandarea</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span><span class="nt">bandarea</span><span class="o">(</span><span class="nt">Amplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">HWHM</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span> <span class="nt">peak_shape</span> <span class="o">=</span> <span class="s2">&quot;Gaussian&quot;</span><span class="o">,</span> <span class="nt">error_switch</span> <span class="o">=</span> <span class="s2">&quot;no&quot;</span><span class="o">,</span> <span class="nt">eseAmplitude</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span> <span class="o">=</span> <span class="cp">[</span><span class="mf">0.0</span><span class="cp">]</span><span class="o">,</span> <span class="nt">eseHWHM</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span> <span class="o">=</span> <span class="cp">[</span><span class="mf">0.0</span><span class="cp">]</span><span class="o">)</span>
@@ -764,7 +766,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/integrale.jl#L50-L82' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/integrale.jl#L50-L82' class='documenter-source'>source</a><br></p>
 <p><a id='Polynomials-1'></a></p>
 <h2 id="polynomials">Polynomials</h2>
 <p><a id='Spectra.poly-Tuple{Array{Float64,1},Array{Float64,N}}' href='#Spectra.poly-Tuple{Array{Float64,1},Array{Float64,N}}'>#</a>
@@ -786,7 +788,7 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L16-L30' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L16-L30' class='documenter-source'>source</a><br></p>
 <p><a id='Spectra.polyfit-Tuple{Array{Float64,N},Array{Float64,N},Int64}' href='#Spectra.polyfit-Tuple{Array{Float64,N},Array{Float64,N},Int64}'>#</a>
 <strong><code>Spectra.polyfit</code></strong> &mdash; <em>Method</em>.</p>
 <div class="codehilite"><pre><span></span>polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
@@ -808,116 +810,12 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/functions.jl#L39-L56' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d80b712b23fc20c7e8ff0cbf97de5d1b304ce6e1/src/functions.jl#L39-L56' class='documenter-source'>source</a><br></p>
 <p><a id='Splines-1'></a></p>
 <h2 id="splines">Splines</h2>
 <p>Not all the splines packages provide the same performances for data smoothing and interpolation. By experience, the Dierckx spline package ("Dspline" option in the baseline() function) provides a good starting point, but is not as usefull as other spline packages.</p>
 <p>The csaps function of Matlab uses the SMOOTH Fortran library, and provides better smoothing capabilities for noisy data. Similarly, the GCVSPL Fortran package from Woltring (1986) also provides a very robust way to smooth and interpolate noisy data.</p>
-<p>This GCVSPL spline package is called directly by Julia (through a ccall()) in the baseline function, with the options of a cubic spline with least-square data fitting. The smoothing is done with scaling the variances of the data points (VAR variable in the GCVSPL.f package) that is provided to the GCVSPL.f program.</p>
-<p>Now, while baseline() should be well suited for most users needs, it uses cubic splines that are not always the best answers to some problems. For instance, quadratic splines may be more robust in some cases. You can change that by providing the spline order to baseline() as SplOrder = 2 for instance.</p>
-<p>In case you want to have even more control on GCVSPL.f, and use its internal tricks and tweeks, the following lines will provide you the documentation of the two functions allowing you to calculate the spline coefficients and to evaluate the spline values at specific x entries.</p>
-<p><a id='Spectra.gcvspl_julia-Tuple{Array{Float64,1},Array{Float64,1},Array{Float64,1},Float64}' href='#Spectra.gcvspl_julia-Tuple{Array{Float64,1},Array{Float64,1},Array{Float64,1},Float64}'>#</a>
-<strong><code>Spectra.gcvspl_julia</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span>gcvspl_julia(x,y,ese,SmoothSpline;SplineOrder = Int32(2),SplineMode = Int32(3))
-</pre></div>
-
-
-<p>This function allows you to calculate the spline coefficients. It calls gcvspline subroutine of the program GCVSPL.f.</p>
-<p>INPUTS:</p>
-<div class="codehilite"><pre><span></span><span class="n">x</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">independent</span> <span class="n">variables</span><span class="o">;</span>
-
-<span class="n">y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">observations</span> <span class="o">(</span><span class="n">we</span> <span class="n">assume</span> <span class="n">here</span> <span class="n">that</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span> <span class="k">this</span> <span class="n">spline</span> <span class="n">only</span> <span class="n">on</span> <span class="mi">1</span> <span class="n">dataset</span><span class="o">...</span> <span class="n">see</span> <span class="n">gcvspl</span><span class="o">.</span><span class="na">f</span> <span class="k">if</span> <span class="n">not</span><span class="o">);</span>
-
-<span class="n">ese</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">errors</span> <span class="n">on</span> <span class="n">y</span><span class="o">;</span>
-
-<span class="n">SplineSmooth</span><span class="o">:</span> <span class="n">Float64</span><span class="o">,</span> <span class="n">the</span> <span class="n">smoothing</span> <span class="n">factor</span><span class="o">;</span>
-
-<span class="n">SplineOrder</span> <span class="o">(</span><span class="n">M</span> <span class="n">parameter</span> <span class="k">in</span> <span class="n">gcvspl</span><span class="o">.</span><span class="na">f</span><span class="o">):</span> <span class="n">Int32</span><span class="o">,</span> <span class="n">the</span> <span class="n">half</span> <span class="n">order</span> <span class="n">of</span> <span class="n">the</span> <span class="n">required</span> <span class="n">B</span><span class="o">-</span><span class="n">splines</span><span class="o">.</span> <span class="k">default</span><span class="o">:</span> <span class="n">splorder</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">(</span><span class="n">cubic</span><span class="o">).</span> <span class="n">SplineOrder</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span> <span class="n">correspond</span> <span class="n">to</span> <span class="n">linear</span><span class="o">,</span> <span class="n">cubic</span><span class="o">,</span> <span class="n">quintic</span><span class="o">,</span> <span class="n">and</span> <span class="n">heptic</span> <span class="n">splines</span><span class="o">,</span> <span class="n">respectively</span><span class="o">.</span> 
-
-<span class="n">SplineMode</span> <span class="o">(</span><span class="n">Int32</span><span class="o">,</span> <span class="n">MD</span> <span class="n">parameter</span> <span class="k">in</span> <span class="n">gcvspl</span><span class="o">.</span><span class="na">f</span><span class="o">)</span> <span class="k">is</span> <span class="n">the</span> <span class="n">Optimization</span> <span class="n">mode</span> <span class="k">switch</span><span class="o">:</span>
-    <span class="k">default</span><span class="o">:</span>   <span class="n">SplineMode</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">(</span><span class="n">General</span> <span class="n">Cross</span> <span class="n">Validated</span><span class="o">)</span>
-
-               <span class="n">SplineMode</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span> <span class="n">Prior</span> <span class="n">given</span> <span class="n">value</span> <span class="k">for</span> <span class="n">p</span> <span class="k">in</span> <span class="n">VAL</span>
-                         <span class="o">(</span><span class="n">VAL</span><span class="o">.</span><span class="na">ge</span><span class="o">.</span><span class="na">ZERO</span><span class="o">).</span> <span class="n">This</span> <span class="k">is</span> <span class="n">the</span> <span class="n">fastest</span>
-                         <span class="n">use</span> <span class="n">of</span> <span class="n">GCVSPL</span><span class="o">,</span> <span class="n">since</span> <span class="n">no</span> <span class="n">iteration</span>
-                         <span class="k">is</span> <span class="n">performed</span> <span class="k">in</span> <span class="n">p</span><span class="o">.</span>
-
-               <span class="n">SplineMode</span> <span class="o">=</span> <span class="mi">2</span><span class="o">:</span> <span class="n">Generalized</span> <span class="n">cross</span> <span class="n">validation</span><span class="o">.</span>
-
-               <span class="n">SplineMode</span> <span class="o">=</span> <span class="mi">3</span><span class="o">:</span> <span class="n">True</span> <span class="n">predicted</span> <span class="n">mean</span><span class="o">-</span><span class="n">squared</span> <span class="n">error</span><span class="o">,</span>
-                         <span class="k">with</span> <span class="n">prior</span> <span class="n">given</span> <span class="n">variance</span> <span class="k">in</span> <span class="n">VAL</span><span class="o">.</span>
-
-               <span class="n">SplineMode</span> <span class="o">=</span> <span class="mi">4</span><span class="o">:</span> <span class="n">Prior</span> <span class="n">given</span> <span class="n">number</span> <span class="n">of</span> <span class="n">degrees</span> <span class="n">of</span>
-                         <span class="n">freedom</span> <span class="k">in</span> <span class="n">VAL</span> <span class="o">(</span><span class="n">ZERO</span><span class="o">.</span><span class="na">le</span><span class="o">.</span><span class="na">VAL</span><span class="o">.</span><span class="na">le</span><span class="o">.</span><span class="na">N</span><span class="o">-</span><span class="n">M</span><span class="o">).</span>
-
-               <span class="n">SplineMode</span>  <span class="o">&lt;</span> <span class="mi">0</span><span class="o">:</span> <span class="n">It</span> <span class="k">is</span> <span class="n">assumed</span> <span class="n">that</span> <span class="n">the</span> <span class="n">contents</span> <span class="n">of</span>
-                         <span class="n">X</span><span class="o">,</span> <span class="n">W</span><span class="o">,</span> <span class="n">M</span><span class="o">,</span> <span class="n">N</span><span class="o">,</span> <span class="n">and</span> <span class="n">WK</span> <span class="n">have</span> <span class="n">not</span> <span class="n">been</span>
-                         <span class="n">modified</span> <span class="n">since</span> <span class="n">the</span> <span class="n">previous</span> <span class="n">invoca</span><span class="o">-</span>
-                         <span class="n">tion</span> <span class="n">of</span> <span class="n">GCVSPL</span><span class="o">.</span> <span class="n">If</span> <span class="n">MD</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">1</span><span class="o">,</span> <span class="n">WK</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
-                         <span class="k">is</span> <span class="n">used</span> <span class="k">as</span> <span class="n">an</span> <span class="n">initial</span> <span class="n">estimate</span> <span class="k">for</span>
-                         <span class="n">the</span> <span class="n">smoothing</span> <span class="n">parameter</span> <span class="n">p</span><span class="o">.</span>  <span class="n">At</span> <span class="n">the</span>
-                         <span class="n">first</span> <span class="n">call</span> <span class="n">to</span> <span class="n">GCVSPL</span><span class="o">,</span> <span class="n">MD</span> <span class="n">must</span> <span class="n">be</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">.</span>
-
-               <span class="n">Other</span> <span class="n">values</span> <span class="k">for</span> <span class="n">SplineMode</span><span class="o">,</span> <span class="n">and</span> <span class="n">inappropriate</span> <span class="n">values</span>
-               <span class="k">for</span> <span class="n">VAL</span> <span class="n">will</span> <span class="n">result</span> <span class="k">in</span> <span class="n">an</span> <span class="n">error</span> <span class="n">condition</span><span class="o">,</span> <span class="n">or</span>
-               <span class="n">cause</span> <span class="n">a</span> <span class="k">default</span> <span class="n">value</span> <span class="k">for</span> <span class="n">VAL</span> <span class="n">to</span> <span class="n">be</span> <span class="n">selected</span><span class="o">.</span>
-               <span class="n">After</span> <span class="k">return</span> <span class="n">from</span> <span class="n">MD</span><span class="o">.</span><span class="na">ne</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span> <span class="n">the</span> <span class="n">same</span> <span class="n">number</span> <span class="n">of</span>
-               <span class="n">degrees</span> <span class="n">of</span> <span class="n">freedom</span> <span class="n">can</span> <span class="n">be</span> <span class="n">obtained</span><span class="o">,</span> <span class="k">for</span> <span class="n">identical</span>
-               <span class="n">weight</span> <span class="n">factors</span> <span class="n">and</span> <span class="n">knot</span> <span class="n">positions</span><span class="o">,</span> <span class="n">by</span> <span class="n">selecting</span>
-               <span class="n">SplineMode</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span> <span class="n">and</span> <span class="n">by</span> <span class="n">copying</span> <span class="n">the</span> <span class="n">value</span> <span class="n">of</span> <span class="n">p</span> <span class="n">from</span> <span class="n">WK</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
-               <span class="n">into</span> <span class="n">VAL</span><span class="o">.</span> <span class="n">In</span> <span class="k">this</span> <span class="n">way</span><span class="o">,</span> <span class="n">no</span> <span class="n">iterative</span> <span class="n">optimization</span>
-               <span class="k">is</span> <span class="n">required</span> <span class="n">when</span> <span class="n">processing</span> <span class="n">other</span> <span class="n">data</span> <span class="k">in</span> <span class="n">Y</span><span class="o">.</span>
-</pre></div>
-
-
-<p>OUPUTS:</p>
-<div class="codehilite"><pre><span></span><span class="n">c</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">spline</span> <span class="n">coefficients</span><span class="o">;</span>
-
-<span class="n">WK</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">working</span> <span class="n">vector</span><span class="o">,</span> <span class="n">see</span> <span class="n">gcvspl</span><span class="o">.</span><span class="na">f</span><span class="o">;</span>
-
-<span class="n">IER</span><span class="o">:</span> <span class="n">error</span> <span class="n">parameter</span>
-
-    <span class="n">IER</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span> <span class="n">Normal</span> <span class="n">exit</span> 
-
-    <span class="n">IER</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span> <span class="n">M</span><span class="o">.</span><span class="na">le</span><span class="o">.</span><span class="mi">0</span> <span class="o">.</span><span class="na">or</span><span class="o">.</span> <span class="n">N</span><span class="o">.</span><span class="na">lt</span><span class="o">.</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span>
-
-    <span class="n">IER</span> <span class="o">=</span> <span class="mi">2</span><span class="o">:</span> <span class="n">Knot</span> <span class="n">sequence</span> <span class="k">is</span> <span class="n">not</span> <span class="n">strictly</span> <span class="n">increasing</span><span class="o">,</span> <span class="n">or</span> <span class="n">some</span> <span class="n">weight</span> <span class="n">factor</span> <span class="k">is</span> <span class="n">not</span> <span class="n">positive</span><span class="o">.</span>
-
-    <span class="n">IER</span> <span class="o">=</span> <span class="mi">3</span><span class="o">:</span> <span class="n">Wrong</span> <span class="n">mode</span> <span class="n">parameter</span> <span class="n">or</span> <span class="n">value</span><span class="o">.</span>
-</pre></div>
-
-
-<p>SEE GCVSPL.f and Woltring (1986) for even more information.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/gcvspl_wrapper.jl#L14-L83' class='documenter-source'>source</a><br></p>
-<p><a id='Spectra.splderivative_julia-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.splderivative_julia-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
-<strong><code>Spectra.splderivative_julia</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span><span class="nt">splderivative_julia</span><span class="o">(</span><span class="nt">xfull</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">xparse</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">cparse</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">;</span><span class="nt">SplineOrder</span><span class="p">::</span><span class="nd">Int32</span> <span class="o">=</span> <span class="nt">Int32</span><span class="o">(</span><span class="nt">2</span><span class="o">),</span> <span class="nt">L</span><span class="p">::</span><span class="nd">Int32</span> <span class="o">=</span> <span class="nt">Int32</span><span class="o">(</span><span class="nt">1</span><span class="o">),</span> <span class="nt">IDER</span><span class="p">::</span><span class="nd">Int32</span> <span class="o">=</span> <span class="nt">Int32</span><span class="o">(</span><span class="nt">0</span><span class="o">))</span>
-</pre></div>
-
-
-<p>Wrapper to the SPLDER function of gcvspl.f, for interpolation purpose</p>
-<p>INPUTS:</p>
-<div class="codehilite"><pre><span></span><span class="n">xfull</span><span class="o">:</span> <span class="n">Float64</span> <span class="n">Array</span><span class="o">,</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">entire</span> <span class="n">x</span> <span class="n">range</span> <span class="n">where</span> <span class="n">the</span> <span class="n">spline</span> <span class="n">has</span> <span class="n">to</span> <span class="n">be</span> <span class="n">evaluated</span>
-
-<span class="n">xparse</span><span class="o">:</span> <span class="n">Float64</span> <span class="n">Array</span><span class="o">,</span> <span class="n">contains</span> <span class="n">the</span> <span class="n">x</span> <span class="n">values</span> <span class="n">of</span> <span class="n">interpolation</span> <span class="n">regions</span>   
-
-<span class="n">WARNING</span><span class="o">!!!</span> <span class="o">=&gt;</span> <span class="n">xparse</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="n">xfull</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">&lt;=</span> <span class="n">xparse</span><span class="o">[</span><span class="n">n</span><span class="o">]</span> 
-
-<span class="n">cparse</span><span class="o">:</span> <span class="n">Float64</span> <span class="n">Array</span><span class="o">,</span> <span class="k">is</span> <span class="n">the</span> <span class="n">evaluated</span> <span class="n">spline</span> <span class="n">coefficients</span> <span class="n">returned</span> <span class="n">by</span> <span class="n">gcvspl</span> <span class="k">for</span> <span class="n">xparse</span>
-</pre></div>
-
-
-<p>OPTIONS:    </p>
-<div class="codehilite"><pre><span></span><span class="nt">splineorder</span> <span class="o">(</span><span class="nt">integer</span><span class="o">):</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">order</span><span class="o">,</span> <span class="nt">default</span><span class="o">:</span> <span class="nt">splineorder</span> <span class="o">=</span> <span class="nt">2</span> <span class="o">(</span><span class="nt">cubic</span><span class="o">);</span>
-
-<span class="nt">L</span> <span class="o">(</span><span class="nt">integer</span><span class="o">):</span> <span class="nt">see</span> <span class="nt">gcvspl</span><span class="p">.</span><span class="nc">f</span> <span class="nt">for</span> <span class="nt">details</span><span class="o">,</span> <span class="nt">default</span><span class="o">:</span> <span class="nt">L</span> <span class="o">=</span> <span class="nt">1</span><span class="o">;</span>
-
-<span class="nt">IDER</span><span class="o">:</span> <span class="nt">the</span> <span class="nt">Derivative</span> <span class="nt">order</span> <span class="nt">required</span><span class="o">,</span> <span class="nt">with</span> <span class="nt">0</span><span class="p">.</span><span class="nc">le</span><span class="p">.</span><span class="nc">IDER</span> <span class="nt">and</span> <span class="nt">IDER</span><span class="p">.</span><span class="nc">le</span><span class="p">.</span><span class="nc">2</span><span class="o">*</span><span class="nt">M</span><span class="o">.</span> <span class="nt">If</span> <span class="nt">IDER</span><span class="p">.</span><span class="nc">eq</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span> <span class="nt">the</span> <span class="nt">function</span> <span class="nt">value</span> <span class="nt">is</span> <span class="nt">returned</span><span class="o">;</span> <span class="nt">otherwise</span><span class="o">,</span> <span class="nt">the</span> <span class="nt">IDER-th</span> <span class="nt">derivative</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">is</span> <span class="nt">returned</span><span class="o">.</span>
-</pre></div>
-
-
-<p>SEE gcvspl.f FOR MORE INFORMATION</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/2430070307d31829db0705f7d5feface96a2af3a/src/gcvspl_wrapper.jl#L114-L138' class='documenter-source'>source</a><br></p>
+<p>Starting from Spectra v0.3.4, the gcvspline Python module (https://github.com/charlesll/gcvspline) is used in the smooth and baseline function. It behaves exactly as the previous wrapping of GCVSPL.f in Julia, such that this should be transparent to users.</p>
                 
                   
                 
@@ -987,7 +885,9 @@ y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, us
       
     </div>
     
-      <script src="../assets/javascripts/application-06a3e72efd.js"></script>
+      <script src="../assets/javascripts/application-e3caa82af6.js"></script>
+      
+      
       <script>app.initialize({url:{base:".."}})</script>
       
         <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
