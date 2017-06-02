@@ -6,9 +6,8 @@ os:
 julia:
   - 0.5
   - 0.6
-before_install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; fi
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install python-numpy; fi
+#before_install:
+#  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; fi
 addons:
   apt_packages:
     - gfortran
@@ -17,7 +16,7 @@ notifications:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - PYTHON="" julia -e 'Pkg.clone(pwd()); Pkg.build("Spectra");ENV["PYTHON"]=""; Pkg.build("PyCall"); Pkg.test("Spectra"; coverage=true)'
+  - PYTHON="" julia -e 'Pkg.clone(pwd()); Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)'
 after_success:
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("Spectra")); include(joinpath("docs", "make.jl"))'
