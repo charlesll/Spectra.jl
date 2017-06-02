@@ -43,7 +43,7 @@ function __init__()
 	copy!(svm, pyimport_conda("sklearn.svm","scikit-learn"))
 	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "scikit-learn"))
 	copy!(linear_model, pyimport_conda("sklearn.linear_model", "scikit-learn"))
-	copy!(pygcvspl, pyimport_conda("gcvspline","gcvspline"))
+	copy!(pygcvspl, pyimport("gcvspline"))
 
 end
 
