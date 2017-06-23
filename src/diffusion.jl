@@ -82,7 +82,8 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,spectra_numbers:
     end
    
     for i = 1:nb_exp
-        y[:,i] = y[:,i]./(K1 + K2 .* trapz(x_sili[:,1],y_sili[:,i])) # integration of silicate bands for normalisation
+		y_sili_corr,~ = baseline(x_sili[:,1],y_sili[:,i],[norm_low_x norm_low_x+5;norm_high_x-5 norm_high_x],"poly",p=1.0)
+        y[:,i] = y[:,i]./(K1 + K2 .* trapz(x_sili[:,1],y_sili_corr[:,1])) # integration of silicate bands for normalisation
     end
 
     if (bas_switch == "Yes") && (roi[1,1] != 0)

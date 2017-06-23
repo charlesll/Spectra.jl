@@ -45,11 +45,11 @@ OPTIONS:
 	
 OUTPUTS:
 
+	intensity: Float64, the intensity of the peak;
+	
 	position: Float64, the position of the peak;
 	
 	hwhm: Float64, the half-width at half-maximum of the peak;
-	
-	intensity: Float64, the intensity of the peak;
 	
 	centroïd: Float64, the centroïd of the peak;
 	
