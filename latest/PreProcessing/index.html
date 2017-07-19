@@ -496,7 +496,7 @@
 <p>The "galeener" equation is the exact one reported in Galeener and Sen (1978), which is a modification from Shuker and Gammon (1970) for accounting of (vo - v)^4 dependence of the Raman intensity. See also Brooker et al. (1988) for further discussion.</p>
 <p>The "long" equation is that of Galeener and Sen (1978) corrected by a vo^3 coefficient for removing the cubic meter dimension of the equation of "galeener". This equation has been used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012).</p>
 <p>The "hehlen" equation is that reported in Hehlen et al. (2010). It actually originates before this publication (Brooker et al. 1988). It uses a different correction that avoid crushing the signal below 500 cm-1. THerefore, it has the advantage of keeping intact the Boson peak signal in glasses.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ad744300a229f7c7c5fad951ba1d5b143f081c59/src/tlcorrection.jl#L33-L71' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/tlcorrection.jl#L33-L71' class='documenter-source'>source</a><br></p>
 <p><a id='Removing-cristal-or-epoxy-signals-1'></a></p>
 <h2 id="removing-cristal-or-epoxy-signals">Removing cristal or epoxy signals</h2>
 <p>Spectra.jl contains a function that helps removing the signal from crystals in the Raman spectra of glasses. Two spectra are needed: that of the mixed crystal+glass signals, and that of the pure cristal signals. Please note that it also can be used to remove signal from epoxy.</p>
@@ -570,7 +570,7 @@
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ad744300a229f7c7c5fad951ba1d5b143f081c59/src/ctxremoval.jl#L17-L79' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/ctxremoval.jl#L17-L79' class='documenter-source'>source</a><br></p>
 <p><a id='Smoothing-signals-1'></a></p>
 <h2 id="smoothing-signals">Smoothing signals</h2>
 <p>Smoothing the signal is achieved with the smooth function. Use of the GCVSplineNSmooth algorithm from the gcvspline Python library is recommended. It seems to give very reasonable smoothing signals. In the present call of GCVSplineNSmooth, errors as sqrt(y) are assumed.</p>
@@ -606,13 +606,13 @@
 
 <p>NOTE:</p>
 <p>See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ad744300a229f7c7c5fad951ba1d5b143f081c59/src/functions.jl#L399-L428' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/functions.jl#L399-L428' class='documenter-source'>source</a><br></p>
 <p><a id='Baseline-subtraction-1'></a></p>
 <h2 id="baseline-subtraction">Baseline subtraction</h2>
 <p>Baseline subtraction can be made with using the baseline function:</p>
 <p><a id='Spectra.baseline-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},AbstractString}' href='#Spectra.baseline-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},AbstractString}'>#</a>
 <strong><code>Spectra.baseline</code></strong> &mdash; <em>Method</em>.</p>
-<div class="codehilite"><pre><span></span><span class="nt">baseline</span><span class="o">(</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">y</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">roi</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">basetype</span><span class="p">::</span><span class="nd">AbstractString</span><span class="o">;</span><span class="nt">p</span><span class="o">=</span><span class="nt">1</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span><span class="nt">SplOrder</span><span class="o">=</span><span class="nt">3</span><span class="o">,</span><span class="nt">roi_out</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">)</span>
+<div class="codehilite"><pre><span></span><span class="nt">baseline</span><span class="o">(</span><span class="nt">x</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">y</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">roi</span><span class="p">::</span><span class="nd">Array</span><span class="p">{</span><span class="err">Float64</span><span class="p">}</span><span class="o">,</span><span class="nt">basetype</span><span class="p">::</span><span class="nd">AbstractString</span><span class="o">;</span><span class="nt">p</span><span class="o">=</span><span class="nt">1</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span><span class="nt">lambda</span> <span class="o">=</span> <span class="nt">10</span><span class="o">^</span><span class="nt">5</span><span class="o">,</span><span class="nt">SplOrder</span><span class="o">=</span><span class="nt">3</span><span class="o">,</span><span class="nt">roi_out</span><span class="o">=</span><span class="s2">&quot;no&quot;</span><span class="o">)</span>
 </pre></div>
 
 
@@ -639,11 +639,15 @@
 
 
 <p>OPTIONS:</p>
-<div class="codehilite"><pre><span></span>p:: Float64, if using gcvspline or Dspline, this number indicates the spline smoothing coefficient. If using &quot;poly&quot;, it is the degree of the polynomial function to be fitted. Please enter a float number (1.0, 2.0 or 3.0 for splines of order 1, 2 or 3), and it is automatically converted to an Integer for the polyfit function. Default = 1.0.
+<div class="codehilite"><pre><span></span><span class="nt">p</span><span class="o">::</span> <span class="nt">Float64</span><span class="o">,</span> <span class="nt">if</span> <span class="nt">using</span> <span class="nt">gcvspline</span> <span class="nt">or</span> <span class="nt">Dspline</span><span class="o">,</span> <span class="nt">this</span> <span class="nt">number</span> <span class="nt">indicates</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">smoothing</span> <span class="nt">coefficient</span><span class="o">.</span> <span class="nt">If</span> <span class="nt">using</span> <span class="s2">&quot;poly&quot;</span><span class="o">,</span> <span class="nt">it</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">degree</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">polynomial</span> <span class="nt">function</span> <span class="nt">to</span> <span class="nt">be</span> <span class="nt">fitted</span><span class="o">.</span> <span class="nt">Please</span> <span class="nt">enter</span> <span class="nt">a</span> <span class="nt">float</span> <span class="nt">number</span> <span class="o">(</span><span class="nt">1</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span> <span class="nt">2</span><span class="p">.</span><span class="nc">0</span> <span class="nt">or</span> <span class="nt">3</span><span class="p">.</span><span class="nc">0</span> <span class="nt">for</span> <span class="nt">splines</span> <span class="nt">of</span> <span class="nt">order</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">2</span> <span class="nt">or</span> <span class="nt">3</span><span class="o">),</span> <span class="nt">and</span> <span class="nt">it</span> <span class="nt">is</span> <span class="nt">automatically</span> <span class="nt">converted</span> <span class="nt">to</span> <span class="nt">an</span> <span class="nt">Integer</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">polyfit</span> <span class="nt">function</span><span class="o">.</span> <span class="nt">For</span> <span class="nt">the</span> <span class="nt">ALS</span> <span class="nt">algorithm</span><span class="o">,</span> <span class="nt">choose</span> <span class="nt">p</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">range</span> <span class="nt">0</span><span class="p">.</span><span class="nc">001</span> <span class="nt">-</span> <span class="nt">0</span><span class="p">.</span><span class="nc">1</span><span class="o">.</span> <span class="nt">Default</span> <span class="o">=</span> <span class="nt">1</span><span class="p">.</span><span class="nc">0</span><span class="o">.</span>
 
-SplOrder: Integer, the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.
+<span class="nt">lambda</span><span class="o">:</span> <span class="nt">Float64</span><span class="o">,</span> <span class="nt">lambda</span> <span class="nt">parameter</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">ALS</span> <span class="nt">algorithm</span><span class="o">,</span> <span class="nt">recommended</span> <span class="nt">values</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">range</span> <span class="nt">10</span><span class="o">^</span><span class="nt">2</span> <span class="nt">-</span> <span class="nt">10</span><span class="o">^</span><span class="nt">9</span><span class="o">;</span> <span class="nt">Default</span> <span class="o">=</span> <span class="nt">10</span><span class="o">^</span><span class="nt">5</span><span class="o">.</span>
 
-roi_out: String, &quot;no&quot; or &quot;yes&quot;. This will result in an additional output matrix containing the y signal in the roi regions of interest, which can then be used to plot and to evaluate the roi provided to the baseline function.
+<span class="nt">SplOrder</span><span class="o">:</span> <span class="nt">Integer</span><span class="o">,</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">coefficient</span> <span class="nt">to</span> <span class="nt">be</span> <span class="nt">used</span> <span class="nt">with</span> <span class="nt">the</span> <span class="nt">Dspline</span> <span class="nt">or</span> <span class="nt">gcvspline</span> <span class="nt">options</span><span class="o">.</span> <span class="nt">Default</span> <span class="o">=</span> <span class="nt">3</span><span class="o">.</span>
+
+<span class="nt">roi_out</span><span class="o">:</span> <span class="nt">String</span><span class="o">,</span> <span class="s2">&quot;no&quot;</span> <span class="nt">or</span> <span class="s2">&quot;yes&quot;</span><span class="o">.</span> <span class="nt">This</span> <span class="nt">will</span> <span class="nt">result</span> <span class="nt">in</span> <span class="nt">an</span> <span class="nt">additional</span> <span class="nt">output</span> <span class="nt">matrix</span> <span class="nt">containing</span> <span class="nt">the</span> <span class="nt">y</span> <span class="nt">signal</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">roi</span> <span class="nt">regions</span> <span class="nt">of</span> <span class="nt">interest</span><span class="o">,</span> <span class="nt">which</span> <span class="nt">can</span> <span class="nt">then</span> <span class="nt">be</span> <span class="nt">used</span> <span class="nt">to</span> <span class="nt">plot</span> <span class="nt">and</span> <span class="nt">to</span> <span class="nt">evaluate</span> <span class="nt">the</span> <span class="nt">roi</span> <span class="nt">provided</span> <span class="nt">to</span> <span class="nt">the</span> <span class="nt">baseline</span> <span class="nt">function</span><span class="o">.</span>
+
+<span class="nt">niter</span><span class="o">:</span> <span class="nt">Int</span><span class="o">,</span> <span class="nt">number</span> <span class="nt">of</span> <span class="nt">iterations</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">ALS</span> <span class="nt">algorithm</span>
 </pre></div>
 
 
@@ -701,7 +705,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 
 
 <p>p there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ad744300a229f7c7c5fad951ba1d5b143f081c59/src/baseline.jl#L19-L108' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/baseline.jl#L19-L112' class='documenter-source'>source</a><br></p>
 <p><a id='Frequency-shifts-correction-1'></a></p>
 <h2 id="frequency-shifts-correction">Frequency shifts correction</h2>
 <p>In case your spectra are shifted from a reference value, Spectra offers several functions that allows you to correct it from this shift.</p>
@@ -732,7 +736,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ad744300a229f7c7c5fad951ba1d5b143f081c59/src/functions.jl#L335-L358' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/functions.jl#L335-L358' class='documenter-source'>source</a><br></p>
 <p>Sometime, two signals from the same mineral show a shift in the X axis, while they share a common X axis. To correct from such thing, you can use the function:</p>
 <p><a id='Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.xshift_correction</code></strong> &mdash; <em>Method</em>.</p>
@@ -764,7 +768,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 
 
 <p>ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ad744300a229f7c7c5fad951ba1d5b143f081c59/src/functions.jl#L366-L392' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/functions.jl#L366-L392' class='documenter-source'>source</a><br></p>
                 
                   
                 
