@@ -496,7 +496,7 @@
 <p>The "galeener" equation is the exact one reported in Galeener and Sen (1978), which is a modification from Shuker and Gammon (1970) for accounting of (vo - v)^4 dependence of the Raman intensity. See also Brooker et al. (1988) for further discussion.</p>
 <p>The "long" equation is that of Galeener and Sen (1978) corrected by a vo^3 coefficient for removing the cubic meter dimension of the equation of "galeener". This equation has been used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012).</p>
 <p>The "hehlen" equation is that reported in Hehlen et al. (2010). It actually originates before this publication (Brooker et al. 1988). It uses a different correction that avoid crushing the signal below 500 cm-1. THerefore, it has the advantage of keeping intact the Boson peak signal in glasses.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/tlcorrection.jl#L33-L71' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/tlcorrection.jl#L33-L71' class='documenter-source'>source</a><br></p>
 <p><a id='Removing-cristal-or-epoxy-signals-1'></a></p>
 <h2 id="removing-cristal-or-epoxy-signals">Removing cristal or epoxy signals</h2>
 <p>Spectra.jl contains a function that helps removing the signal from crystals in the Raman spectra of glasses. Two spectra are needed: that of the mixed crystal+glass signals, and that of the pure cristal signals. Please note that it also can be used to remove signal from epoxy.</p>
@@ -570,7 +570,7 @@
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/ctxremoval.jl#L17-L79' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/ctxremoval.jl#L17-L79' class='documenter-source'>source</a><br></p>
 <p><a id='Smoothing-signals-1'></a></p>
 <h2 id="smoothing-signals">Smoothing signals</h2>
 <p>Smoothing the signal is achieved with the smooth function. Use of the GCVSplineNSmooth algorithm from the gcvspline Python library is recommended. It seems to give very reasonable smoothing signals. In the present call of GCVSplineNSmooth, errors as sqrt(y) are assumed.</p>
@@ -606,7 +606,7 @@
 
 <p>NOTE:</p>
 <p>See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/functions.jl#L399-L428' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/functions.jl#L399-L428' class='documenter-source'>source</a><br></p>
 <p><a id='Baseline-subtraction-1'></a></p>
 <h2 id="baseline-subtraction">Baseline subtraction</h2>
 <p>Baseline subtraction can be made with using the baseline function:</p>
@@ -705,7 +705,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 
 
 <p>p there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/baseline.jl#L19-L112' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/baseline.jl#L19-L112' class='documenter-source'>source</a><br></p>
 <p><a id='Frequency-shifts-correction-1'></a></p>
 <h2 id="frequency-shifts-correction">Frequency shifts correction</h2>
 <p>In case your spectra are shifted from a reference value, Spectra offers several functions that allows you to correct it from this shift.</p>
@@ -736,7 +736,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/functions.jl#L335-L358' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/functions.jl#L335-L358' class='documenter-source'>source</a><br></p>
 <p>Sometime, two signals from the same mineral show a shift in the X axis, while they share a common X axis. To correct from such thing, you can use the function:</p>
 <p><a id='Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.xshift_correction</code></strong> &mdash; <em>Method</em>.</p>
@@ -768,7 +768,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 
 
 <p>ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/functions.jl#L366-L392' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/functions.jl#L366-L392' class='documenter-source'>source</a><br></p>
                 
                   
                 
