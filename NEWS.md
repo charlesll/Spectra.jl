@@ -10,6 +10,10 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
+# 0.3.5
+
+- Addition of the asymmetric least square ALS algorithm for baseline fitting from Eilers and Boelens, 2005, Baseline Correction with Asymmetric Least Squares. Updates of examples and tests accordingly.
+
 # 0.3.4
 
 - Wrapping of the GCVSPL.f library is dropped, we now call gcvspline, the Python package that wraps GCVSPL.f. This now should solve any trouble with Windows users! No change of API, except the drop of the gcvspl_julia and splder_julia functions. This should be transparent for users.
