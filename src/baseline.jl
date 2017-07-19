@@ -17,7 +17,7 @@ using JuMP
 using Ipopt
 
 """
-	baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,SplOrder=3,roi_out="no")
+	baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,lambda = 10^5,SplOrder=3,roi_out="no")
 	
 Baseline subtraction can be made with using the baseline function:
 
@@ -43,11 +43,15 @@ INPUTS:
 
 OPTIONS:
 
-	p:: Float64, if using gcvspline or Dspline, this number indicates the spline smoothing coefficient. If using "poly", it is the degree of the polynomial function to be fitted. Please enter a float number (1.0, 2.0 or 3.0 for splines of order 1, 2 or 3), and it is automatically converted to an Integer for the polyfit function. Default = 1.0.
+	p:: Float64, if using gcvspline or Dspline, this number indicates the spline smoothing coefficient. If using "poly", it is the degree of the polynomial function to be fitted. Please enter a float number (1.0, 2.0 or 3.0 for splines of order 1, 2 or 3), and it is automatically converted to an Integer for the polyfit function. For the ALS algorithm, choose p in the range 0.001 - 0.1. Default = 1.0.
+
+	lambda: Float64, lambda parameter of the ALS algorithm, recommended values in the range 10^2 - 10^9; Default = 10^5.
 
 	SplOrder: Integer, the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.
 	
 	roi_out: String, "no" or "yes". This will result in an additional output matrix containing the y signal in the roi regions of interest, which can then be used to plot and to evaluate the roi provided to the baseline function.
+	
+	niter: Int, number of iterations for the ALS algorithm
 	
 OUTPUTS:
 
@@ -107,7 +111,7 @@ p there is the smoothing parameter used. The cubic spline uses the Dierckx packa
 
 """
 
-function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,SplOrder=3,roi_out="no")
+function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,lambda = 10^5,SplOrder=3,roi_out="no",niter = 10)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
 	if x[end,1] < x[1,1]
 	    x = flipdim(x,1)
@@ -140,6 +144,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	# Scaling the data
 	x_bas_sc = X_scaler[:transform](interest_x)
 	y_bas_sc = Y_scaler[:transform](interest_y)
+	y_sc = Y_scaler[:transform](y)
 	x_sc = X_scaler[:transform](reshape(x,size(x,1),1))
 	
 	# we assume errors as sqrt(y), we only use it for gcvspline
@@ -178,6 +183,24 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		# implementation using the Python wrapper of gcvspline.
 		flt = pygcvspl[:MSESmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],1./(p[1].*ese_interest_y[:,1]),variance_metric=p[1].^2)
 		y_calc_sc = flt(x_sc)
+		
+	######## GCV SPLINE BASELINE
+	elseif basetype == "als"
+		# als algorithm from Matlab code in Eilers et Boelens 2005
+		
+		# Estimate baseline with asymmetric least squares
+		m = length(y_sc)
+		D = diff(diff(speye(m), 2),2)'
+		w = ones(m, 1)
+		z = 1.0
+		for it = 1:niter
+			W = spdiagm((w,), 0, m, m)
+			#C = chol(W + lambda * D' * D) # for whatever reason cholfac does not work well... so we solve the problem a bit differently from the matlab code. Results seem similar.
+			z = (W + lambda * D' * D) \ (w .* y_sc) #C \ (C' \ (w .* y))
+			w = p * (y_sc .> z) + (1 - p) * (y_sc .< z)
+		end
+
+		y_calc_sc = collect(z) 
 
 	######## KERNEL RIDGE REGRESSION WITH SCIKIT LEARN
 	elseif basetype == "KRregression"
@@ -206,7 +229,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		
 	######## RAISING ERROR IF NOT THE GOOD CHOICE
 	else
-        error("Not implemented, choose between poly, Dspline, gcvspline, KRregression and SVMregression.") # for now GPregression is hidden
+        error("Not implemented, choose between poly, Dspline, gcvspline, als, KRregression, SVMregression.") # for now GPregression is hidden
     end
 	
 	y_calc = Y_scaler[:inverse_transform](y_calc_sc)

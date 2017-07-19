@@ -49,11 +49,11 @@ function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np
         b_x_f = x[idx,:] # we pick the right x
         b_y_f = y[idx,:] # we pick the right y
     elseif boottype == "p" && testx == testy && testx == teste
-	b_x_f = x
-	b_y_f = ones(size(y))
-	b_y_f = randn!(b_y_f[:,:]) .* ese[:,:] + y[:,:]
+	    b_x_f = x
+	    b_y_f = ones(size(y))
+	    b_y_f = randn!(b_y_f[:,:]) .* ese[:,:] + y[:,:]
     else 
-	error("Something is wrong. Check size of x, y and ese as well as the boottype (either p or np). Providing an ese array is mandatory for parametric bootstrapping")
+	    error("Something is wrong. Check size of x, y and ese as well as the boottype (either p or np). Providing an ese array is mandatory for parametric bootstrapping")
     end
     
     return b_x_f, b_y_f
