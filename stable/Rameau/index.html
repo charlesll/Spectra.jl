@@ -16,7 +16,7 @@
       
         <link rel="shortcut icon" href="../assets/images/favicon.png">
       
-      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.7.4">
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.7.5">
     
     
       
@@ -91,11 +91,11 @@
         
           <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
           
-<div class="md-search" data-md-component="search">
+<div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="search"></label>
   <div class="md-search__inner">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" required placeholder="Search" accesskey="s" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
+      <input type="text" class="md-search__input" name="query" required placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
       <label class="md-icon md-search__icon" for="search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset">close</button>
     </form>
@@ -544,16 +544,17 @@
 
 <p>roi_hf_external: Array{Float64}, the roi for fitting the linear baseline in the external calibration mode. Default = [3000. 3100.; 3800. 3900.].</p>
 <div class="codehilite"><pre><span></span><span class="n">basetype</span><span class="o">:</span> <span class="n">String</span><span class="o">,</span> <span class="n">the</span> <span class="n">type</span> <span class="n">of</span> <span class="n">baseline</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">fit</span><span class="o">.</span> <span class="n">Corresponds</span> <span class="n">to</span> <span class="n">the</span> <span class="s2">&quot;basetype&quot;</span> <span class="n">parameter</span> <span class="n">of</span> <span class="n">the</span> <span class="n">baseline</span> <span class="kd">function</span><span class="o">.</span>  <span class="n">Default</span> <span class="o">=</span> <span class="s2">&quot;gcvspline&quot;</span><span class="o">.</span>
+
+<span class="n">mmap_switch</span><span class="o">:</span> <span class="kc">false</span> <span class="n">or</span> <span class="kc">true</span><span class="o">,</span> <span class="k">this</span> <span class="n">allows</span> <span class="n">to</span> <span class="k">switch</span> <span class="n">on</span> <span class="n">or</span> <span class="n">off</span> <span class="n">the</span> <span class="n">memory</span> <span class="n">mapping</span> <span class="k">in</span> <span class="n">the</span> <span class="err">`</span><span class="n">readcsv</span><span class="err">`</span><span class="o">/</span><span class="err">`</span><span class="n">readdlm</span><span class="err">`</span> <span class="n">functions</span> <span class="n">that</span> <span class="err">`</span><span class="n">rameau</span><span class="err">`</span> <span class="n">uses</span><span class="o">.</span> <span class="n">Default</span> <span class="o">=</span> <span class="s2">&quot;true&quot;</span><span class="o">.</span>
 </pre></div>
 
 
-<p>mmap_switch: false or true, this allows to switch on or off the memory mapping in the <code>readcsv</code>/<code>readdlm</code> functions that <code>rameau</code> uses. Default = "true".</p>
 <p>OUTPUTS:</p>
 <div class="codehilite"><pre><span></span>Rameau does not provide any outputs directly in Julia, but saves everything in the folders you indicate in the variable &quot;paths&quot;.
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/4a7401cf0816f162e2f5053a0536dabae414f73d/src/rameau.jl#L14-L67' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/rameau.jl#L14-L67' class='documenter-source'>source</a><br></p>
 <p><a id='Quick-examples-1'></a></p>
 <h2 id="quick-examples">Quick examples</h2>
 <p>In this example, the Julia code and the csv liste (myliste.csv) of spectra are in the working folder, the data are in ./raw/, and we want to output the corrected spectra and the figures in the ./treated/ and ./figures/ folders. So we set things like:</p>
@@ -731,7 +732,7 @@ rameau(paths,switches,input_properties = (&#39;\t&#39;,0))
       
     </div>
     
-      <script src="../assets/javascripts/application-c35428f87f.js"></script>
+      <script src="../assets/javascripts/application-07b0fbb49b.js"></script>
       
       
       <script>app.initialize({url:{base:".."}})</script>
