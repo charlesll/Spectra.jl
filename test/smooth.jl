@@ -18,10 +18,13 @@ y = scale.*(y_tot + randn(size(y_tot,1)))
 
 y_sv = smooth(x,y,filter=:SavitzkyGolay,M=15,N=2)
 y_gcv = smooth(x,y,filter=:GCVSmoothedNSpline, ese_y = std(y))
+y_whit = smooth(x,y,filter=:GCVSmoothedNSpline, lambda=10.0^1)
 
 ese_noise = sum((y - y_perfect).^2)
 ese_sg = sum((y_sv-y_perfect).^2)
 ese_gcv = sum((y_gcv-y_perfect).^2)
+ese_whit = sum((y_whit-y_perfect).^2)
 
 @test ese_sg < ese_noise
 @test ese_gcv < ese_noise
+@test ese_whit < ese_noise
