@@ -403,36 +403,58 @@ This function allows smoothing noisy data with Savitzky-Golay filter or GCV spli
 
 INPUTS:
 
-	x: Array{Float64}, 1 column or vector array x values;
+	x: Array{Float64}
 	
-	y: Array{Float64}, 1 column or vector array y values associated with x;
+1 column or vector array x values;
+	
+	y: Array{Float64}
+	
+1 column or vector array y values associated with x;
 	
 OPTIONS:
 
-	filter: Symbol, the filter that will be used. Available filters are :SavitzkyGolay, :GCVSmoothedNSpline, :MSESmoothedNSpline, :DOFSmoothedNSpline. The spline filters are automatic, but the :SavitzkyGolay filter requires adjusting the M and N parameters.
+	filter: Symbol
 	
-	M = 5, Int, half window size of the :SavitzkyGolay filter. M is the number of points before and after to interpolate, i.e. the full width of the window is 2M+1;
+the filter that will be used. Available filters are :SavitzkyGolay, :GCVSmoothedNSpline, :MSESmoothedNSpline, :DOFSmoothedNSpline, :Whittaker. The spline filters are automatic, but the :SavitzkyGolay filter requires adjusting the M and N parameters.
 	
-	N = 2, Int, polynomial degree of the :SavitzkyGolay filter;
+	M = 5, Int
 	
-	ese_y, Float64 or Array{Float64}, an estimation of the errors on y
+half window size of the :SavitzkyGolay filter. M is the number of points before and after to interpolate, i.e. the full width of the window is 2M+1;
+	
+	N = 2, Int
+	
+polynomial degree of the :SavitzkyGolay filter;
+	
+	lambda = 10.0^5, Float64
+	
+smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
+
+	d = 2, Int
+	
+d parameter in Whittaker filter, see Eilers (2003)
+	
+	ese_y, Float64 or Array{Float64}
+	
+an estimation of the errors on y
 	
 OUTPUTS:
 
-	smoothed_y: Array{Float64}, the smoothed y values.
+	smoothed_y: Array{Float64}
+	
+the smoothed y values.
 	
 NOTE:
 
 See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.
 
 """
-function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2,ese_y = 1.0)
+function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2,lambda=10.0^5,d=2,ese_y = 1.0)
 
 	if size(y,2) > 1
 		error("This function only accepts one column arrays or vectors.")
 	end
 	
-	filter_names=[:SavitzkyGolay;:GCVSmoothedNSpline;:MSESmoothedNSpline;:DOFSmoothedNSpline]
+	filter_names=[:SavitzkyGolay;:GCVSmoothedNSpline;:MSESmoothedNSpline;:DOFSmoothedNSpline;:Whittaker]
 	
 	if filter == filter_names[1]
 		
@@ -444,6 +466,10 @@ function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=
 		w = 1.0 ./ (ones(size(y,1),1) .* ese_y)
 		flt = pygcvspl[filter](vec(x),vec(y),vec(w))
 		return flt(x)
+		
+	elseif filter == filter_names[5]
+		w = ones(length(x),1)
+		return whitsmdd(x,y,ones(length(x),1),lambda,d=d)
 	
 	else
 		error("Not implemented, choose between $(filter_names)")
