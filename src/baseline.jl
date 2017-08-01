@@ -263,8 +263,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		
 		clf = kernel_ridge[:KernelRidge](kernel="rbf", gamma=0.1)
 		kr = model_selection[:GridSearchCV](clf,cv=5,param_grid=Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3,1e-4],"gamma"=> logspace(-4, 4, 9)))# GridSearchCV for best parameters
-		kr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
-		y_calc_sc = kr[:predict](x_sc)
+		kr[:fit](reshape(x_bas_sc,size(x_bas_sc,1),1), squeeze(reshape(y_bas_sc[:,1],size(y_bas_sc,1),1),2)) #SciKit learn is expecting a y vector, not an array...
+		y_calc_sc = kr[:predict](reshape(x_sc,size(x_sc,1),1))
 		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
 		
 	######## SUPPORT VECTOR MACHINES REGRESSION WITH SCIKIT LEARN
@@ -272,18 +272,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	
 		clf = svm[:SVR](kernel="rbf", gamma=0.1)
 		svr = model_selection[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-4, 4, 9))) # GridSearchCV for best parameters
-		svr[:fit](x_bas_sc, squeeze(y_bas_sc,2)) #SciKit learn is expecting a y vector, not an array...
-		y_calc_sc = svr[:predict](x_sc)
-		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
-		
-	######## GRADIENT BOOSTING ENSEMBLE REGRESSION WITH SCIKIT LEARN
-	elseif basetype == "GPregression"
-
-		# constructing a GridSearchCV instance for grabing the best parameters
-		gpr = gaussian_process[:GaussianProcess](corr="squared_exponential", theta0=1e-1,thetaL=1e-3, thetaU=1,nugget=(ese_interest_y[:] ./ interest_y[:]).^2,random_start=100)
-		#svr = grid_search[:GridSearchCV](clf,cv=5,param_grid=Dict("C"=> [1e-1, 1e0, 1e1, 1e2, 1e3],"gamma"=> logspace(-2, 2, 5)))
-		gpr[:fit](interest_x, squeeze(interest_y,2)) #SciKit learn is expecting a y vector, not an array...
-		y_calc = gpr[:predict](x_sc)
+		svr[:fit](reshape(x_bas_sc,size(x_bas_sc,1),1), squeeze(reshape(y_bas_sc[:,1],size(y_bas_sc,1),1),2)) #SciKit learn is expecting a y vector, not an array...
+		y_calc_sc = svr[:predict](reshape(x_sc,size(x_sc,1),1))
 		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
 		
 	######## RAISING ERROR IF NOT THE GOOD CHOICE
