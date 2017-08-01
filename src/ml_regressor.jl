@@ -63,7 +63,7 @@ NOTES
 	If the results are poor with Support Vector and Kernel Ridge regressions, you will have to tune the param_grid_kr or param_grid_svm dictionnary that records the hyperparameter space to investigate during the cross validation.
 	
 """
-function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaler="MinMaxScaler",rand_state=42,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
+function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaling="yes",scaler="MinMaxScaler",rand_state=42,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
     
 	if size(X_test,1) == 1
 		X_train, X_test, y_train, y_test = model_selection[:train_test_split](x, reshape(y,size(y,1),1), test_size=test_sz, random_state=rand_state) 
@@ -98,6 +98,7 @@ function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractStri
 
 	X_test_sc = X_scaler[:transform](X_test)
 	y_test_sc = Y_scaler[:transform](y_test)
+
 	
 	if algorithm=="KernelRidge"
 		clf_kr = kernel_ridge[:KernelRidge](kernel=user_kernel, gamma=0.1)
@@ -105,15 +106,27 @@ function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractStri
 	elseif algorithm=="SVM"
 		clf_svm = svm[:SVR](kernel=user_kernel, gamma=0.1)
 		model = model_selection[:GridSearchCV](clf_svm,cv=5,param_grid=param_grid_svm)
+	elseif algorithm=="Lasso"
+		clf_lasso = linear_model[:Lasso](alpha=0.1)
+		model = model_selection[:GridSearchCV](clf_lasso,cv=5,param_grid=Dict("alpha"=> [1e-3, 1e-2, 1e-1, 1., 1e1, 1e2, 1e3, 1e4]))
+	elseif algorithm=="ElasticNet"
+		clf_ElasticNet = linear_model[:ElasticNet](alpha=0.1,l1_ratio=0.5)
+		model = model_selection[:GridSearchCV](clf_ElasticNet,cv=5,param_grid=Dict("alpha"=> [1e-3, 1e-2, 1e-1, 1., 1e1, 1e2, 1e3, 1e4]))
 	elseif algorithm=="LinearRegression"
 		model = linear_model[:LinearRegression]()
 	end
 	
-	model[:fit](X_train_sc, vec(y_train_sc))
-	predict_train_sc = model[:predict](X_train_sc)
-	prediction_train = Y_scaler[:inverse_transform](predict_train_sc)
-	predict_test_sc = model[:predict](X_test_sc)
-	prediction_test = Y_scaler[:inverse_transform](predict_test_sc)
-	
-	return prediction_train, prediction_test, model, X_scaler, Y_scaler
+	if scaling == "yes"
+		model[:fit](X_train_sc, vec(y_train_sc))
+		predict_train_sc = model[:predict](X_train_sc)
+		prediction_train = Y_scaler[:inverse_transform](predict_train_sc)
+		predict_test_sc = model[:predict](X_test_sc)
+		prediction_test = Y_scaler[:inverse_transform](predict_test_sc)
+		return prediction_train, prediction_test, model, X_scaler, Y_scaler
+	else 
+		model[:fit](X_train, vec(y_train))
+		prediction_train = model[:predict](X_train)
+		prediction_test = model[:predict](X_test)
+		return prediction_train, prediction_test, model
+	end
 end

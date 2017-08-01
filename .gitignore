@@ -1,6 +1,7 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
+.ipynb_checkpoints/
 .DS_STORE
 gcvspl.o
 libgcvspl.so

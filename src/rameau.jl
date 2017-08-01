@@ -58,7 +58,7 @@ OPTIONS:
 
 	basetype: String, the type of baseline you want to fit. Corresponds to the "basetype" parameter of the baseline function.  Default = "gcvspline".
 
-  mmap_switch: false or true, this allows to switch on or off the memory mapping in the `readcsv`/`readdlm` functions that `rameau` uses. Default = "true".
+    mmap_switch: false or true, this allows to switch on or off the memory mapping in the `readcsv`/`readdlm` functions that `rameau` uses. Default = "true".
 
 OUTPUTS:
 
@@ -67,7 +67,7 @@ OUTPUTS:
 """
 
 
-function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
+function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true,lambda=10.0^12,p=0.01)
 
 	# some function definition
 	calibration_model(x, p) = p[1].*x
@@ -206,12 +206,17 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 
 			else # only a single baseline treatment is asked
 
-				# we test if thre Long correction is asked, and react accordingly for baseline substraction
+				# we test if the Long correction is asked, and react accordingly for baseline substraction
 				if switches[4] == "yes"
 					x, y_long, ~ = tlcorrection([x[:] y[:]],temperature,laser) # Long correction
 					y_long=y_long./maximum(y_long).*scale
-
-					y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
+					
+					if basetype == "arPLS" || basetype == "whittaker"
+						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,lambda = lambda, p = p)
+					else
+						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
+					end
+					
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*(scale./10) # area normalisation
 
 					figure(figsize=(20,20))
@@ -254,7 +259,12 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
 
 				else
-					y_calc2, bas2 = baseline(x,y,roi[:,:,i],basetype,p=smo_lf[i])
+					if basetype == "arPLS" || basetype == "whittaker"
+						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,lambda = lambda, p = p)
+					else
+						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
+					end
+					
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*scale # area normalisation
 
 					figure()

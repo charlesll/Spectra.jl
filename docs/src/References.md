@@ -1,5 +1,7 @@
 # References
 
+Baek, S.-J., A. Park, Y.-J. Ahn, and J. Choo 2015. Baseline correction using asymmetrically reweighted penalized least squares smoothing, Analyst, 140(1), 250–257, doi:10.1039/C4AN01061B.
+
 Behrens, Harald, Jacques Roux, Daniel R. Neuville, and Michael Siemann. 2006. “Quantification of Dissolved H2O in Silicate Glasses Using Confocal microRaman Spectroscopy.” Chemical Geology 229 (1-3): 96–112. doi:10.1016/j.chemgeo.2006.01.014.
 
 Brooker et al. 1988 Assessment of correction procedures for reduction of Raman spectra. Journal of Raman Spectroscopy 19(2), 71-78.
@@ -9,6 +11,10 @@ Efron, B. 1979. “Bootstrap Methods: Another Look at the Jackknife.” The Anna
 Efron, Bradley. 1981. “Nonparametric Estimates of Standard Error: The Jackknife, the Bootstrap and Other Methods.” Biometrika 68 (3): 589–99. doi:10.1093/biomet/68.3.589.
 
 Efron, B., and Tibshirani, R. 1994. An Introduction to the Bootstrap. CRC press.
+
+Eilers, P. H. C. 2003. A Perfect Smoother, Anal. Chem., 75(14), 3631–3636, doi:10.1021/ac034173t.
+
+Eilers, P. H. C. and Boelens H. F. M., 2005. Baseline Correction with Asymmetric Least Squares Smoothing.
 
 Galeener, F. L., and Sen, P. N. 1978. “Theory of the First-Order Vibrational Spectra of Disordered Solids.” Physical Review B 17 (4): 1928–33.
 

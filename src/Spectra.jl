@@ -30,8 +30,8 @@ const model_selection = PyNULL()
 const decomposition = PyNULL()
 const kernel_ridge = PyNULL()
 const svm = PyNULL()
-const gaussian_process = PyNULL()
 const linear_model = PyNULL()
+const gaussian_process = PyNULL()
 const pygcvspl = PyNULL()
 
 function __init__()
@@ -69,7 +69,7 @@ export peak_diffusion, model, IRdataprep
 export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, SavitzkyGolayFilter, smooth
 
 #From baseline.jl
-export baseline
+export baseline, whitsmdd
 
 #From bootstrap
 export bootsample, bootperf
