@@ -16,7 +16,7 @@
       
         <link rel="shortcut icon" href="../assets/images/favicon.png">
       
-      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.7.4">
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.7.5">
     
     
       
@@ -91,11 +91,11 @@
         
           <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
           
-<div class="md-search" data-md-component="search">
+<div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="search"></label>
   <div class="md-search__inner">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" required placeholder="Search" accesskey="s" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
+      <input type="text" class="md-search__input" name="query" required placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
       <label class="md-icon md-search__icon" for="search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset">close</button>
     </form>
@@ -496,7 +496,7 @@
 <p>The "galeener" equation is the exact one reported in Galeener and Sen (1978), which is a modification from Shuker and Gammon (1970) for accounting of (vo - v)^4 dependence of the Raman intensity. See also Brooker et al. (1988) for further discussion.</p>
 <p>The "long" equation is that of Galeener and Sen (1978) corrected by a vo^3 coefficient for removing the cubic meter dimension of the equation of "galeener". This equation has been used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012).</p>
 <p>The "hehlen" equation is that reported in Hehlen et al. (2010). It actually originates before this publication (Brooker et al. 1988). It uses a different correction that avoid crushing the signal below 500 cm-1. THerefore, it has the advantage of keeping intact the Boson peak signal in glasses.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/tlcorrection.jl#L33-L71' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/tlcorrection.jl#L33-L71' class='documenter-source'>source</a><br></p>
 <p><a id='Removing-cristal-or-epoxy-signals-1'></a></p>
 <h2 id="removing-cristal-or-epoxy-signals">Removing cristal or epoxy signals</h2>
 <p>Spectra.jl contains a function that helps removing the signal from crystals in the Raman spectra of glasses. Two spectra are needed: that of the mixed crystal+glass signals, and that of the pure cristal signals. Please note that it also can be used to remove signal from epoxy.</p>
@@ -570,7 +570,7 @@
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/ctxremoval.jl#L17-L79' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/ctxremoval.jl#L17-L79' class='documenter-source'>source</a><br></p>
 <p><a id='Smoothing-signals-1'></a></p>
 <h2 id="smoothing-signals">Smoothing signals</h2>
 <p>Smoothing the signal is achieved with the smooth function. Use of the GCVSplineNSmooth algorithm from the gcvspline Python library is recommended. It seems to give very reasonable smoothing signals. In the present call of GCVSplineNSmooth, errors as sqrt(y) are assumed.</p>
@@ -582,31 +582,56 @@
 
 <p>This function allows smoothing noisy data with Savitzky-Golay filter or GCV splines.</p>
 <p>INPUTS:</p>
-<div class="codehilite"><pre><span></span><span class="n">x</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="mi">1</span> <span class="n">column</span> <span class="n">or</span> <span class="n">vector</span> <span class="n">array</span> <span class="n">x</span> <span class="n">values</span><span class="o">;</span>
-
-<span class="n">y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="mi">1</span> <span class="n">column</span> <span class="n">or</span> <span class="n">vector</span> <span class="n">array</span> <span class="n">y</span> <span class="n">values</span> <span class="n">associated</span> <span class="k">with</span> <span class="n">x</span><span class="o">;</span>
+<div class="codehilite"><pre><span></span><span class="n">x</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
 </pre></div>
 
 
+<p>1 column or vector array x values;</p>
+<div class="codehilite"><pre><span></span><span class="n">y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
+</pre></div>
+
+
+<p>1 column or vector array y values associated with x;</p>
 <p>OPTIONS:</p>
-<div class="codehilite"><pre><span></span><span class="n">filter</span><span class="o">:</span> <span class="n">Symbol</span><span class="o">,</span> <span class="n">the</span> <span class="n">filter</span> <span class="n">that</span> <span class="n">will</span> <span class="n">be</span> <span class="n">used</span><span class="o">.</span> <span class="n">Available</span> <span class="n">filters</span> <span class="n">are</span> <span class="o">:</span><span class="n">SavitzkyGolay</span><span class="o">,</span> <span class="o">:</span><span class="n">GCVSmoothedNSpline</span><span class="o">,</span> <span class="o">:</span><span class="n">MSESmoothedNSpline</span><span class="o">,</span> <span class="o">:</span><span class="n">DOFSmoothedNSpline</span><span class="o">.</span> <span class="n">The</span> <span class="n">spline</span> <span class="n">filters</span> <span class="n">are</span> <span class="n">automatic</span><span class="o">,</span> <span class="n">but</span> <span class="n">the</span> <span class="o">:</span><span class="n">SavitzkyGolay</span> <span class="n">filter</span> <span class="n">requires</span> <span class="n">adjusting</span> <span class="n">the</span> <span class="n">M</span> <span class="n">and</span> <span class="n">N</span> <span class="n">parameters</span><span class="o">.</span>
-
-<span class="n">M</span> <span class="o">=</span> <span class="mi">5</span><span class="o">,</span> <span class="n">Int</span><span class="o">,</span> <span class="n">half</span> <span class="n">window</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="o">:</span><span class="n">SavitzkyGolay</span> <span class="n">filter</span><span class="o">.</span> <span class="n">M</span> <span class="k">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">points</span> <span class="n">before</span> <span class="n">and</span> <span class="n">after</span> <span class="n">to</span> <span class="n">interpolate</span><span class="o">,</span> <span class="n">i</span><span class="o">.</span><span class="na">e</span><span class="o">.</span> <span class="n">the</span> <span class="n">full</span> <span class="n">width</span> <span class="n">of</span> <span class="n">the</span> <span class="n">window</span> <span class="k">is</span> <span class="mi">2</span><span class="n">M</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span>
-
-<span class="n">N</span> <span class="o">=</span> <span class="mi">2</span><span class="o">,</span> <span class="n">Int</span><span class="o">,</span> <span class="n">polynomial</span> <span class="n">degree</span> <span class="n">of</span> <span class="n">the</span> <span class="o">:</span><span class="n">SavitzkyGolay</span> <span class="n">filter</span><span class="o">;</span>
-
-<span class="n">ese_y</span><span class="o">,</span> <span class="n">Float64</span> <span class="n">or</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">an</span> <span class="n">estimation</span> <span class="n">of</span> <span class="n">the</span> <span class="n">errors</span> <span class="n">on</span> <span class="n">y</span>
+<div class="codehilite"><pre><span></span><span class="n">filter</span><span class="o">:</span> <span class="n">Symbol</span>
 </pre></div>
 
 
+<p>the filter that will be used. Available filters are :SavitzkyGolay, :GCVSmoothedNSpline, :MSESmoothedNSpline, :DOFSmoothedNSpline, :Whittaker. The spline filters are automatic, but the :SavitzkyGolay filter requires adjusting the M and N parameters.</p>
+<div class="codehilite"><pre><span></span>M = 5, Int
+</pre></div>
+
+
+<p>half window size of the :SavitzkyGolay filter. M is the number of points before and after to interpolate, i.e. the full width of the window is 2M+1;</p>
+<div class="codehilite"><pre><span></span>N = 2, Int
+</pre></div>
+
+
+<p>polynomial degree of the :SavitzkyGolay filter;</p>
+<div class="codehilite"><pre><span></span>lambda = 10.0^5, Float64
+</pre></div>
+
+
+<p>smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.</p>
+<div class="codehilite"><pre><span></span>d = 2, Int
+</pre></div>
+
+
+<p>d parameter in Whittaker filter, see Eilers (2003)</p>
+<div class="codehilite"><pre><span></span>ese_y, Float64 or Array{Float64}
+</pre></div>
+
+
+<p>an estimation of the errors on y</p>
 <p>OUTPUTS:</p>
-<div class="codehilite"><pre><span></span><span class="n">smoothed_y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">smoothed</span> <span class="n">y</span> <span class="n">values</span><span class="o">.</span>
+<div class="codehilite"><pre><span></span><span class="n">smoothed_y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
 </pre></div>
 
 
+<p>the smoothed y values.</p>
 <p>NOTE:</p>
 <p>See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/functions.jl#L399-L428' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/functions.jl#L399-L450' class='documenter-source'>source</a><br></p>
 <p><a id='Baseline-subtraction-1'></a></p>
 <h2 id="baseline-subtraction">Baseline subtraction</h2>
 <p>Baseline subtraction can be made with using the baseline function:</p>
@@ -618,58 +643,95 @@
 
 <p>Baseline subtraction can be made with using the baseline function:</p>
 <p>INPUTS:</p>
-<div class="codehilite"><pre><span></span><span class="n">x</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">x</span> <span class="n">values</span><span class="o">;</span>
-
-<span class="n">y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">y</span> <span class="n">values</span><span class="o">;</span>
-
-<span class="n">roi</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">containing</span> <span class="n">the</span> <span class="s2">&quot;region of interest&quot;</span><span class="o">,</span> <span class="n">i</span><span class="o">.</span><span class="na">e</span><span class="o">.</span> <span class="n">the</span> <span class="n">places</span> <span class="n">where</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">baseline</span><span class="o">.</span> <span class="n">For</span> <span class="n">instance</span><span class="o">,</span> <span class="k">if</span> <span class="n">the</span> <span class="n">baseline</span> <span class="n">should</span> <span class="n">fit</span> <span class="n">the</span> <span class="n">regions</span> <span class="n">comprised</span> <span class="n">between</span> <span class="mi">750</span> <span class="n">and</span> <span class="mi">800</span> <span class="n">cm</span><span class="o">^{-</span><span class="mi">1</span><span class="o">},</span> <span class="n">and</span> <span class="mi">1250</span> <span class="n">and</span> <span class="mi">1300</span> <span class="n">cm</span><span class="o">^{-</span><span class="mi">1</span><span class="o">}:</span> <span class="n">roi</span> <span class="o">=</span> <span class="o">[</span><span class="mi">750</span><span class="o">.</span> <span class="mi">800</span><span class="o">.;</span> <span class="mi">1250</span><span class="o">.</span> <span class="mi">1300</span><span class="o">.];</span>
-
-<span class="n">basetype</span><span class="o">:</span> <span class="n">AbstractString</span><span class="o">,</span> <span class="n">the</span> <span class="n">type</span> <span class="n">of</span> <span class="n">baseline</span> <span class="n">that</span> <span class="n">you</span> <span class="n">want</span> <span class="n">to</span> <span class="n">use</span><span class="o">.</span> <span class="n">For</span> <span class="n">now</span><span class="o">,</span> <span class="n">polynomial</span> <span class="n">and</span> <span class="n">cubic</span> <span class="n">spline</span> <span class="n">baselines</span> <span class="n">are</span> <span class="n">available</span><span class="o">.</span> <span class="n">Indicate</span> <span class="n">the</span> <span class="n">type</span> <span class="n">you</span> <span class="n">want</span> <span class="k">as</span><span class="o">:</span>
-
-    <span class="n">Polynomial</span> <span class="n">baseline</span><span class="o">:</span> <span class="n">enter</span> <span class="s2">&quot;poly&quot;</span> <span class="k">for</span> <span class="n">basetype</span><span class="o">,</span> <span class="n">then</span> <span class="n">the</span> <span class="n">polynomial</span> <span class="n">degree</span> <span class="k">as</span> <span class="n">p</span><span class="o">.</span>
-
-    <span class="n">Dierckx</span> <span class="n">cubic</span> <span class="n">spline</span> <span class="n">baseline</span><span class="o">:</span> <span class="n">enter</span> <span class="s2">&quot;Dspline&quot;</span> <span class="k">for</span> <span class="n">basetype</span><span class="o">,</span> <span class="n">then</span> <span class="n">the</span> <span class="n">smoothing</span> <span class="n">degree</span> <span class="k">as</span> <span class="n">p</span><span class="o">.</span>
-
-    <span class="n">Generalised</span> <span class="n">Cross</span><span class="o">-</span><span class="n">Validated</span> <span class="n">baseline</span><span class="o">:</span> <span class="n">enter</span> <span class="s2">&quot;gsvspline&quot;</span> <span class="k">for</span> <span class="n">basetype</span><span class="o">,</span> <span class="n">then</span> <span class="n">the</span> <span class="n">smoothing</span> <span class="n">degree</span> <span class="k">as</span> <span class="n">p</span><span class="o">.</span> 
-
-    <span class="n">Kernel</span> <span class="n">Ridge</span> <span class="n">Regression</span><span class="o">:</span> <span class="n">enter</span> <span class="s2">&quot;KRregression&quot;</span> <span class="k">for</span> <span class="n">basetype</span><span class="o">,</span> <span class="n">no</span> <span class="n">need</span> <span class="n">to</span> <span class="n">provide</span> <span class="n">p</span><span class="o">.</span>
-
-    <span class="n">Support</span> <span class="n">Vector</span> <span class="n">Machines</span> <span class="n">regression</span><span class="o">:</span> <span class="n">enter</span> <span class="s2">&quot;SVMregression&quot;</span> <span class="k">for</span> <span class="n">basetype</span><span class="o">,</span> <span class="n">no</span> <span class="n">need</span> <span class="n">to</span> <span class="n">provide</span> <span class="n">p</span><span class="o">.</span>
+<div class="codehilite"><pre><span></span><span class="n">x</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
 </pre></div>
 
 
+<p>containing the x values;</p>
+<div class="codehilite"><pre><span></span><span class="n">y</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
+</pre></div>
+
+
+<p>containing the y values;</p>
+<div class="codehilite"><pre><span></span><span class="n">roi</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
+</pre></div>
+
+
+<p>containing the region of interest, i.e. the places where you want to fit the baseline. For instance, if the baseline should fit the regions comprised between 750 and 800 cm^{-1}, and 1250 and 1300 cm^{-1}: roi = [750. 800.; 1250. 1300.];</p>
+<div class="codehilite"><pre><span></span><span class="n">basetype</span><span class="o">:</span> <span class="n">AbstractString</span>
+</pre></div>
+
+
+<p>the type of baseline that you want to use. For now, polynomial and cubic spline baselines are available. Indicate the type you want as:</p>
+<p>Polynomial baseline: enter "poly" for basetype, then the polynomial degree as p.</p>
+<p>Dierckx cubic spline baseline: enter "Dspline" for basetype, then the smoothing degree as p. This uses the Dierckx package: https://github.com/kbarbary/Dierckx.jl</p>
+<p>Generalised Cross-Validated baseline: enter "gsvspline" for basetype, then the smoothing degree as p. </p>
+<p>Kernel Ridge Regression: enter "KRregression" for basetype, no need to provide p.</p>
+<p>Support Vector Machines regression: enter "SVMregression" for basetype, no need to provide p.</p>
+<p>ALS algorithm: enter "als" for automatic baseline fitting following Eilers and Boelens (2005).</p>
+<p>arPSL algorithm: enter "arPLS" for automatic baseline fitting following Baek et al. (2015).</p>
+<p>whittaker algorithm: enter "whittaker" to use the whittaker smoother described in Eiler (2003) which fit the signal in the roi regions. See also function whitsmdd().</p>
 <p>OPTIONS:</p>
-<div class="codehilite"><pre><span></span><span class="nt">p</span><span class="o">::</span> <span class="nt">Float64</span><span class="o">,</span> <span class="nt">if</span> <span class="nt">using</span> <span class="nt">gcvspline</span> <span class="nt">or</span> <span class="nt">Dspline</span><span class="o">,</span> <span class="nt">this</span> <span class="nt">number</span> <span class="nt">indicates</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">smoothing</span> <span class="nt">coefficient</span><span class="o">.</span> <span class="nt">If</span> <span class="nt">using</span> <span class="s2">&quot;poly&quot;</span><span class="o">,</span> <span class="nt">it</span> <span class="nt">is</span> <span class="nt">the</span> <span class="nt">degree</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">polynomial</span> <span class="nt">function</span> <span class="nt">to</span> <span class="nt">be</span> <span class="nt">fitted</span><span class="o">.</span> <span class="nt">Please</span> <span class="nt">enter</span> <span class="nt">a</span> <span class="nt">float</span> <span class="nt">number</span> <span class="o">(</span><span class="nt">1</span><span class="p">.</span><span class="nc">0</span><span class="o">,</span> <span class="nt">2</span><span class="p">.</span><span class="nc">0</span> <span class="nt">or</span> <span class="nt">3</span><span class="p">.</span><span class="nc">0</span> <span class="nt">for</span> <span class="nt">splines</span> <span class="nt">of</span> <span class="nt">order</span> <span class="nt">1</span><span class="o">,</span> <span class="nt">2</span> <span class="nt">or</span> <span class="nt">3</span><span class="o">),</span> <span class="nt">and</span> <span class="nt">it</span> <span class="nt">is</span> <span class="nt">automatically</span> <span class="nt">converted</span> <span class="nt">to</span> <span class="nt">an</span> <span class="nt">Integer</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">polyfit</span> <span class="nt">function</span><span class="o">.</span> <span class="nt">For</span> <span class="nt">the</span> <span class="nt">ALS</span> <span class="nt">algorithm</span><span class="o">,</span> <span class="nt">choose</span> <span class="nt">p</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">range</span> <span class="nt">0</span><span class="p">.</span><span class="nc">001</span> <span class="nt">-</span> <span class="nt">0</span><span class="p">.</span><span class="nc">1</span><span class="o">.</span> <span class="nt">Default</span> <span class="o">=</span> <span class="nt">1</span><span class="p">.</span><span class="nc">0</span><span class="o">.</span>
-
-<span class="nt">lambda</span><span class="o">:</span> <span class="nt">Float64</span><span class="o">,</span> <span class="nt">lambda</span> <span class="nt">parameter</span> <span class="nt">of</span> <span class="nt">the</span> <span class="nt">ALS</span> <span class="nt">algorithm</span><span class="o">,</span> <span class="nt">recommended</span> <span class="nt">values</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">range</span> <span class="nt">10</span><span class="o">^</span><span class="nt">2</span> <span class="nt">-</span> <span class="nt">10</span><span class="o">^</span><span class="nt">9</span><span class="o">;</span> <span class="nt">Default</span> <span class="o">=</span> <span class="nt">10</span><span class="o">^</span><span class="nt">5</span><span class="o">.</span>
-
-<span class="nt">SplOrder</span><span class="o">:</span> <span class="nt">Integer</span><span class="o">,</span> <span class="nt">the</span> <span class="nt">spline</span> <span class="nt">coefficient</span> <span class="nt">to</span> <span class="nt">be</span> <span class="nt">used</span> <span class="nt">with</span> <span class="nt">the</span> <span class="nt">Dspline</span> <span class="nt">or</span> <span class="nt">gcvspline</span> <span class="nt">options</span><span class="o">.</span> <span class="nt">Default</span> <span class="o">=</span> <span class="nt">3</span><span class="o">.</span>
-
-<span class="nt">roi_out</span><span class="o">:</span> <span class="nt">String</span><span class="o">,</span> <span class="s2">&quot;no&quot;</span> <span class="nt">or</span> <span class="s2">&quot;yes&quot;</span><span class="o">.</span> <span class="nt">This</span> <span class="nt">will</span> <span class="nt">result</span> <span class="nt">in</span> <span class="nt">an</span> <span class="nt">additional</span> <span class="nt">output</span> <span class="nt">matrix</span> <span class="nt">containing</span> <span class="nt">the</span> <span class="nt">y</span> <span class="nt">signal</span> <span class="nt">in</span> <span class="nt">the</span> <span class="nt">roi</span> <span class="nt">regions</span> <span class="nt">of</span> <span class="nt">interest</span><span class="o">,</span> <span class="nt">which</span> <span class="nt">can</span> <span class="nt">then</span> <span class="nt">be</span> <span class="nt">used</span> <span class="nt">to</span> <span class="nt">plot</span> <span class="nt">and</span> <span class="nt">to</span> <span class="nt">evaluate</span> <span class="nt">the</span> <span class="nt">roi</span> <span class="nt">provided</span> <span class="nt">to</span> <span class="nt">the</span> <span class="nt">baseline</span> <span class="nt">function</span><span class="o">.</span>
-
-<span class="nt">niter</span><span class="o">:</span> <span class="nt">Int</span><span class="o">,</span> <span class="nt">number</span> <span class="nt">of</span> <span class="nt">iterations</span> <span class="nt">for</span> <span class="nt">the</span> <span class="nt">ALS</span> <span class="nt">algorithm</span>
+<div class="codehilite"><pre><span></span>p:: Float64
 </pre></div>
 
 
+<p>Default = 1.0. If using gcvspline or Dspline, this number indicates the spline smoothing coefficient. If using "poly", it is the degree of the polynomial function to be fitted. Please enter a float number (1.0, 2.0 or 3.0 for splines of order 1, 2 or 3), and it is automatically converted to an Integer for the polyfit function. </p>
+<p>For the ALS algorithm, choose p in the range 0.001 - 0.1. </p>
+<p>For the arPLS algorithm, p corresponds to the breaking ratio parameter in the paper of Baek et al. (2015). Test different values of p, starting at high p values (~0.1).</p>
+<div class="codehilite"><pre><span></span><span class="n">lambda</span><span class="o">:</span> <span class="n">Float64</span>
+</pre></div>
+
+
+<p>smoothing parameter of the ALS, arPLS and whittaker algorithms, recommended values in the range 10^2 - 10^9; Default = 10^5.</p>
+<div class="codehilite"><pre><span></span><span class="n">SplOrder</span><span class="o">:</span> <span class="n">Integer</span>
+</pre></div>
+
+
+<p>the spline coefficient to be used with the Dspline or gcvspline options. Default = 3.</p>
+<div class="codehilite"><pre><span></span><span class="n">roi_out</span><span class="o">:</span> <span class="n">String</span><span class="o">,</span> <span class="s2">&quot;no&quot;</span> <span class="n">or</span> <span class="s2">&quot;yes&quot;</span><span class="o">.</span>
+</pre></div>
+
+
+<p>This will result in an additional output matrix containing the y signal in the roi regions of interest, which can then be used to plot and to evaluate the roi provided to the baseline function.</p>
+<div class="codehilite"><pre><span></span><span class="n">niter</span><span class="o">:</span> <span class="n">Int</span>
+</pre></div>
+
+
+<p>number of iterations for the ALS algorithm. Default = 10.</p>
 <p>OUTPUTS:</p>
 <p>(are combined in a tuple in one array if only one output variable is provided)</p>
-<div class="codehilite"><pre><span></span><span class="n">y_corr</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">spectrum</span> <span class="n">corrected</span> <span class="n">from</span> <span class="n">its</span> <span class="n">baseline</span><span class="o">;</span>
-
-<span class="n">bass</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">the</span> <span class="n">baseline</span><span class="o">.</span>
+<div class="codehilite"><pre><span></span><span class="n">y_corr</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
 </pre></div>
 
 
+<p>the spectrum corrected from its baseline;</p>
+<div class="codehilite"><pre><span></span><span class="n">bass</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
+</pre></div>
+
+
+<p>the baseline.</p>
 <p>OPTIONAL OUTPUT:</p>
-<div class="codehilite"><pre><span></span><span class="n">y_roi_out</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">},</span> <span class="n">an</span> <span class="mi">2</span> <span class="n">column</span> <span class="n">array</span> <span class="n">containing</span> <span class="n">the</span> <span class="n">initial</span> <span class="n">x</span><span class="o">-</span><span class="n">y</span> <span class="n">pairs</span> <span class="n">of</span> <span class="n">the</span> <span class="n">signal</span> <span class="k">in</span> <span class="n">the</span> <span class="n">roi</span> <span class="n">regions</span> <span class="n">of</span> <span class="n">interest</span><span class="o">.</span>
+<div class="codehilite"><pre><span></span><span class="n">y_roi_out</span><span class="o">:</span> <span class="n">Array</span><span class="o">{</span><span class="n">Float64</span><span class="o">}</span>
 </pre></div>
 
 
+<p>an 2 column array containing the initial x-y pairs of the signal in the roi regions of interest.</p>
 <p>NOTES:</p>
 <p>Errors on measurenements are automatically provided as sqrt(y) in gcvspline. For further options, please use the gcvspl and splderivative functions that directly call the GCVSPL and SPLDER function of the gcvspl.f program (Holtring, 1986). Further informations for the use of splines are given in the Splines section, see :ref:<code>Splines</code>.</p>
 <p>The Kernel Ridge and Support Vector Machines regression algorithms call the Scikit Learn library, available in Python. This library thus SHOULD be installed. They are machine learning algorithms that will try to automatically fit the baseline in the provided regions of interest. They are slower that splines, but have the advantage of avoiding the (sometimes painful) tuning of the spline coefficients.</p>
 <p>The Kernel Ridge and Support Vector Machines regression algorithms used a Cross-Validated approach to increase the generalisation and avoid overfitting. The GridSearchCV function of SciKit Learn is called, with 5 fold cross-validation and the following gridsearch parameters:</p>
-<div class="codehilite"><pre><span></span><span class="nt">-</span> <span class="nt">For</span> <span class="nt">KRregression</span><span class="o">:</span> <span class="nt">param_grid</span><span class="o">=</span><span class="nt">Dict</span><span class="o">(</span><span class="s2">&quot;alpha&quot;</span><span class="o">=&gt;</span> <span class="cp">[</span><span class="mi">1</span><span class="nx">e0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="nx">e</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="nx">e</span><span class="o">-</span><span class="mi">3</span><span class="cp">]</span><span class="o">,</span><span class="s2">&quot;gamma&quot;</span><span class="o">=&gt;</span> <span class="nt">logspace</span><span class="o">(</span><span class="nt">-4</span><span class="o">,</span> <span class="nt">4</span><span class="o">,</span> <span class="nt">9</span><span class="o">));</span>
-<span class="nt">-</span> <span class="nt">For</span> <span class="nt">SVMregression</span><span class="o">:</span> <span class="nt">param_grid</span><span class="o">=</span><span class="nt">Dict</span><span class="o">(</span><span class="s2">&quot;C&quot;</span><span class="o">=&gt;</span> <span class="cp">[</span><span class="mi">1</span><span class="nx">e0</span><span class="p">,</span> <span class="mi">1</span><span class="nx">e1</span><span class="p">,</span> <span class="mi">1</span><span class="nx">e2</span><span class="p">,</span> <span class="mi">1</span><span class="nx">e3</span><span class="cp">]</span><span class="o">,</span><span class="s2">&quot;gamma&quot;</span><span class="o">=&gt;</span> <span class="nt">logspace</span><span class="o">(</span><span class="nt">-4</span><span class="o">,</span> <span class="nt">4</span><span class="o">,</span> <span class="nt">9</span><span class="o">)).</span>
+<ul>
+<li>For KRregression:</li>
+</ul>
+<div class="codehilite"><pre><span></span>param_grid=Dict(&quot;alpha&quot;=&gt; [1e0, 0.1, 1e-2, 1e-3],&quot;gamma&quot;=&gt; logspace(-4, 4, 9));
+</pre></div>
+
+
+<ul>
+<li>For SVMregression:</li>
+</ul>
+<div class="codehilite"><pre><span></span>param_grid=Dict(&quot;C&quot;=&gt; [1e0, 1e1, 1e2, 1e3],&quot;gamma&quot;=&gt; logspace(-4, 4, 9)).
 </pre></div>
 
 
@@ -698,14 +760,12 @@ y_corr, bas = baseline(x,y,roi,&quot;poly&quot;,p=0.0)
 <p>For a cubic spline baseline fitting the basis of a peak centered at 1100 cm^{-1} and with basis at 900 and 1250 cm^{-1}:</p>
 <div class="codehilite"><pre><span></span>roi = [890. 910.; 1250. 1300.]
 
-basetype = &quot;Dspline&quot;
-
-bas = baseline(x,y,roi,basetype,p=0.01)
+bas = baseline(x,y,roi,&quot;Dspline&quot;,p=0.01)
 </pre></div>
 
 
-<p>p there is the smoothing parameter used. The cubic spline uses the Dierckx package initially written in Fortran and used in Julia: https://github.com/kbarbary/Dierckx.jl</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/baseline.jl#L19-L112' class='documenter-source'>source</a><br></p>
+<p>p there is the smoothing parameter used.</p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/baseline.jl#L16-L146' class='documenter-source'>source</a><br></p>
 <p><a id='Frequency-shifts-correction-1'></a></p>
 <h2 id="frequency-shifts-correction">Frequency shifts correction</h2>
 <p>In case your spectra are shifted from a reference value, Spectra offers several functions that allows you to correct it from this shift.</p>
@@ -736,7 +796,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 </pre></div>
 
 
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/functions.jl#L335-L358' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/functions.jl#L335-L358' class='documenter-source'>source</a><br></p>
 <p>Sometime, two signals from the same mineral show a shift in the X axis, while they share a common X axis. To correct from such thing, you can use the function:</p>
 <p><a id='Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}' href='#Spectra.xshift_correction-Tuple{Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N},Array{Float64,N}}'>#</a>
 <strong><code>Spectra.xshift_correction</code></strong> &mdash; <em>Method</em>.</p>
@@ -768,7 +828,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
 
 
 <p>ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.</p>
-<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/ca2c916054a2bb2b2ed0f157121d07891cacd825/src/functions.jl#L366-L392' class='documenter-source'>source</a><br></p>
+<p><a target='_blank' href='https://github.com/charlesll/Spectra.jl/tree/d4742980fd6c895cd2a9547b8da87320660b882d/src/functions.jl#L366-L392' class='documenter-source'>source</a><br></p>
                 
                   
                 
@@ -838,7 +898,7 @@ bas = baseline(x,y,roi,basetype,p=0.01)
       
     </div>
     
-      <script src="../assets/javascripts/application-c35428f87f.js"></script>
+      <script src="../assets/javascripts/application-07b0fbb49b.js"></script>
       
       
       <script>app.initialize({url:{base:".."}})</script>
