@@ -10,6 +10,16 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
+# 0.3.6
+
+- standardizatin in the baseline() function is now written in pure Julia (avoid annoying messages from scikit-learn);
+
+- addition of the arPLS algorithm from Baek et al. (2015) to automatic fit the baseline;
+
+- addition of the whittaker smoother to fit the baseline;
+
+- addition of the ElasticNet and Lasso algorithms in the ml_regressor function.
+
 # 0.3.5
 
 - Addition of the asymmetric least square ALS algorithm for baseline fitting from Eilers and Boelens, 2005, Baseline Correction with Asymmetric Least Squares. Updates of examples and tests accordingly.
