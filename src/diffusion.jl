@@ -74,16 +74,14 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,spectra_numbers:
    
    # integration of silicate bands for normalisation depending on the polariser orientation, we use different thickness determination
     if polarizer_orientation == "A"
-        K1 = -4.702790323345388e-04
-        K2 = 1.232195900605357e-04
+        K1 = 0.8345
     elseif polarizer_orientation == "C"
-        K1 = -0.009520859717694
-        K2 = 2.160999910417261e-04
+        K1 = 0.5620
     end
    
     for i = 1:nb_exp
 		y_sili_corr,~ = baseline(x_sili[:,1],y_sili[:,i],[norm_low_x norm_low_x+5;norm_high_x-5 norm_high_x],"poly",p=1.0)
-        y[:,i] = y[:,i]./(K1 + K2 .* trapz(x_sili[:,1],y_sili_corr[:,1])) # integration of silicate bands for normalisation
+        y[:,i] = y[:,i]./(trapz(x_sili[:,1],y_sili_corr[:,1])./K1.*1e-4) # integration of silicate bands for normalisation, thickness is in cm
     end
 
     if (bas_switch == "Yes") && (roi[1,1] != 0)

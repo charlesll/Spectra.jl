@@ -84,7 +84,7 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
     y::Array{Float64} = data[:,2]
 
     # Calculate the error on data as sqrt(y). If y <= 0, then error = abs(y).
-    ese::Array{Float64} = sqrt(abs(y))./abs(y) # relative errors
+    ese::Array{Float64} = sqrt.(abs.(y))./abs.(y) # relative errors
 
 	# get the Raman shift in m-1
 	nu::Array{Float64} = 100.0.*x # cm-1 -> m-1 Raman shift
@@ -94,19 +94,19 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 		# Formula used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012) (corrected for using the Planck constant in the last reference)
 		# It is that reported in Brooker et al. (1988) with the addition of a scaling nu0^3 coefficient for adimentionality
     	frequency::Array{Float64} = nu0.^3.*nu./((nu0-nu).^4) # frequency correction; dimensionless
-    	boltzman::Array{Float64} = 1 - exp(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
+    	boltzman::Array{Float64} = 1 - exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
     	ycorr::Array{Float64} = y.*frequency.*boltzman; # correction
 		
 	elseif correction == "galeener"
 		# This uses the formula reported in Galeener and Sen (1978) and Brooker et al. (1988); it uses the Bose-Einstein / Boltzman distribution
 		# Formula from  without the scaling vo^3 coefficient reported in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012)
     	frequency = nu./((nu0-nu).^4) # frequency correction; M^3
-    	boltzman = 1 - exp(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
+    	boltzman = 1 - exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
     	ycorr = y.*frequency.*boltzman; # correction
 		
 	elseif correction =="hehlen"
 		# this uses the formula reported in Hehlen et al. 2010
-    	frequency = nu./(nu0.^3.*density) # frequency + density correction; M/KG
+    	frequency = 1./(nu0.^3.*density) # frequency + density correction; M/KG
     	boltzman = 1 - exp(-h.*c.*nu./(k.*T)) # dimensionless
     	ycorr = y.*frequency.*boltzman; # correction
 	else

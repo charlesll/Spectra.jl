@@ -219,14 +219,15 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		m = length(y)
 		D = diff(diff(speye(m))) # use if data equally spaced
 		#D = ddmat(x, 2) # from Eilers 2003: use ddmat if data are not equally spaced...
-		w = ones(m, 1)
+		#w = ones(N, 1)
+		w = zeros(size(y,1)) # Modification following email of Baek, thanks!
+		w[interest_index] = 1.0
 		
-		z = 1.0
 		for it = 1:niter
 			W = spdiagm((w,), 0, m, m)
 			#C = chol(W + lambda * D' * D) # for whatever reason cholfac does not work well... so we solve the problem a bit differently from the matlab code. Results seem similar.
-			z = (W + lambda * D' * D) \ (w .* y) #C \ (C' \ (w .* y))
-			w = p * (y .> z) + (1 - p) * (y .< z)
+			global z = (W + lambda * D' * D) \ (w .* y) #C \ (C' \ (w .* y))
+			w[w.!=0] = p * (y[w.!=0] .> z[w.!=0]) + (1 - p) * (y[w.!=0] .< z[w.!=0])
 		end
 		
 		y_calc = collect(z)
@@ -235,17 +236,19 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	elseif basetype == "arPLS"
 		# arPLS algorithm of Baek et al. 2015 Analyst 140: 250-257
 	
+		#w = ones(N, 1)
+		w = zeros(size(y,1)) # Modification following email of Baek, thanks!
+		w[interest_index] = 1.0
+		
 		# Estimate baseline with asymmetric least squares
 		N = length(y)
 		#D = ddmat(x, 2) # from Eilers 2003: use ddmat if data are not equally spaced...
 		D = diff(diff(speye(N))) # use if data equally spaced
 		H = lambda * D' * D
 		
-		w = ones(N, 1)
-		
 		while true
 			W = spdiagm((w,), 0, N, N)
-			z = (W + H) \ (w .* y) # We don't use the exact same Cholesky decomposition as in the code but the \ operator
+			global z = (W + H) \ (w .* y) # We don't use the exact same Cholesky decomposition as in the code but the \ operator
 			d = y - z
 			# make d- and get w^t with m and s
 			dn = d[d.<0]
@@ -254,7 +257,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 			wt = 1./(1 + exp( 2* (d-(2*s-m))/s ) )
 			# check exit condition and backup
 			if norm(w-wt)/norm(w) .< p; break; end
-			w = wt;
+			#w = wt;
+			w[w.!=0]=wt[w.!=0] # Modification following email of Baek, thanks!
 		end
 		y_calc = collect(z)
 

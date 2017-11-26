@@ -41,6 +41,7 @@ INPUTS:
 		experimental? : use only with the "internal" mode, this is an experimental code. For now, only the "double" feature is advised. It allows using different smoothing spline coefficients for the water and silicate bands, delimited by the lb_break and hb_start variables (see below).
 
 		temperature_laser_correction? : use only with the "internal" mode, this should be equal to "yes" or "no". This asks if you want to use the temperature-laser wavelength correction as done in Le Losq et al. (2012). If you use the double baseline mode, this correction is applied after removing the background under the water peak.
+		
 
 OPTIONS:
 
@@ -67,14 +68,13 @@ OUTPUTS:
 """
 
 
-function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true,lambda=10.0^12,p=0.01)
+function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0062;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true,lambda=10.0^12,p=0.01)
 
 	# some function definition
 	calibration_model(x, p) = p[1].*x
 	baseline_lfmodel(x, p) = p[1].*x + p[2].*x.^2 + p[3].*x.^3
 
 	if switches[1] == "internal"
-
 
 		scale = 1 # no scaling, keeping that for history
 
@@ -176,6 +176,8 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					legend(loc="best",fancybox="true")
 					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
 					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
+					
+					tight_layout()
 
 				else
 					# ALSO FULLY EXPERIMENTAL!!!! IT DOES NOT WORK!
@@ -202,6 +204,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					plot(x,y,color="black")
 					plot(x,baseline_hf,color="red")
 					plot(x,y_calc2,color="blue")
+					tight_layout()
 				end
 
 			else # only a single baseline treatment is asked
@@ -257,6 +260,8 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					legend(loc="best",fancybox="true")
 					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
 					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
+					
+					tight_layout()
 
 				else
 					if basetype == "arPLS" || basetype == "whittaker"
@@ -276,6 +281,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					ylabel("Intensity, area normalised")
 					title("Baseline sub., NO Long corr.")
 					legend(loc="best",fancybox="true")
+					tight_layout()
 				end
 
 			end
@@ -329,6 +335,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			annotate(L"R$_{ws}$=",xy=(0.3,0.9),xycoords="axes fraction",fontsize=18,fontname="Arial",horizontalalignment="center")
 			annotate("$(round(coef[1],5)) +/- $(round(sigma[1],5))",xy=(0.3,0.8),xycoords="axes fraction",fontsize=18,fontname="Arial",horizontalalignment="center")
 			annotate("Standard deviation\n= $(round(rmse_calibration,2)) wt%",xy=(0.7,0.3),xycoords="axes fraction",horizontalalignment="center",fontsize=18,fontname="Arial")
+			tight_layout()
 			savefig(paths[6])
 
 			writecsv(string(paths[5]), ["spectrum" "product" "Rws" "Water input" "Water Raman";liste[:,1] liste[:,2] rws[:,3] water water_compare])
