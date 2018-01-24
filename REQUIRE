@@ -1,4 +1,4 @@
-julia 0.5
+julia 0.6
 IJulia
 PyPlot
 JuMP 0.13
@@ -10,3 +10,4 @@ JLD
 LsqFit
 PyCall
 NMF
+Polynomials

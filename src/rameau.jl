@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016 Charles Le Losq
+#Copyright (c) 2016-2017 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -77,7 +77,8 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 	if switches[1] == "internal"
 
 		scale = 1 # no scaling, keeping that for history
-
+		
+		# reading the list of data to get the names, smoothing factors and roi
 		liste=readcsv(paths[1], skipstart=1,use_mmap = mmap_switch)
 		names = liste[:,1]
 		water = Array{Float64}(liste[:,3])
@@ -89,18 +90,22 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			roi[:,2,j] = (liste[j,7:2:end])
 		end
 
-		rws = ones(size(liste,1),3)
+		rws = ones(size(liste,1),3) # output array of ratios
 
-		for i = 1:size(liste,1)
+		for i = 1:size(liste,1) # starting a loop other the data list\
+			
+			# reading the spectra
 			spectra = Array{Float64}(readdlm(string(paths[2],names[i]),input_properties[1],skipstart=input_properties[2],use_mmap = mmap_switch))
 
+			# Making sure that the frequencies are in increasing order
 			if spectra[end,1] < spectra[1,1]
 				spectra = flipdim(spectra,1)
 			end
 
+			# Assigning things, primary treatments
 			x = spectra[:,1]
-			spectra[:,2] = spectra[:,2] - minimum(spectra[:,2])
-			y = spectra[:,2]./maximum(spectra[:,2]).*scale + 0.1# area normalisation, and we avoid any 0 by putting the smallest value to 1e-20
+			spectra[:,2] = spectra[:,2] - minimum(spectra[:,2]) + 0.01 #we avoid any 0 values by putting the smallest value to 0.01
+			y = spectra[:,2]./maximum(spectra[:,2]).*scale # intensity normalisation 
 			ratio_bkg = minimum(y)/maximum(y) # to keep a record of the ratio of maximum signal intensity over minimum background intensity
 
 			#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
@@ -113,7 +118,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			interest_x = x[interest_index,1]
 			interest_y = y[interest_index,1]
 
-			if switches[3] == "double" # if user asks for the experimental mode
+			if switches[3] == "double" # if user asks for using two different smoothing factors for the silicate and water regions
 
 				if switches[4] == "yes"
 
@@ -130,14 +135,15 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					y_hf = y_long[x.>hb_start]
 					y_lf = y_long[x.<lb_break]
 
-					# A first linear baseline in signals between ~1300 and ~ 2000 cm-1
+					# A first baseline in signals between ~1300 and ~ 2000 cm-1
 					y_calc_hf, baseline_hf = baseline(x,y_long,roi_hf,basetype,p=smo_hf[i])
 					y_calc_lf, baseline_lf = baseline(x,y_long,roi_lf,basetype,p=smo_lf[i])
-
+					
+					# putting back the signals together
 					y_calc2 = [y_calc_lf[x.<=lb_break];y_calc_hf[x.>lb_break]]
 					bas2 = [baseline_lf[x.<=lb_break];baseline_hf[x.>lb_break]]
-					#y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*scale # area normalisation
-
+					
+					# making a nice figure
 					figure(figsize=(20,20))
 					suptitle("LL2012 method, sp. $(names[i])")
 

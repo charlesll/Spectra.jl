@@ -1,6 +1,6 @@
 # Spectra.jl News
 
-Copyright (c) 2016-2017 Dr. Charles Le Losq
+Copyright (c) 2016-2018 Dr. Charles Le Losq
 
 email: charles.lelosq@anu.edu.au
 
@@ -9,6 +9,22 @@ email: charles.lelosq@anu.edu.au
 Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
+
+# 0.4.0
+
+Breaking change:
+
+- Require Julia 0.6
+
+Modifications:
+
+- use of Polynomials.jl for the polynomial baseline fit.
+
+Additions:
+
+- flipsp() allows to flip an array of decreasing values (e.g. IR spectra) in one line.
+
+- resample() allows to resample a x-y signal along a new x_new axis in one line.
 
 # 0.3.6
 

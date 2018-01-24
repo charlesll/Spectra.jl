@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016 Charles Le Losq
+#Copyright (c) 2016-2017 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -180,9 +180,13 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 	######## POLYNOMIAL BASELINE
 	if basetype == "poly"
-
-		best_p::Array{Float64} = polyfit(x_bas_sc[:,1],y_bas_sc[:,1],round(Int,p))
-        y_calc_sc::Array{Float64} = poly(best_p,x_sc[:,1])
+		degree = round(Int,p)
+		if degree == 0
+			y_calc_sc::Array{Float64} = ones(size(y,1),1).*mean(y_bas_sc)
+		else
+			best_p = polyfit(x_bas_sc[:,1],y_bas_sc[:,1],round(Int,p))
+			y_calc_sc = polyval(best_p,x_sc[:,1])
+		end
 		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
 
 	######## DIERCKX SPLINE BASELINE
@@ -198,7 +202,8 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 		# implementation using the Python wrapper of gcvspline.
 		ese_interest_y = ones(size(y_bas_sc))
-		flt = pygcvspl[:MSESmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],1./(p[1].*ese_interest_y[:,1]),variance_metric=p[1].^2)
+		#flt = pygcvspl[:MSESmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],1./(p[1].*ese_interest_y[:,1])) #variance_metric=p[1].^2
+		flt = pygcvspl[:SmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],p[1])
 		y_calc_sc = flt(x_sc)
 		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
 	

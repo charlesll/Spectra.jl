@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016 Charles Le Losq
+#Copyright (c) 2016-2017 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -35,30 +35,6 @@ function poly(p::Vector{Float64},x::Array{Float64})
     end
     return sum(segments,2)
 end
-
-"""
-	polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
-	
-Fit a polynom of degree n to x-y data. Code from https://rosettacode.org/wiki/Polynomial_regression#Julia
-
-INPUTS:
-
-	x: Array{Float64}, the x values;
-	
-	y: Array{Float64}, the y values;
-	
-	n: Int64, the polynomial degree: 0 for a constant up to as high as wanted.
-
-OUTPUTS:
-	
-	coefs: Array{Float64}, containing the polynomial coefficients.
-
-"""
-function polyfit(x::Array{Float64}, y::Array{Float64}, n::Int64)
-  A = [ float(x[i])^p for i = 1:length(x), p = 0:n ]
-  return A \ y
-end
-
 
 """
 	gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
@@ -133,11 +109,11 @@ function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arra
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = amplitude[i] .*exp(-log(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2)
+            segments[:,i] = amplitude[i] .*exp.(-log.(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2)
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
+            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) .*exp.(-log.(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
         end	    	
     else
         error("Not implemented, see documentation")
@@ -530,3 +506,30 @@ immutable SavitzkyGolayFilter{M,N} end
      return expr
 end
 
+"""
+
+	flipsp(spectra::Array{Float64})
+
+Flip an array along the row dimension (dim = 1) if the first column values are in decreasing order.
+
+"""
+function flipsp(spectra::Array{Float64})
+    if spectra[end,1] < spectra[1,1]
+        spectra = flipdim(spectra,1)
+    end
+	return spectra
+end
+
+"""
+
+	resample(x::Array{Float64},y::Array{Float64},x_new::Array{Float64})
+
+Resample a y signal associated with x, along the x_new values.
+
+Uses the Dierckx spline library.
+
+"""
+function resample(x::Array{Float64},y::Array{Float64},x_new::Array{Float64})
+    spl = Spline1D(x,y,bc="zero")
+    return evaluate(spl, x_new)
+end
