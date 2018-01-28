@@ -12,14 +12,14 @@ addons:
     - gfortran
 notifications:
   email: false
+env:
+ - PYTHON=""
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.clone(pwd())'
-  - julia -e 'Pkg.add("PyCall"); ENV["PYTHON"]=""; Pkg.build("PyCall")'
-#  - PYTHON="" julia -e 'Pkg.clone(pwd()); Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)'
-  - julia -e 'Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)'
-    
+  - julia -e 'Pkg.build("Spectra"); Pkg.test("Spectra")'
+
 after_success:
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("Spectra")); include(joinpath("docs", "make.jl"))'
