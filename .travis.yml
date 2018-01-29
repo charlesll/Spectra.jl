@@ -18,7 +18,7 @@ script:
   - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'Pkg.clone(pwd())'
-  - julia -e 'Pkg.build("Spectra"); Pkg.test("Spectra")'
+  - julia -e 'Pkg.test("Spectra")'
 
 after_success:
   - julia -e 'Pkg.add("Documenter")'
