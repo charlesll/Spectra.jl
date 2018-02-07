@@ -13,7 +13,7 @@
 
 """
 	rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
-	
+
 INPUTS:
 
     paths: Tuple{Strings}, it contains the following strings:
@@ -41,7 +41,7 @@ INPUTS:
 		experimental? : use only with the "internal" mode, this is an experimental code. For now, only the "double" feature is advised. It allows using different smoothing spline coefficients for the water and silicate bands, delimited by the lb_break and hb_start variables (see below).
 
 		temperature_laser_correction? : use only with the "internal" mode, this should be equal to "yes" or "no". This asks if you want to use the temperature-laser wavelength correction as done in Le Losq et al. (2012). If you use the double baseline mode, this correction is applied after removing the background under the water peak.
-		
+
 
 OPTIONS:
 
@@ -77,7 +77,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 	if switches[1] == "internal"
 
 		scale = 1 # no scaling, keeping that for history
-		
+
 		# reading the list of data to get the names, smoothing factors and roi
 		liste=readcsv(paths[1], skipstart=1,use_mmap = mmap_switch)
 		names = liste[:,1]
@@ -93,7 +93,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 		rws = ones(size(liste,1),3) # output array of ratios
 
 		for i = 1:size(liste,1) # starting a loop other the data list\
-			
+
 			# reading the spectra
 			spectra = Array{Float64}(readdlm(string(paths[2],names[i]),input_properties[1],skipstart=input_properties[2],use_mmap = mmap_switch))
 
@@ -105,7 +105,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			# Assigning things, primary treatments
 			x = spectra[:,1]
 			spectra[:,2] = spectra[:,2] - minimum(spectra[:,2]) + 0.01 #we avoid any 0 values by putting the smallest value to 0.01
-			y = spectra[:,2]./maximum(spectra[:,2]).*scale # intensity normalisation 
+			y = spectra[:,2]./maximum(spectra[:,2]).*scale # intensity normalisation
 			ratio_bkg = minimum(y)/maximum(y) # to keep a record of the ratio of maximum signal intensity over minimum background intensity
 
 			#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
@@ -138,11 +138,11 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					# A first baseline in signals between ~1300 and ~ 2000 cm-1
 					y_calc_hf, baseline_hf = baseline(x,y_long,roi_hf,basetype,p=smo_hf[i])
 					y_calc_lf, baseline_lf = baseline(x,y_long,roi_lf,basetype,p=smo_lf[i])
-					
+
 					# putting back the signals together
 					y_calc2 = [y_calc_lf[x.<=lb_break];y_calc_hf[x.>lb_break]]
 					bas2 = [baseline_lf[x.<=lb_break];baseline_hf[x.>lb_break]]
-					
+
 					# making a nice figure
 					figure(figsize=(20,20))
 					suptitle("LL2012 method, sp. $(names[i])")
@@ -182,7 +182,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					legend(loc="best",fancybox="true")
 					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
 					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
-					
+
 					tight_layout()
 
 				else
@@ -219,13 +219,13 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 				if switches[4] == "yes"
 					x, y_long, ~ = tlcorrection([x[:] y[:]],temperature,laser) # Long correction
 					y_long=y_long./maximum(y_long).*scale
-					
+
 					if basetype == "arPLS" || basetype == "whittaker"
 						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,lambda = lambda, p = p)
 					else
 						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
 					end
-					
+
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*(scale./10) # area normalisation
 
 					figure(figsize=(20,20))
@@ -266,7 +266,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					legend(loc="best",fancybox="true")
 					xlabel(L"Raman shift, cm$^{-1}$",fontsize=18,fontname="Arial")
 					ylabel("Intensity,a. u.",fontsize=18,fontname="Arial")
-					
+
 					tight_layout()
 
 				else
@@ -275,7 +275,7 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 					else
 						y_calc2, bas2 = baseline(x,y_long,roi[:,:,i],basetype,p=smo_lf[i])
 					end
-					
+
 					y_calc2 = y_calc2[:,1]./trapz(x[:],y_calc2[:,1]).*scale # area normalisation
 
 					figure()
