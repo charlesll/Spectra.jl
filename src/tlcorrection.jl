@@ -108,7 +108,7 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 		# this uses the formula reported in Hehlen et al. 2010
     	frequency = 1./(nu0.^3.*density) # frequency + density correction; M/KG
     	boltzman = 1 - exp.(-h.*c.*nu./(k.*T)) # dimensionless
-    	ycorr = y.*frequency.*boltzman; # correction
+    	ycorr = nu.*y.*frequency.*boltzman; # correction
 	else
 		error("Not implemented, choose between long, galeener or hehlen.")
 	end
