@@ -35,7 +35,7 @@ See the NEWS.md file for following the evolution of Spectra.jl.
 A common problem is baseline subtraction and peak fitting when dealing with spectra. After calling the libraries and importing a spectrum like:
 
 
-	using JuMP, PyPlot, Ipopt, Spectra
+	using JuMP, PyPlot, Spectra
 
 	data = readdlm("./examples/data/LS4.txt", '\t') # we import the spectra
 	x = data[:,1]

@@ -11,7 +11,7 @@
 #
 #############################################################################
 
-VERSION >= v"0.6.0" && __precompile__()
+VERSION >= v"0.7.0" && __precompile__()
 
 module Spectra
 
@@ -20,7 +20,6 @@ using PyPlot
 using LsqFit
 using PyCall
 using Dierckx
-using Ipopt
 using JuMP
 using NMF
 using Polynomials
