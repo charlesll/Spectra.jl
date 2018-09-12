@@ -124,7 +124,6 @@ function IRdataprep(data::Array{Float64},distance_step::Float64,spectra_numbers:
 	end
 end
 
-
 """
 The `peak_diffusion` function allows to fit/plot gaussian peaks for which the amplitude is defined by a 1D diffusion law
 Call as:
