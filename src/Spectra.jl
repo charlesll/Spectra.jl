@@ -20,7 +20,6 @@ using PyPlot
 using LsqFit
 using PyCall
 using Dierckx
-using JuMP
 using NMF
 using Polynomials
 
