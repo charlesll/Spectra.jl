@@ -66,8 +66,6 @@ OUTPUTS:
 	Rameau does not provide any outputs directly in Julia, but saves everything in the folders you indicate in the variable "paths".
 
 """
-
-
 function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0062;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true,lambda=10.0^12,p=0.01)
 
 	# some function definition
@@ -322,13 +320,13 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 
 			rws_calibration = collect(0:0.01:round(maximum(rws[:,3]),2))
 			water_ratio_calibration = calibration_model(rws_calibration,coef)
-			water_compare =  100.*calibration_model(rws[:,3],coef)./(calibration_model(rws[:,3],coef)+1) # eq. 3 Le Losq et al. (2012)
+			water_compare =  100.0.*calibration_model(rws[:,3],coef)./(calibration_model(rws[:,3],coef)+1) # eq. 3 Le Losq et al. (2012)
 
-			rmse_calibration = sqrt(1./(size(rws,1)-1).*sum((water_compare-water).^2))
-			rmse_ratio_ws = rmse_calibration/100*(rmse_calibration/(100-rmse_calibration)+1)
+			rmse_calibration = sqrt(1.0./(size(rws,1)-1.0).*sum((water_compare-water).^2))
+			rmse_ratio_ws = rmse_calibration./100.0.*(rmse_calibration./(100.0-rmse_calibration)+1.0)
 
 			figure()
-			scatter(rws[:,3],water[:]./(100.-water[:]))
+			scatter(rws[:,3],water[:]./(100.0-water[:]))
 			plot(rws_calibration,water_ratio_calibration,color="red",linewidth=2.0)
 			plot(rws_calibration,water_ratio_calibration+rmse_ratio_ws,color="red",linestyle="--",linewidth=1.0)
 			plot(rws_calibration,water_ratio_calibration-rmse_ratio_ws,color="red",linestyle="--",linewidth=1.0)
@@ -347,8 +345,8 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			writecsv(string(paths[5]), ["spectrum" "product" "Rws" "Water input" "Water Raman";liste[:,1] liste[:,2] rws[:,3] water water_compare])
 			#return [rws[:,3] water water_compare]
 		else
-			water_predicted = 100.*(rws[:,3].*prediction_coef[1]./(rws[:,3].*prediction_coef[1]+1))
-			water_predicted_high = 100.*(rws[:,3].*sum(prediction_coef)./(rws[:,3].*sum(prediction_coef)+1))
+			water_predicted = 100.0.*(rws[:,3].*prediction_coef[1]./(rws[:,3].*prediction_coef[1]+1))
+			water_predicted_high = 100.0.*(rws[:,3].*sum(prediction_coef)./(rws[:,3].*sum(prediction_coef)+1))
 			writecsv(string(paths[5]), ["spectrum" "product" "Rws" "Water Raman" "Error";liste[:,1] liste[:,2] rws[:,3] water_predicted water_predicted_high-water_predicted])
 			#return [rws[:,3] water_predicted]
 		end

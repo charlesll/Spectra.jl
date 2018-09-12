@@ -69,14 +69,13 @@ The "long" equation is that of Galeener and Sen (1978) corrected by a vo^3 coeff
 
 The "hehlen" equation is that reported in Hehlen et al. (2010). It actually originates before this publication (Brooker et al. 1988). It uses a different correction that avoid crushing the signal below 500 cm-1. THerefore, it has the advantage of keeping intact the Boson peak signal in glasses.
 """
-
 function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",normalisation="area",density=2210.0)
 
     h::Float64 = 6.626070040e-34   # J S    Plank constant from NIST
 	hb::Float64 = 1.054571800e-34 # J S    Reduced Plank constant from NIST
     k::Float64 = 1.38064852e-23      # J K-1    Boltzman constant from NIST
-    c::Float64 = 299792458.         # M S-1    Speed of light from NIST
-    nu0::Float64 = 1.0./wave*1e9     # nu0 laser is in M-1 (wave is in nm)
+    c::Float64 = 299792458.0         # M S-1    Speed of light from NIST
+    nu0::Float64 = 1.0./wave*1.0e9     # nu0 laser is in M-1 (wave is in nm)
     T::Float64 = temp + 273.15    # K temperature
 	# density is in KG M-3
 
@@ -93,21 +92,21 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 	if correction == "long"
 		# Formula used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012) (corrected for using the Planck constant in the last reference)
 		# It is that reported in Brooker et al. (1988) with the addition of a scaling nu0^3 coefficient for adimentionality
-    	frequency::Array{Float64} = nu0.^3.*nu./((nu0-nu).^4) # frequency correction; dimensionless
-    	boltzman::Array{Float64} = 1 - exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
+    	frequency::Array{Float64} = nu0.^3.0.*nu./((nu0-nu).^4) # frequency correction; dimensionless
+    	boltzman::Array{Float64} = 1.0 - exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
     	ycorr::Array{Float64} = y.*frequency.*boltzman; # correction
 		
 	elseif correction == "galeener"
 		# This uses the formula reported in Galeener and Sen (1978) and Brooker et al. (1988); it uses the Bose-Einstein / Boltzman distribution
 		# Formula from  without the scaling vo^3 coefficient reported in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012)
     	frequency = nu./((nu0-nu).^4) # frequency correction; M^3
-    	boltzman = 1 - exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
+    	boltzman = 1.0 - exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
     	ycorr = y.*frequency.*boltzman; # correction
 		
 	elseif correction =="hehlen"
 		# this uses the formula reported in Hehlen et al. 2010
-    	frequency = 1./(nu0.^3.*density) # frequency + density correction; M/KG
-    	boltzman = 1 - exp.(-h.*c.*nu./(k.*T)) # dimensionless
+    	frequency = 1.0./(nu0.^3.0.*density) # frequency + density correction; M/KG
+    	boltzman = 1.0 - exp.(-h.*c.*nu./(k.*T)) # dimensionless
     	ycorr = nu.*y.*frequency.*boltzman; # correction
 	else
 		error("Not implemented, choose between long, galeener or hehlen.")

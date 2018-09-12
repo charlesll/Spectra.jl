@@ -32,7 +32,7 @@ OUTPUTS:
 This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).
 
 """
-function trapz{Tx<:Number, Ty<:Number}(x::Vector{Tx}, y::Vector{Ty})
+function trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
     # Trapezoidal integration rule
     local n = length(x)
     if (length(y) != n)
@@ -80,7 +80,6 @@ OUTPUTS:
 	
 	esearea: Array{Float64}, an array that contains the propagated errors affecting the areas calculations.
 """
-
 function bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
     
 	# first we check the desired peak shape, and apply the relevant calculation

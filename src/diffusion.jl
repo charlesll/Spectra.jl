@@ -31,10 +31,8 @@ Normalisation to the area between the norm_low_x and norm_high_x frequency is al
 
 The code returns the x and the y arrays, plus arrays for optimisation: x_input_fit contains the frequency-distance couples and y_input_fit their corresponding y values.
 """
-
 function IRdataprep(data::Array{Float64},distance_step::Float64,spectra_numbers::Array{Int64}, portion_interest::Array{Float64}, normalization_region::Array{Float64},integration_regions::Array{Float64},polarizer_orientation::AbstractString;fig_select::Int64=1,bas_switch::AbstractString = "No",roi::Array{Float64} = [3000. 3100.; 3425. 3530.; 3630. 3650.],baseline_type = "gcvspline", smoothing_coef = 10.0, Spline_Order = 3,noise_estimation = "No", noise_calculation_portion::Array{Float64} = [3000. 3100.])
 	
-   
     start_sp::Int = spectra_numbers[1]
     stop_sp::Int = spectra_numbers[2]
     low_x::Float64 = portion_interest[1]
@@ -148,7 +146,7 @@ The current version assumes the peak being a Gaussian peak. Updates will integra
 function peak_diffusion(g_c0::Array{Float64,1},g_c1::Array{Float64,1},g_D::Array{Float64,1}, g_freq::Array{Float64,1}, g_hwhm::Array{Float64,1},x::Array{Float64,2},time::Float64)
     segments = zeros(size(x)[1],size(g_c0)[1])
     for i = 1:size(g_c0)[1]
-        segments[:,i] = ((g_c1[i] - g_c0[i]) .* erfc(x[:,1]./(2. .* sqrt( 10.^g_D[i] .* time))) + g_c0[i]) .*exp(-log(2) .* ((x[:,2]-g_freq[i])./g_hwhm[i]).^2)
+        segments[:,i] = ((g_c1[i] - g_c0[i]) .* erfc(x[:,1]./(2. .* sqrt( 10.0 .^g_D[i] .* time))) + g_c0[i]) .*exp(-log(2) .* ((x[:,2]-g_freq[i]) ./g_hwhm[i]) .^2)
     end
     return sum(segments,2), segments
 end

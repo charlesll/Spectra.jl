@@ -145,8 +145,8 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 
-	        plot(true_x,data[:,1],color="black",label="Ctx file "liste[i,1])
-	        plot(true_x,data[:,2],color="blue",label="Glass file "liste[i,2])
+	        plot(true_x,data[:,1],color="black",label="Ctx file "*liste[i,1])
+	        plot(true_x,data[:,2],color="blue",label="Glass file "*liste[i,2])
         
 	        plot(true_x,baseline_ctx,color="red")
 	        plot(true_x,baseline_gls,color="orange")
@@ -159,8 +159,8 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 
-	        plot(true_x,data[:,1],color="black",label="Ctx file "liste[i,1])
-	        plot(true_x,data[:,2],color="blue",label="Glass file "liste[i,2])
+	        plot(true_x,data[:,1],color="black",label="Ctx file "*liste[i,1])
+	        plot(true_x,data[:,2],color="blue",label="Glass file "*liste[i,2])
         
 	        plot(true_x,baseline_ctx,color="red")
 	        plot(true_x,baseline_gls,color="orange")
@@ -191,8 +191,8 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 			
 	        figure()
 	        title("Spectra after the baseline and X shift corrections")
-	        plot(true_x,bas_matrix[:,1],color="black",label="Cristal file "liste[i,1])
-	        plot(true_x,bas_matrix[:,2],color="blue",label="Glass file "liste[i,2])
+	        plot(true_x,bas_matrix[:,1],color="black",label="Cristal file "*liste[i,1])
+	        plot(true_x,bas_matrix[:,2],color="blue",label="Glass file "*liste[i,2])
 	        xlabel(L"Raman shift, cm$^{-1}$")
 	        ylabel("Intensity, counts")
 	        legend(loc="best",fancybox=true)
