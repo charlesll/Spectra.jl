@@ -30,6 +30,12 @@ Full documentation for the stable and latest versions is now available at
 
 See the NEWS.md file for following the evolution of Spectra.jl.
 
+# Installation
+
+In Julia 0.6 or earlier, use `Pkg.add("Spectra")`.
+
+In Julia 0.7 and later, use the `pkg` environment (key `]`), then directly run `add git@github.com:charlesll/Spectra.jl.git`. For those versions of Julia, you need to install through this way as not all dependencies have solved version problems and there is many warnings in Spectra, such that I can't tag a proper 0.4.0 version of Spectra yet. You also will have to manually install NMF using `add NMF#aa/1.0`.
+
 # Quick Usage Examples
 
 A common problem is baseline subtraction and peak fitting when dealing with spectra. After calling the libraries and importing a spectrum like:
