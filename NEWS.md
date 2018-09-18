@@ -14,7 +14,7 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 Breaking change:
 
-- Require Julia 0.6
+- Require Julia 0.7. Not all libraries are up to date with 0.7 yet, so some dependencies may require direct install of the bleeding edge version from their Github repo and not from the official stream.
 
 Modifications:
 
