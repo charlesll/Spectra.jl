@@ -4,7 +4,7 @@ os:
   - linux
   - osx
 julia:
-  - 0.6
+  - 0.7
 #before_install:
 #  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; fi
 addons:
