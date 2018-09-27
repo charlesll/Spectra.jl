@@ -144,7 +144,6 @@ For a cubic spline baseline fitting the basis of a peak centered at 1100 cm^{-1}
 p there is the smoothing parameter used.
 
 """
-
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,lambda = 10^5,SplOrder=3,roi_out="no",niter = 10)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
 	if x[end,1] < x[1,1]
@@ -259,7 +258,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 			dn = d[d.<0]
 			m = mean(dn)
 			s = std(dn)
-			wt = 1./(1 + exp( 2* (d-(2*s-m))/s ) )
+			wt = 1.0 ./(1.0 + exp.( 2.0 .* (d-(2.0 .*s-m))./s ) )
 			# check exit condition and backup
 			if norm(w-wt)/norm(w) .< p; break; end
 			#w = wt;
@@ -317,7 +316,6 @@ Matlab version in Paul Eilers, 2003
 
 Julia translation by Charles Le Losq 2017
 """
-
 function ddmat(x, d)
 
 

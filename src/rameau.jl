@@ -14,6 +14,8 @@
 """
 	rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),prediction_coef=[0.0059;0.0005],temperature=23.0,laser=532.0,lb_break=1600.,hb_start=2600.,roi_hf_external = [3000. 3100.; 3800. 3900.],basetype="gcvspline",mmap_switch=true)
 
+	The RAMEAU function in Spectra is mostly experimental. For a robust use of internal calibrations, please see the rampy.rameau() class built in Python which is more up to date.
+		
 INPUTS:
 
     paths: Tuple{Strings}, it contains the following strings:
@@ -314,25 +316,25 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 		end
 
 		if switches[2] == "yes"
-			fit = curve_fit(calibration_model, rws[:,3], water[:]./(100.-water[:]), [0.5])
+			fit = curve_fit(calibration_model, rws[:,3], water[:]./(100.0 -water[:]), [0.5])
 			coef = fit.param
 			sigma = estimate_errors(fit, 0.95)
 
 			rws_calibration = collect(0:0.01:round(maximum(rws[:,3]),2))
 			water_ratio_calibration = calibration_model(rws_calibration,coef)
-			water_compare =  100.0.*calibration_model(rws[:,3],coef)./(calibration_model(rws[:,3],coef)+1) # eq. 3 Le Losq et al. (2012)
+			water_compare =  100.0 .*calibration_model(rws[:,3],coef)./(calibration_model(rws[:,3],coef)+1.0) # eq. 3 Le Losq et al. (2012)
 
-			rmse_calibration = sqrt(1.0./(size(rws,1)-1.0).*sum((water_compare-water).^2))
-			rmse_ratio_ws = rmse_calibration./100.0.*(rmse_calibration./(100.0-rmse_calibration)+1.0)
+			rmse_calibration = sqrt(1.0 ./(size(rws,1)-1.0).*sum((water_compare-water).^2))
+			rmse_ratio_ws = rmse_calibration./100.0 .*(rmse_calibration./(100.0-rmse_calibration)+1.0)
 
 			figure()
-			scatter(rws[:,3],water[:]./(100.0-water[:]))
+			scatter(rws[:,3],water[:]./(100.0 -water[:]))
 			plot(rws_calibration,water_ratio_calibration,color="red",linewidth=2.0)
 			plot(rws_calibration,water_ratio_calibration+rmse_ratio_ws,color="red",linestyle="--",linewidth=1.0)
 			plot(rws_calibration,water_ratio_calibration-rmse_ratio_ws,color="red",linestyle="--",linewidth=1.0)
 			plot(rws_calibration,water_ratio_calibration,color="red")
-			xlim(0,maximum(rws_calibration)+1./4*maximum(rws_calibration))
-			ylim(0,maximum(water_ratio_calibration)+1./4*maximum(water_ratio_calibration))
+			xlim(0,maximum(rws_calibration)+1.0 ./4.0 .*maximum(rws_calibration))
+			ylim(0,maximum(water_ratio_calibration)+1.0 ./4.0 .*maximum(water_ratio_calibration))
 
 			xlabel(L"A$_{water}$/A$_{silicates}$, area ratio",fontsize=18,fontname="Arial")
 			ylabel("Water/Glass, weight ratio",fontsize=18,fontname="Arial")
@@ -345,8 +347,8 @@ function rameau(paths::Tuple,switches::Tuple;input_properties=('\t',0),predictio
 			writecsv(string(paths[5]), ["spectrum" "product" "Rws" "Water input" "Water Raman";liste[:,1] liste[:,2] rws[:,3] water water_compare])
 			#return [rws[:,3] water water_compare]
 		else
-			water_predicted = 100.0.*(rws[:,3].*prediction_coef[1]./(rws[:,3].*prediction_coef[1]+1))
-			water_predicted_high = 100.0.*(rws[:,3].*sum(prediction_coef)./(rws[:,3].*sum(prediction_coef)+1))
+			water_predicted = 100.0 .*(rws[:,3].*prediction_coef[1]./(rws[:,3].*prediction_coef[1]+1.0))
+			water_predicted_high = 100.0 .*(rws[:,3].*sum(prediction_coef)./(rws[:,3].*sum(prediction_coef)+1.0))
 			writecsv(string(paths[5]), ["spectrum" "product" "Rws" "Water Raman" "Error";liste[:,1] liste[:,2] rws[:,3] water_predicted water_predicted_high-water_predicted])
 			#return [rws[:,3] water_predicted]
 		end

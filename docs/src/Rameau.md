@@ -2,6 +2,8 @@
 
 ## Introductory notes
 
+**The RAMEAU function in Spectra is mostly experimental. For a robust use of internal calibrations, please see the rampy.rameau() class built in Python which is more up to date. This function may simply disappear in future versions of Spectra**
+	
 This is the Julia version of the RamEau software. It allows quantification of the water content of glasses following the internal and external protocols described in:
 
 Thomas, R. 2000. “Determination of Water Contents of Granite Melt Inclusions by Confocal Laser Raman Microprobe Spectroscopy.” American Mineralogist 85 (5-6): 868–72.
