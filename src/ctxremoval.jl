@@ -309,12 +309,13 @@ function ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),alg
 		    y_for_ica_sc = X_scaler[:transform](y_for_ica)
 			
 			# with sklearn
-	    	#model = decomposition[:NMF](n_components=2,init="nndsvda")
-	    	#S_corr = model[:fit_transform](y_for_ica_sc)
+	    	model = decomposition[:NMF](n_components=2,init="nndsvda")
+	    	S_corr = model[:fit_transform](y_for_ica_sc)
 			
 			# with julia NMF implementation: nndsvda init + alspgrad algo
-			r = nnmf(transpose(y_for_ica), 2; init=:nndsvda, alg=:alspgrad, maxiter=100, verbose=false)			 
-			H = r.H; W = r.W; S_corr = transpose(H./maximum(H,2))
+			# commented at 10/2018 because NMF is not compatible with Julia 0.7/1.0
+			#r = nnmf(transpose(y_for_ica), 2; init=:nndsvda, alg=:alspgrad, maxiter=100, verbose=false)			 
+			#H = r.H; W = r.W; S_corr = transpose(H./maximum(H,2))
 			
 		else
 			error("Not implemented, choose between NMF and FastICA")

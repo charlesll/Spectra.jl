@@ -20,7 +20,7 @@ using PyPlot
 using LsqFit
 using PyCall
 using Dierckx
-using NMF
+#using NMF
 using Polynomials
 
 # For PyCall modules

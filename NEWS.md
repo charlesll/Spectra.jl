@@ -14,9 +14,11 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 Breaking change:
 
-- Require Julia 0.7. Not all libraries are up to date with 0.7 yet, so some dependencies may require direct install of the bleeding edge version from their Github repo and not from the official stream.
+- Requires Julia 0.7 or 1.0.
 
 Modifications:
+
+- NMF calculations in ctxremoval use sklearn, not the NMF julia package (not working yet in 0.7-1.0)
 
 - use of Polynomials.jl for the polynomial baseline fit.
 
