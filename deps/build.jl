@@ -1,11 +1,18 @@
-using PyCall
+using PyCall, Conda
 
 println("Running build.jl for the Spectra package.")
 
 # Change that to whatever packages you need.
 const PACKAGES = ["gcvspline"]
 
-# Use eventual proxy info
+Conda.add("pip")
+run(`$(PyCall.python) -m pip install $(PACKAGES)`)#
+#run(`pip install --upgrade gcvspline`)
+
+# Change that to whatever packages you need.
+# const PACKAGES = ["gcvspline"]
+
+#= # Use eventual proxy info
 proxy_arg=String[]
 if haskey(ENV, "http_proxy")
     push!(proxy_arg, "--proxy")
@@ -24,5 +31,6 @@ catch
 end
 
 println("Installing required python packages using pip")
-run(`$(PyCall.python) $(proxy_arg) -m pip install --user --upgrade pip setuptools`)
-run(`$(PyCall.python) $(proxy_arg) -m pip install --user $(PACKAGES)`)
+run(`$(PyCall.python) $(proxy_arg) -m conda install --upgrade pip setuptools`)
+run(`$(PyCall.python) $(proxy_arg) -m pip install $(PACKAGES)`) =#
+

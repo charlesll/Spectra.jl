@@ -4,7 +4,7 @@ os:
   - linux
   - osx
 julia:
-  - 0.7
+  - 1.0
 #before_install:
 #  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; fi
 addons:
@@ -17,9 +17,7 @@ env:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.clone(pwd())'
-  - julia -e 'Pkg.test("Spectra")'
-
+  - julia -e 'if VERSION >= v"0.7.0-" using Pkg; end; Pkg.clone(pwd()); Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
 after_success:
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("Spectra")); include(joinpath("docs", "make.jl"))'
