@@ -1,5 +1,5 @@
 using Spectra
-using Base.Test
+using Test
 
 # based on the example of the smooth function...
 

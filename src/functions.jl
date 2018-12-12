@@ -109,11 +109,11 @@ function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arra
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = amplitude[i] .*exp.(-log.(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2)
+            segments[:,i] = amplitude[i] .*exp.(-log.(2) .* ((x[:,1].-centre[i])./hwhm[i]).^2)
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) .*exp.(-log.(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
+            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) .*exp.(-log.(2) .* ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
         end	    	
     else
         error("Not implemented, see documentation")
@@ -150,11 +150,11 @@ function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Ar
     segments = zeros(size(x)[1],size(amplitude)[1])
     if style == "None"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = amplitude[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2)
+            segments[:,i] = amplitude[i] ./ (1 + ((x[:,1].-centre[i])./hwhm[i]).^2)
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) ./ (1 + ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
+            segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) ./ (1 + ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
         end	    	
     else
         error("Not implemented, see documentation")
@@ -194,11 +194,11 @@ function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::A
     segments = zeros(size(x)[1],size(a1)[1])
     if style == "None"
         for i = 1:size(a1)[1]
-            segments[:,i] = a1[i] ./ (1,0 + ((x[:,1]-a2[i]) ./a3[i]) .^2 .* (2.0 .^(1.0 ./a4[i]) - 1.0))
+            segments[:,i] = a1[i] ./ (1,0 + ((x[:,1].-a2[i]) ./a3[i]) .^2 .* (2.0 .^(1.0 ./a4[i]) - 1.0))
         end
     elseif style == "poly"
         for i = 1:size(a1)[1]
-            segments[:,i] = poly(vec(a1[i,:]),x[:,2]) ./ (1 + ((x[:,1]-(poly(vec(a2[i,:]),x[:,2]))) ./poly(vec(a3[i,:]),x[:,2])) .^2 .* (2.0 .^(1,0 ./vec(a4[i,:])) - 1.0))
+            segments[:,i] = poly(vec(a1[i,:]),x[:,2]) ./ (1 + ((x[:,1].-(poly(vec(a2[i,:]),x[:,2]))) ./poly(vec(a3[i,:]),x[:,2])) .^2 .* (2.0 .^(1,0 ./vec(a4[i,:])) - 1.0))
         end	    	
     else
         error("Not implemented, see documentation")
@@ -243,11 +243,11 @@ function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arr
 	end
 	if style == "None"
 		for i = 1:size(amplitude)[1]
-			segments[:,i] =  amplitude[i].*( (1.0 - lorentzian_fraction[i]) .*exp(-log(2) .* ((x[:,1]-centre[i])./hwhm[i]).^2)   + lorentzian_fraction[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2))
+			segments[:,i] =  amplitude[i].*( (1.0 - lorentzian_fraction[i]) .*exp(-log(2) .* ((x[:,1].-centre[i])./hwhm[i]).^2)   + lorentzian_fraction[i] ./ (1 + ((x[:,1]-centre[i])./hwhm[i]).^2))
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-			segments[:,i] =  vec(lorentzian_fraction[i,:]) .* (poly(vec(amplitude[i,:]),x[:,2]) ./ (1 + ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2))     +      (1- vec(lorentzian_fraction[i,:])) .* poly(vec(amplitude[i,:]),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2) 
+			segments[:,i] =  vec(lorentzian_fraction[i,:]) .* (poly(vec(amplitude[i,:]),x[:,2]) ./ (1 + ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2))     +      (1- vec(lorentzian_fraction[i,:])) .* poly(vec(amplitude[i,:]),x[:,2]) .*exp(-log(2) .* ((x[:,1]-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2) 
         end	    	
     else
         error("Not implemented, see documentation") 
@@ -287,7 +287,7 @@ OUTPUTS:
 function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
     segments = zeros(size(x)[1],size(nd_amplitudes)[1])
     for i = 1:size(nd_amplitudes)[1]
-        segments[:,i] = nd_amplitudes[i]./(nd_sigmas[i].*sqrt(2.0.*pi))  .*  exp(- (x[:,1]-nd_centres[i]).^2 ./ (2.0.*nd_sigmas[i].^2.0))
+        segments[:,i] = nd_amplitudes[i]./(nd_sigmas[i].*sqrt(2.0.*pi))  .*  exp(- (x[:,1].-nd_centres[i]).^2 ./ (2.0.*nd_sigmas[i].^2.0))
     end
     return sum(segments,2), segments
 end

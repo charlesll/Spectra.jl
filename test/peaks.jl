@@ -1,5 +1,5 @@
 using Spectra
-using Base.Test
+using Test
 
 #### Dummy x
 x = collect(0.1:0.1:100.)

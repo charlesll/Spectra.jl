@@ -83,8 +83,8 @@ function peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter 
 	y_second_portion = y_smo[x .>=x_maximum];
 	
     half_int = maximum(y_smo)/2
-    idx_1 = findmin(abs(y_first_portion-half_int))
-    idx_2 = findmin(abs(y_second_portion-half_int))
+    idx_1 = findmin(abs.(y_first_portion-half_int))
+    idx_2 = findmin(abs.(y_second_portion-half_int))
     
     hwhm = (x_2[idx_2[2]]-x_1[idx_1[2]])./2
     position = x_maximum[1]

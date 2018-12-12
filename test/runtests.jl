@@ -1,5 +1,5 @@
 using Spectra
-using Base.Test
+using Test
 
 include("peakmeas.jl")
 include("baseline.jl")

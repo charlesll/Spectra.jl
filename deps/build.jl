@@ -5,7 +5,9 @@ println("Running build.jl for the Spectra package.")
 # Change that to whatever packages you need.
 const PACKAGES = ["gcvspline"]
 
-Conda.add("pip")
+pyimport_conda("pip", "pip")
+
+#Conda.add("pip")
 run(`$(PyCall.python) -m pip install $(PACKAGES)`)#
 #run(`pip install --upgrade gcvspline`)
 

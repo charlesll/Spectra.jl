@@ -1,5 +1,5 @@
 using Spectra
-using Base.Test
+using Test
 
 # Dummy data
 x = collect(0.:1.:100.)
@@ -10,7 +10,7 @@ freq_th = 40.
 hwhm_th = 10.
 
 # we now generate a perfect y as well as a noisy y
-y = int_th.*exp(-log(2) .*((x-freq_th)./hwhm_th).^2)
+y = int_th.*exp.(-log.(2) .*((x.-freq_th)./hwhm_th).^2)
 srand(42) # we fix the seed
 y_noise = y+randn((size(y,1),1))
 
@@ -33,7 +33,7 @@ int2_th = 20.00000 # the two intensities cannot be fully equal, as this will rai
 freq2_th = 60.
 hwhm2_th = 10.
 
-y2 = int2_th.*exp(-log(2) .*((x-freq2_th)./hwhm2_th).^2)
+y2 = int2_th.*exp.(-log(2) .*((x-freq2_th)./hwhm2_th).^2)
 y_tot = y + y2
 
 ~, ~, ~, centroid_mea3 = peakmeas(x,y_tot,smoothing="no")

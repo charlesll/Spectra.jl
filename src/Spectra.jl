@@ -54,7 +54,7 @@ include("bootstrap.jl")
 include("tlcorrection.jl")
 include("rameau.jl")
 include("deprecated.jl")
-include("ml_regressor.jl")
+include("ml_regressor.jl")Base
 include("ctxremoval.jl")
 include("peakmeasurement.jl")
 
