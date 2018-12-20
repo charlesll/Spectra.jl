@@ -1,3 +1,16 @@
+name = "Spectra"
+uuid = "391af1a9-06f1-59d3-8d21-0be089654739"
+author = "Charles Le Losq <charles.lelosq@anu.edu.au>"
+version = "0.4.0"
+
 [deps]
+Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
+Dierckx = "39dd38d3-220a-591b-8e3c-4c3a8c710a94"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LsqFit = "2fda8390-95c7-5789-9bda-21331edee243"
+NMF = "6ef6ca0d-6ad7-5ff6-b225-e928bfa0a386"
+Polynomials = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
