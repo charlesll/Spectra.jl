@@ -17,7 +17,7 @@ env:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'if VERSION >= v"1.0.0-" using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
+  - julia -e 'using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
 after_success:
   - julia -e 'using Pkg; Pkg.add("Documenter")'
   - julia -e 'cd(Pkg.dir("Spectra")); include(joinpath("docs", "make.jl"))'
