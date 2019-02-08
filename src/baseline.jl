@@ -221,7 +221,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 		# Estimate baseline with asymmetric least squares
 		m = length(y)
-		D = diff(diff(sparse(m))) # use if data equally spaced
+		D = diff(diff(sparse(Matrix(1.0I,m,m)))) # use if data equally spaced
 		#D = ddmat(x, 2) # from Eilers 2003: use ddmat if data are not equally spaced...
 		#w = ones(N, 1)
 		w = zeros(size(y,1)) # Modification following email of Baek, thanks!
@@ -247,7 +247,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		# Estimate baseline with asymmetric least squares
 		N = length(y)
 		#D = ddmat(x, 2) # from Eilers 2003: use ddmat if data are not equally spaced...
-		D = diff(diff(sparse(N))) # use if data equally spaced
+		D = diff(diff(sparse(Matrix(1.0I,N,N)))) # use if data equally spaced
 		H = lambda * D' * D
 
 		while true
@@ -321,7 +321,7 @@ function ddmat(x, d)
 
     m = length(x)
     if d == 0
-        D = sparse(m)
+        D = sparse(Matrix(1.0I,m,m))
     else
         dx = x[(d + 1):m] - x[1:(m - d)]
         V = spdiagm((1 ./ dx,), 0, m - d, m - d)
@@ -359,7 +359,7 @@ function whitsmdd(x,y,w,lambda;d=2)
 
     # Smoothing
     m = length(y)
-    E = sparse(m)
+    E = sparse(Matrix(1.0I,m,m))
     D = ddmat(x, d)
     W = spdiagm((w,), 0, m, m);
     # avoiding the col implementation in julia, direct use of \

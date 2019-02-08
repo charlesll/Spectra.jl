@@ -19,6 +19,7 @@ using StatsBase
 using Random
 using Statistics
 using SparseArrays
+using LinearAlgebra
 using PyPlot
 using LsqFit
 using PyCall
