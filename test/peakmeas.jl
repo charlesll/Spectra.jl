@@ -17,7 +17,7 @@ y_noise = y+randn((size(y,1),1))
 
 # we measured the width and frequency with the peakhw function
 int_mea1, freq_meas1, hwhm_meas1, centroid_mea1 = peakmeas(x,y,smoothing="no")
-int_mea2, freq_meas2, hwhm_meas2, centroid_mea2 = peakmeas(x,y_noise,M=10,N=5) # with applying a Savitsky Golay filter
+int_mea2, freq_meas2, hwhm_meas2, centroid_mea2 = peakmeas(x,y_noise,M=9,N=5) # with applying a Savitsky Golay filter
 
 # test of the perfect version
 @test_approx_eq_eps(int_th,int_mea1,1e-5)
