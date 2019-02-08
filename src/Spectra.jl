@@ -37,6 +37,7 @@ const linear_model = PyNULL()
 const gaussian_process = PyNULL()
 const pygcvspl = PyNULL()
 const signal = PyNULL()
+const rampy = PyNULL()
 
 function __init__()
 	
@@ -49,6 +50,7 @@ function __init__()
 	copy!(linear_model, pyimport_conda("sklearn.linear_model", "scikit-learn"))
 	copy!(pygcvspl, pyimport("gcvspline"))
 	copy!(signal, pyimport_conda("scipy.signal", "scipy"))
+	copy!(rampy, pyimport("rampy"))
 
 end
 

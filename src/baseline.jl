@@ -221,7 +221,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 
 		# Estimate baseline with asymmetric least squares
 		m = length(y)
-		D = diff(diff(sparse(Matrix(1.0I,m,m)))) # use if data equally spaced
+		D = diff(diff(sparse(Matrix(1.0I,m,m)),dims=1),dims=1) # use if data equally spaced
 		#D = ddmat(x, 2) # from Eilers 2003: use ddmat if data are not equally spaced...
 		#w = ones(N, 1)
 		w = zeros(size(y,1)) # Modification following email of Baek, thanks!
