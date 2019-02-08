@@ -431,7 +431,7 @@ function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=
 	
 	if filter == filter_names[1]
 		
-		return savitsky_golay(vec(y),M,N)
+		return scipy[:signal].savgol_filter(vec(y),M,N)
 	
 	elseif filter == filter_names[2] || filter == filter_names[3] || filter == filter_names[4]
 		
@@ -449,49 +449,6 @@ function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=
 	
 end
 
-"""
-
-	SavitzkyGolayFilter(x::Vector, windowSize::Integer, polyOrder::Integer; deriv::Integer=0)
-	
-    Polynomial smoothing with the Savitsky Golay filters
-    
-     Sources
-     ---------
-     Code: https://github.com/BBN-Q/Qlab.jl/blob/master/src/SavitskyGolay.jl
-     Theory: http://www.ece.rutgers.edu/~orfanidi/intro2sp/orfanidis-i2sp.pdf
-     Python Example: http://wiki.scipy.org/Cookbook/SavitzkyGolay
-
-"""
-
-function savitsky_golay(x::Vector, windowSize::Integer, polyOrder::Integer; deriv::Integer=0)
-
-    #Some error checking
-    @assert isodd(windowSize) "Window size must be an odd integer."
-    @assert polyOrder < windowSize "Polynomial order must me less than window size."
-    
-    halfWindow = (windowSize-1)/2
-    
-    #Setup the S matrix of basis vectors. 
-    S = zeros(windowSize, polyOrder+1)
-    for ct = 0:polyOrder
-        S[:,ct+1] = collect([-halfWindow:halfWindow]).^(ct)
-    end
-    
-    #Compute the filter coefficients for all orders
-    #From the scipy code it seems pinv(S) and taking rows should be enough
-    G = S*pinv(S'*S)
-    
-    #Slice out the derivative order we want
-    filterCoeffs = G[:,deriv+1] * factorial(deriv);
-    
-    #Pad the signal with the endpoints and convolve with filter 
-    paddedX = [x[1]*ones(halfWindow), x, x[end]*ones(halfWindow)]
-    y = conv(filterCoeffs[end:-1:1], paddedX)
-    
-    #Return the valid midsection
-    return y[2*halfWindow+1:end-2*halfWindow]
-    
-    end
 
 """
 
