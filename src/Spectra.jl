@@ -71,7 +71,7 @@ export trapz, bandarea
 export peak_diffusion, model, IRdataprep
 
 #From functions.jl
-export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, SavitzkyGolayFilter, smooth, flipsp, resample
+export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, smooth, flipsp, resample
 
 #From baseline.jl
 export baseline, whitsmdd
