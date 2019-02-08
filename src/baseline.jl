@@ -152,10 +152,10 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	end
 
 	#### PRELIMINARY STEP: FIRST WE GRAB THE GOOD SIGNAL IN THE ROI
-    interest_index::Array{Int64} = find(roi[1,1] .<= x[:,1] .<= roi[1,2])
+    interest_index::Array{Int64} = findall(roi[1,1] .<= x[:,1] .<= roi[1,2])
     if size(roi)[1] > 1
         for i = 2:size(roi)[1]
-            interest_index = vcat(interest_index,  find(roi[i,1] .<= x[:,1] .<= roi[i,2]))
+            interest_index = vcat(interest_index,  findall(roi[i,1] .<= x[:,1] .<= roi[i,2]))
         end
     end
 
