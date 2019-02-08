@@ -431,8 +431,7 @@ function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=
 	
 	if filter == filter_names[1]
 		
-		flt = SavitzkyGolayFilter{M,N}()
-		return flt(vec(y))
+		return savitsky_golay(y,M,N)
 	
 	elseif filter == filter_names[2] || filter == filter_names[3] || filter == filter_names[4]
 		
@@ -452,56 +451,47 @@ end
 
 """
 
-	SavitzkyGolayFilter{M,N}(data)
+	SavitzkyGolayFilter(x::Vector, windowSize::Integer, polyOrder::Integer; deriv::Integer=0)
 	
-Savitzky-Golay filter of window half-width M and degree N
-M is the number of points before and after to interpolate, i.e. the full width
-of the window is 2M+1
-Code from https://medium.com/@acidflask/smoothing-data-with-julia-s-generated-functions-c80e240e05f3#.45v03x6it
+    Polynomial smoothing with the Savitsky Golay filters
+    
+     Sources
+     ---------
+     Code: https://github.com/BBN-Q/Qlab.jl/blob/master/src/SavitskyGolay.jl
+     Theory: http://www.ece.rutgers.edu/~orfanidi/intro2sp/orfanidis-i2sp.pdf
+     Python Example: http://wiki.scipy.org/Cookbook/SavitzkyGolay
 
 """
-struct SavitzkyGolayFilter{M,N} end
 
-@generated  function (::SavitzkyGolayFilter{M, N})(data::AbstractVector{T}) where {M, N, T}
+function savitsky_golay(x::Vector, windowSize::Integer, polyOrder::Integer; deriv::Integer=0)
 
-     #Create Jacobian matrix
-     J = zeros(2M+1, N+1)
-     for i=1:2M+1, j=1:N+1
-         J[i, j] = (i-M-1)^(j-1)
-     end
-     e₁ = zeros(N+1) 
-     e₁[1] = 1.0
+    #Some error checking
+    @assert isodd(windowSize) "Window size must be an odd integer."
+    @assert polyOrder < windowSize "Polynomial order must me less than window size."
     
-     #Compute filter coefficients
-     C = J' \ e₁
-
-     #Evaluate filter on data matrix
-
-     To = typeof(C[1] * one(T)) #Calculate type of output
-     expr = quote
-         n = size(data, 1)
-         smoothed = zeros($To, n)
-         @inbounds for i in eachindex(smoothed)
-             smoothed[i] += $(C[M+1])*data[i]
-         end
-         smoothed
-     end
-
-     for j=1:M
-         insert!(expr.args[6].args[2].args[2].args, 1,
-             :(if i - $j ≥ 1
-                 smoothed[i] += $(C[M+1-j])*data[i-$j]
-               end)
-         )
-         push!(expr.args[6].args[2].args[2].args,
-             :(if i + $j ≤ n
-                 smoothed[i] += $(C[M+1+j])*data[i+$j]
-               end)
-         )
-     end
-
-     return expr
-end
+    halfWindow = int((windowSize-1)/2)
+    
+    #Setup the S matrix of basis vectors. 
+    S = zeros(windowSize, polyOrder+1)
+    for ct = 0:polyOrder
+        S[:,ct+1] = [-halfWindow:halfWindow].^(ct)
+    end
+    
+    #Compute the filter coefficients for all orders
+    #From the scipy code it seems pinv(S) and taking rows should be enough
+    G = S*pinv(S'*S)
+    
+    #Slice out the derivative order we want
+    filterCoeffs = G[:,deriv+1] * factorial(deriv);
+    
+    #Pad the signal with the endpoints and convolve with filter 
+    paddedX = [x[1]*ones(halfWindow), x, x[end]*ones(halfWindow)]
+    y = conv(filterCoeffs[end:-1:1], paddedX)
+    
+    #Return the valid midsection
+    return y[2*halfWindow+1:end-2*halfWindow]
+    
+    end
 
 """
 
