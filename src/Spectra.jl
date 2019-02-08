@@ -16,6 +16,8 @@ VERSION >= v"0.7.0" && __precompile__()
 module Spectra
 
 using StatsBase
+using Random
+using Statistics
 using PyPlot
 using LsqFit
 using PyCall
