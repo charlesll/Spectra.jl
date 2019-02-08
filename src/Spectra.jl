@@ -32,7 +32,7 @@ const svm = PyNULL()
 const linear_model = PyNULL()
 const gaussian_process = PyNULL()
 const pygcvspl = PyNULL()
-const scipy = PyNULL()
+const signal = PyNULL()
 
 function __init__()
 	
@@ -44,7 +44,7 @@ function __init__()
 	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "scikit-learn"))
 	copy!(linear_model, pyimport_conda("sklearn.linear_model", "scikit-learn"))
 	copy!(pygcvspl, pyimport("gcvspline"))
-	copy!(scipy, pyimport_conda("scipy", "scipy"))
+	copy!(signal, pyimport_conda("scipy.signal", "scipy"))
 
 end
 

@@ -431,7 +431,7 @@ function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=
 	
 	if filter == filter_names[1]
 		
-		return scipy[:signal].savgol_filter(vec(y),M,N)
+		return signal[:savgol_filter](vec(y),M,N)
 	
 	elseif filter == filter_names[2] || filter == filter_names[3] || filter == filter_names[4]
 		
