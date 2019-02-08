@@ -210,7 +210,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	elseif basetype == "whittaker"
 
 		w = zeros(size(y,1))
-		w[interest_index] = 1.0
+		w[interest_index[:]] = 1.0
 
 		y_calc = whitsmdd(x,y,w,lambda)
 
@@ -225,7 +225,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		#D = ddmat(x, 2) # from Eilers 2003: use ddmat if data are not equally spaced...
 		#w = ones(N, 1)
 		w = zeros(size(y,1)) # Modification following email of Baek, thanks!
-		w[interest_index] = 1.0
+		w[interest_index[:]] = 1.0
 
 		for it = 1:niter
 			W = spdiagm((w,), 0, m, m)
