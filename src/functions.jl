@@ -474,7 +474,7 @@ function savitsky_golay(x::Vector, windowSize::Integer, polyOrder::Integer; deri
     #Setup the S matrix of basis vectors. 
     S = zeros(windowSize, polyOrder+1)
     for ct = 0:polyOrder
-        S[:,ct+1] = [-halfWindow:halfWindow].^(ct)
+        S[:,ct+1] = collect([-halfWindow:halfWindow]).^(ct)
     end
     
     #Compute the filter coefficients for all orders
