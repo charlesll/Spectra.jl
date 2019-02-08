@@ -1,4 +1,5 @@
 using Spectra
+using Random
 using Test
 
 x = collect(50:1.0:500)
