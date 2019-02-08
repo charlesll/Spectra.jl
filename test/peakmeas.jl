@@ -20,14 +20,14 @@ int_mea1, freq_meas1, hwhm_meas1, centroid_mea1 = peakmeas(x,y,smoothing="no")
 int_mea2, freq_meas2, hwhm_meas2, centroid_mea2 = peakmeas(x,y_noise,M=9,N=5) # with applying a Savitsky Golay filter
 
 # test of the perfect version
-@test_approx_eq_eps(int_th,int_mea1,1e-5)
-@test_approx_eq_eps(freq_th,freq_meas1,1e-5)
-@test_approx_eq_eps(hwhm_th,hwhm_meas1,1e-5)
+@test isapprox(int_th,int_mea1,1e-5)
+@test isapprox(freq_th,freq_meas1,1e-5)
+@test isapprox(hwhm_th,hwhm_meas1,1e-5)
 
 # test of the noisy version
-@test_approx_eq_eps(int_th,int_mea2,1.)
-@test_approx_eq_eps(freq_th,freq_meas2,1.)
-@test_approx_eq_eps(hwhm_th,hwhm_meas2,1.)
+@test isapprox(int_th,int_mea2,1.)
+@test isapprox(freq_th,freq_meas2,1.)
+@test isapprox(hwhm_th,hwhm_meas2,1.)
 
 # Now we test 2 gaussians to test the centroid
 int2_th = 20.00000 # the two intensities cannot be fully equal, as this will raise an error.
@@ -42,4 +42,4 @@ y_tot = y + y2
 int_tot = int2_th + int_th
 
 centroid_th = int_th./int_tot.*freq_th + int2_th./int_tot.*freq2_th # this works because the peaks have the same hwhm
-@test_approx_eq_eps(centroid_th,centroid_mea3,1e-4)
+@test isapprox(centroid_th,centroid_mea3,1e-4)
