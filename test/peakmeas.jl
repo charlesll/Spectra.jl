@@ -34,12 +34,12 @@ int2_th = 20.00000 # the two intensities cannot be fully equal, as this will rai
 freq2_th = 60.
 hwhm2_th = 10.
 
-y2 = int2_th.*exp.(-log(2) .*((x-freq2_th)./hwhm2_th).^2)
+y2 = int2_th.*exp.(-log(2) .*((x.-freq2_th)./hwhm2_th).^2)
 y_tot = y + y2
 
 ~, ~, ~, centroid_mea3 = peakmeas(x,y_tot,smoothing="no")
 
 int_tot = int2_th + int_th
 
-centroid_th = int_th./int_tot.*freq_th + int2_th./int_tot.*freq2_th # this works because the peaks have the same hwhm
+centroid_th = int_th./int_tot.*freq_th .+ int2_th./int_tot.*freq2_th # this works because the peaks have the same hwhm
 @test isapprox(centroid_th,centroid_mea3,atol=1e-4)
