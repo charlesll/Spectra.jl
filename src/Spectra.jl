@@ -18,6 +18,7 @@ module Spectra
 using StatsBase
 using Random
 using Statistics
+using SparseArrays
 using PyPlot
 using LsqFit
 using PyCall
