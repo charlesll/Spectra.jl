@@ -171,11 +171,11 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 	y_std = std(interest_y)
 
 	# Scaling the data
-	x_bas_sc = (interest_x-x_mean)/x_std
-	y_bas_sc = (interest_y-y_mean)/y_std
+	x_bas_sc = (interest_x.-x_mean)./x_std
+	y_bas_sc = (interest_y.-y_mean)./y_std
 
-	x_sc = (x-x_mean)/x_std
-	y_sc = (y-y_mean)/y_std
+	x_sc = (x.-x_mean)./x_std
+	y_sc = (y.-y_mean)./y_std
 
 	######## POLYNOMIAL BASELINE
 	if basetype == "poly"
@@ -186,13 +186,13 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 			best_p = polyfit(x_bas_sc[:,1],y_bas_sc[:,1],round(Int,p))
 			y_calc_sc = polyval(best_p,x_sc[:,1])
 		end
-		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
+		y_calc = (y_calc_sc.*y_std).+y_mean # unscalling
 
 	######## DIERCKX SPLINE BASELINE
 	elseif basetype == "Dspline"
 		spl = Spline1D(x_bas_sc[:,1],y_bas_sc[:,1],s=p[1],bc="extrapolate",k=SplOrder)
 		y_calc_sc = evaluate(spl,x_sc[:,1])
-		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
+		y_calc = (y_calc_sc.*y_std).+y_mean # unscalling
 
 	######## GCV SPLINE BASELINE
 	elseif basetype == "gcvspline"
@@ -204,7 +204,7 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
 		#flt = pygcvspl[:MSESmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],1./(p[1].*ese_interest_y[:,1])) #variance_metric=p[1].^2
 		flt = pygcvspl[:SmoothedNSpline](x_bas_sc[:,1],y_bas_sc[:,1],p[1])
 		y_calc_sc = flt(x_sc)
-		y_calc = (y_calc_sc*y_std)+y_mean # unscalling
+		y_calc = (y_calc_sc.*y_std).+y_mean # unscalling
 
 	######## WHITTAKER BASELINE (DIRECT RETURN)
 	elseif basetype == "whittaker"
@@ -290,9 +290,9 @@ function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basety
     end
 
 	if roi_out == "no"
-    	return y[:,1] - y_calc, y_calc
+    	return y[:,1] .- y_calc, y_calc
 	elseif roi_out == "yes"
-		return y[:,1] - y_calc, y_calc, [interest_x interest_y]
+		return y[:,1] .- y_calc, y_calc, [interest_x interest_y]
 	else
 		error("roi_out should be set to yes or no")
 	end
