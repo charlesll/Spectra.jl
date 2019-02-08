@@ -469,7 +469,7 @@ function savitsky_golay(x::Vector, windowSize::Integer, polyOrder::Integer; deri
     @assert isodd(windowSize) "Window size must be an odd integer."
     @assert polyOrder < windowSize "Polynomial order must me less than window size."
     
-    halfWindow = convert(UInt8,(windowSize-1)/2)
+    halfWindow = convert(Int64,(windowSize-1)/2)
     
     #Setup the S matrix of basis vectors. 
     S = zeros(windowSize, polyOrder+1)
