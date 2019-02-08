@@ -1,5 +1,6 @@
 using Spectra
 using Test
+using Random
 
 # Dummy data
 x = collect(0.:1.:100.)
@@ -11,7 +12,7 @@ hwhm_th = 10.
 
 # we now generate a perfect y as well as a noisy y
 y = int_th.*exp.(-log.(2) .*((x.-freq_th)./hwhm_th).^2)
-srand(42) # we fix the seed
+Random.seed!(42); # we fix the seed
 y_noise = y+randn((size(y,1),1))
 
 # we measured the width and frequency with the peakhw function
