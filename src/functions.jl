@@ -236,8 +236,8 @@ OUTPUTS:
 """
 function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},lorentzian_fraction::Array{Float64},x::Array{Float64};style::String = "None")
     segments = zeros(size(x)[1],size(amplitude)[1])
-	test1 = find(lorentzian_fraction .< 0.0)
-	test2 = find(lorentzian_fraction .> 1.0)
+	test1 = findall(lorentzian_fraction .< 0.0)
+	test2 = findall(lorentzian_fraction .> 1.0)
     if size(test1)[1] != 0 || size(test2)[1] != 0
 		error("lorentzian_fraction should be comprised between 0 and 1")
 	end
