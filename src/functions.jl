@@ -372,7 +372,7 @@ end
 
 """
 	
-	smooth(x,y,method="whittaker"; window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
+	smooth(x,y; method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
 
 smooth the provided y signal (sampled on x)
 
@@ -420,9 +420,9 @@ smooth the provided y signal (sampled on x)
 
 """
 
-function smooth(x,y,method="whittaker"; window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
+function smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 
-	return rampy.smooth(x,y,method="whittaker"; window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
+	return rampy.smooth(x,y,method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
 	
 end
 
