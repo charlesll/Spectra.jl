@@ -1,0 +1,17 @@
+Requirement already satisfied: gcvspline in /home/charles/.local/lib/python3.7/site-packages (0.4)
+Collecting rampy
+  Using cached https://files.pythonhosted.org/packages/f4/dc/eadf84c69965c477feba2d0eed218490ef825c5573271f8c9e36df2e5fe0/rampy-0.4.3-py3-none-any.whl
+Collecting pandas (from rampy)
+  Downloading https://files.pythonhosted.org/packages/c0/f7/7fd96f43d84a22d068fc999f2ae27f677be4c9501441f5b7870b75842fa4/pandas-0.24.1-cp37-cp37m-manylinux1_x86_64.whl (10.1MB)
+Requirement already satisfied: scipy in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy) (1.1.0)
+Requirement already satisfied: numpy>=1.12 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy) (1.15.4)
+Collecting sklearn (from rampy)
+Requirement already satisfied: python-dateutil>=2.5.0 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from pandas->rampy) (2.7.5)
+Requirement already satisfied: pytz>=2011k in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from pandas->rampy) (2018.7)
+Requirement already satisfied: scikit-learn in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from sklearn->rampy) (0.20.1)
+Requirement already satisfied: six>=1.5 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from python-dateutil>=2.5.0->pandas->rampy) (1.11.0)
+Installing collected packages: pandas, sklearn, rampy
+Successfully installed pandas-0.24.1 rampy-0.4.3 sklearn-0.0
+You are using pip version 18.0, however version 19.0.1 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+Running build.jl for the Spectra package.

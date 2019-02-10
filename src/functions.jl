@@ -33,7 +33,7 @@ function poly(p::Vector{Float64},x::Array{Float64})
     for i = 1:size(p)[1]
         segments[:,i] = p[i].*x[:].^(i-1)
     end
-    return sum(segments,2)
+    return sum(segments, dims=2)
 end
 
 """
@@ -118,7 +118,7 @@ function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arra
     else
         error("Not implemented, see documentation")
     end
-    return sum(segments,2), segments
+    return sum(segments, dims=2), segments
 end
 
 """
@@ -159,7 +159,7 @@ function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Ar
     else
         error("Not implemented, see documentation")
     end
-    return sum(segments,2), segments
+    return sum(segments, dims=2), segments
 end
 
 """
@@ -203,7 +203,7 @@ function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::A
     else
         error("Not implemented, see documentation")
     end
-    return sum(segments,2), segments
+    return sum(segments, dims=2), segments
 end
 
 """
@@ -252,7 +252,7 @@ function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arr
     else
         error("Not implemented, see documentation") 
 	end
-    return sum(segments,2), segments
+    return sum(segments, dims=2), segments
 end	
 
 
@@ -289,7 +289,7 @@ function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd
     for i = 1:size(nd_amplitudes)[1]
         segments[:,i] = nd_amplitudes[i]./(nd_sigmas[i].*sqrt(2.0.*pi))  .*  exp(- (x[:,1].-nd_centres[i]).^2 ./ (2.0.*nd_sigmas[i].^2.0))
     end
-    return sum(segments,2), segments
+    return sum(segments, dims=2), segments
 end
 
 """
@@ -369,83 +369,60 @@ function xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64
 	return xshift_direct(full_x, full_shifted_y, parameters[1])
 end
 
-"""
-	smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2,ese_y = 1.0)
-
-This function allows smoothing noisy data with Savitzky-Golay filter or GCV splines.
-
-INPUTS:
-
-	x: Array{Float64}
-	
-1 column or vector array x values;
-	
-	y: Array{Float64}
-	
-1 column or vector array y values associated with x;
-	
-OPTIONS:
-
-	filter: Symbol
-	
-the filter that will be used. Available filters are :SavitzkyGolay, :GCVSmoothedNSpline, :MSESmoothedNSpline, :DOFSmoothedNSpline, :Whittaker. The spline filters are automatic, but the :SavitzkyGolay filter requires adjusting the M and N parameters.
-	
-	M = 5, Int
-	
-half window size of the :SavitzkyGolay filter. M is the number of points before and after to interpolate, i.e. the full width of the window is 2M+1;
-	
-	N = 2, Int
-	
-polynomial degree of the :SavitzkyGolay filter;
-	
-	lambda = 10.0^5, Float64
-	
-smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
-
-	d = 2, Int
-	
-d parameter in Whittaker filter, see Eilers (2003)
-	
-	ese_y, Float64 or Array{Float64}
-	
-an estimation of the errors on y
-	
-OUTPUTS:
-
-	smoothed_y: Array{Float64}
-	
-the smoothed y values.
-	
-NOTE:
-
-See documentation and examples of gcvspline at https://charlesll.github.io/gcvspline/ for details on the gcvspline Python library.
 
 """
-function smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2,lambda=10.0^5,d=2,ese_y = 1.0)
+	
+	smooth(x,y,method="whittaker"; window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
 
-	if size(y,2) > 1
-		error("This function only accepts one column arrays or vectors.")
-	end
-	
-	filter_names=[:SavitzkyGolay;:GCVSmoothedNSpline;:MSESmoothedNSpline;:DOFSmoothedNSpline;:Whittaker]
-	
-	if filter == filter_names[1]
-		
-		return signal[:savgol_filter](vec(y),M,N)
-	
-	elseif filter == filter_names[2] || filter == filter_names[3] || filter == filter_names[4]
-		
-		w = 1.0 ./ (ones(size(y,1),1) .* ese_y)
-		flt = pygcvspl[filter](vec(x),vec(y),vec(w))
-		return flt(x)
-		
-	elseif filter == filter_names[5]
-		w = ones(length(x),1)
-		return whitsmdd(x,y,ones(length(x),1),lambda,d=d)
-	
-	else
-		error("Not implemented, choose between $(filter_names)")
-	end
+smooth the provided y signal (sampled on x)
+
+	Parameters
+	==========
+	x: ndarray
+		Nx1 array of x values (equally spaced).
+	y: ndarray
+		Nx1 array of y values (equally spaced).
+	method: str
+		Method for smoothing the signal;
+		choose between savgol (Savitzky-Golay), GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline, whittaker, 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'.
+
+	kwargs
+	======
+	window_length: int
+		The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
+	polyorder: int
+		The order of the polynomial used to fit the samples. polyorder must be less than window_length.
+	Lambda: float
+		smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
+	d: int
+		d parameter in Whittaker filter, see Eilers (2003).
+	ese_y: ndarray
+		errors associated with y (for the gcvspline algorithms)
+
+	Returns
+	=======
+	y_smo: ndarray
+		smoothed signal sampled on x.
+
+	Note
+	====
+
+	Use of GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline requires installation of gcvspline. See gcvspline documentation.
+	See also documentation for details on GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline.
+
+	savgol uses the scipy.signal.savgol_filter() function.
+
+	References
+	==========
+	Eilers, P.H.C., 2003. A Perfect Smoother. Anal. Chem. 75, 3631–3636. https://doi.org/10.1021/ac034173t
+
+	Scipy Cookbook: https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html?highlight=smooth
+
+"""
+
+function smooth(x,y,method="whittaker"; window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
+
+	return rampy.smooth(x,y,method="whittaker"; window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
 	
 end
 
