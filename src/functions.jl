@@ -243,7 +243,7 @@ function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arr
 	end
 	if style == "None"
 		for i = 1:size(amplitude)[1]
-			segments[:,i] =  amplitude[i].*( (1.0 .- lorentzian_fraction[i]) .*exp.(-log(2) .* ((x[:,1].-centre[i])./hwhm[i]).^2)   .+ lorentzian_fraction[i] ./ (1 .+ ((x[:,1]-centre[i])./hwhm[i]).^2))
+			segments[:,i] =  amplitude[i].*( (1.0 .- lorentzian_fraction[i]) .*exp.(-log(2) .* ((x[:,1].-centre[i])./hwhm[i]).^2)   .+ lorentzian_fraction[i] ./ (1.0 .+ ((x[:,1].-centre[i])./hwhm[i]).^2))
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
