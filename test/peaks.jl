@@ -40,7 +40,7 @@ y_calc, y_peaks = pseudovoigts([p[1]],[p[2]],[p[3]],[p[4]],x)
 
 #### normal distribution test
 p = [1.,50.,5.]
-y = p[1]./(p[3].*sqrt(2.*pi)) .* exp.(-0.5.*((x.-p[2])./p[3]).^2)
+y = p[1]./(p[3].*sqrt(2.0 .*pi)) .* exp.(-0.5.*((x.-p[2])./p[3]).^2)
 
 y_calc, y_peaks = normal_dist([p[1]],[p[2]],[p[3]],x)
 @test isapprox(y,y_calc)
