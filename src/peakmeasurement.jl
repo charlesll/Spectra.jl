@@ -65,7 +65,7 @@ function peakmeas(x::Array{Float64}, y::Array{Float64}; smoothing = "yes", metho
     end
 
 	if smoothing == "yes"
-    	y_smo = collect(smooth(x,y,method = filter, window_length=window_length, polyorder=polyorder))
+    	y_smo = collect(smooth(x,y,method = method, window_length=window_length, polyorder=polyorder))
 	else
 		y_smo = collect(y)
 	end
