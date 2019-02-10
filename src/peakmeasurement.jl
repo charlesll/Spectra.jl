@@ -65,7 +65,7 @@ function peakmeas(x::Array{Float64}, y::Array{Float64}; smoothing = "yes", metho
     end
 
 	if smoothing == "yes"
-    	y_smo = smooth(x,y,method = filter, window_length=window_length, polyorder=polyorder)
+    	y_smo = collect(smooth(x,y,method = filter, window_length=window_length, polyorder=polyorder))
 	else
 		y_smo = collect(y)
 	end
@@ -76,7 +76,6 @@ function peakmeas(x::Array{Float64}, y::Array{Float64}; smoothing = "yes", metho
 		error("Something went wrong, is there two peaks with identical intensities in the signal? This function treats signal with one main peak...")
 	end
 	
-
     x_1 = x[x .<x_maximum]; 
 	x_2 = x[x .>=x_maximum];
     y_first_portion = y_smo[x .<x_maximum]; 
