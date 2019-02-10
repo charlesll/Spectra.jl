@@ -23,7 +23,7 @@ y = p1 + p2 + p3 + p4 + p5 + noise +bkg
 roi = [0. 100.] # provide whatever matrix
 
 # for the ALS algorithm, 10^2-10^5 lambda and 0.001-0.1 p values are recommended
-y_als, bas_als = baseline(x,y,roi,"als",p=0.04,lambda=10^6,niter=10)
+y_als, bas_als = baseline(x,y,roi,"als",p=0.04,lam=10^6,niter=10)
 
 rmse = sqrt.(sum((y - y_als).^2))./sum(y)
 
