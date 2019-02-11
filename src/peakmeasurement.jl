@@ -57,7 +57,7 @@ OUTPUTS:
 	
 	y_smo: Array{Float64}, the smoothed y signal.
 """
-function peakmeas(x::Array{Float64}, y::Array{Float64}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
+function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     if x[end,1] < x[1,1]
         x = flipdim(x,1)
@@ -65,7 +65,7 @@ function peakmeas(x::Array{Float64}, y::Array{Float64}; smoothing = "yes", metho
     end
 
 	if smoothing == "yes"
-    	y_smo = collect(smooth(x,y,method = method, window_length=window_length, polyorder=polyorder))
+    	y_smo = vec(smooth(x,y,method = method, window_length=window_length, polyorder=polyorder))
 	else
 		y_smo = collect(y)
 	end

@@ -422,7 +422,7 @@ smooth the provided y signal (sampled on x)
 
 function smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 
-	return rampy[:smooth](x,y,method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
+	return rampy[:smooth](vec(x),vec(y),method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
 	
 end
 
@@ -436,7 +436,7 @@ Flip an array along the row dimension (dim = 1) if the first column values are i
 """
 function flipsp(spectra::Array{Float64})
     if spectra[end,1] < spectra[1,1]
-        spectra = flipdim(spectra,1)
+        spectra = spectra[end:-1:1,:]
     end
 	return spectra
 end
