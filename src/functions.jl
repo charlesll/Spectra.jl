@@ -378,9 +378,9 @@ smooth the provided y signal (sampled on x)
 
 	Parameters
 	==========
-	x: ndarray
+	x: vector
 		Nx1 array of x values (equally spaced).
-	y: ndarray
+	y: vector
 		Nx1 array of y values (equally spaced).
 	method: str
 		Method for smoothing the signal;

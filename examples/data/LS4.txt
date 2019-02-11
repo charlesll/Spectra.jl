@@ -1,22 +1,3 @@
-TITLE	
-DATA TYPE	RAMAN SPECTRUM
-ORIGIN	JASCO
-OWNER	
-DATE	14/01/10
-TIME	17:38:47
-SPECTROMETER/DATA SYSTEM	
-LOCALE	1033
-RESOLUTION	
-DELTAX	0.2
-XUNITS	1/CM
-YUNITS	INTENSITY
-FIRSTX	  580.2513
-LASTX	 1377.6513
-NPOINTS	    3988
-FIRSTY	 28873.66602
-MAXY	 29470.75586
-MINY	  1922.10120
-XYDATA
 580.2513	28873.7
 580.4513	29010.8
 580.6513	29141
@@ -4005,48 +3986,3 @@ XYDATA
 1377.2513	1938.93
 1377.4513	1934.52
 1377.6512	1928.39
-
-##### Extended Information
-[Comments]
-Sample name	
-Comment	
-User
-Division
-Company	User
-
-[Detailed Information]
-Creation date	1/10/2014 6:38 PM
-
-Data array type	Linear data array
-Horizontal axis	Raman Shift [cm-1]
-Vertical axis	Int.
-Start	580.251 cm-1
-End	1377.65 cm-1
-Data interval	0.2 cm-1
-Data points	3988    
-
-[Measurement Information]
-Model Name	NRS-3100
-Serial Number	B008561032
-
-Exposure	300 sec
-Accumulation	3
-Center wavenumber	999.96 cm-1
-Binning Upper	102
-Binning Lower	149
-Valid Channel	1 - 1024
-
-Laser wavelength	490.20 nm
-Monochromator	Single
-Grating	2400 l/mm
-Slit	0.1 x 6 mm
-Resolution	2.99 cm-1
-Objective lens	SLMPL 50 x
-BS/DM	BS 30/70
-1/2 plate	Not fitted
-Analyser	Not fitted
-Laser power	45.5 mW
-Attenuator	Open
-CCD temperature	-69.0 C
-Shift	9.00 cm-1
-
