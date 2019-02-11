@@ -1,6 +1,6 @@
 # Spectra.jl News
 
-Copyright (c) 2016-2018 Dr. Charles Le Losq
+Copyright (c) 2016-2019 Dr. Charles Le Losq
 
 email: charles.lelosq@anu.edu.au
 
