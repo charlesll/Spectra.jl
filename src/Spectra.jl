@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2017 Charles Le Losq
+#Copyright (c) 2016-2019 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -11,11 +11,12 @@
 #
 #############################################################################
 
-VERSION >= v"0.7.0" && __precompile__()
+VERSION >= v"1.0.0" && __precompile__()
 
 module Spectra
 
 using StatsBase
+using Statistics
 using Random
 using Statistics
 using SparseArrays
@@ -54,29 +55,23 @@ function __init__()
 
 end
 
-include("diffusion.jl")
 include("integrale.jl")
 include("functions.jl")
 include("baseline.jl")
 include("bootstrap.jl")
 include("tlcorrection.jl")
-include("rameau.jl")
 include("deprecated.jl")
 include("ml_regressor.jl")
-include("ctxremoval.jl")
 include("peakmeasurement.jl")
 
 #From integrale.jl
 export trapz, bandarea
 
-#From diffusion.jl
-export peak_diffusion, model, IRdataprep
-
 #From functions.jl
 export poly, polyfit, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, smooth, flipsp, resample
 
 #From baseline.jl
-export baseline, whitsmdd
+export baseline
 
 #From bootstrap
 export bootsample, bootperf
@@ -84,14 +79,8 @@ export bootsample, bootperf
 #From tlcorrection
 export tlcorrection
 
-#From rameau
-export rameau
-
 #From ml_regressor
 export mlregressor
-
-#From ctxremoval
-export ctxremoval
 
 # From peakmeasurement
 export peakmeas

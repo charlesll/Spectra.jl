@@ -14,7 +14,11 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 Breaking change:
 
-- Requires Julia 0.7 or 1.0.
+- Requires Julia 1.0 or above.
+
+- drop of multiple functions that probably where not useful to people: rameau (see the rampy Python package for this function), all functions in diffusions.jl, as well as in ctxremoval.jl
+
+- smooth() and baseline() are wrapper to the functions provided by rampy in Python. This is not a problem as speed is not the criterion when using such functions. Julia's speed will be helful at a latter stage, i.e. during peak fitting for instance.
 
 Modifications:
 
