@@ -15,6 +15,7 @@
 #############################################################################
 
 """
+
 	trapz{Tx<:Number, Ty<:Number}(x::Vector{Tx}, y::Vector{Ty})
 
 Trapezoidal integration.
@@ -48,6 +49,7 @@ function trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
 end
 
 """
+
 	bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
 	
 This function replaces the function gaussianarea in the version <0.1.9 of Spectra.jl. It allows to calculate the area under a specific band, with different shapes. For now, only Gaussian bands are supported, but other band shapes will be added soon. (This explains why gaussianarea is deprecated in favor of a more generic function)

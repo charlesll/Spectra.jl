@@ -10,7 +10,7 @@ Licence MIT: see LICENCE.md
 
 Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia. Spectra.jl aim is to provide the simplest way to perform actions like baseline fitting and removal, or peak fitting for instance, while respecting the freedom offered by data treatment through using a computer code instead of a Graphic User Interface.
 
-IMPORTANT NOTE FOLLIWING JULIA 1.0 UPGRADE - This upgrade of Julia introduced many breaking changes. In fact, I add to re-write most of the code of Spectra.jl...
+IMPORTANT NOTE FOLLOWING JULIA 1.0 UPGRADE - This upgrade of Julia introduced many breaking changes. In fact, I add to re-write most of the code of Spectra.jl...
 I thus decided that simple functions that do not require speed, like baseline() or smooth(), will be wrappers of those provided by rampy. This will be transparent to the user and will greatly simplify code debugging and syntax homogeneity.
 
 Package is under construction, any help welcome!
@@ -58,4 +58,4 @@ Further functions are available, for treating profiles of spectra for instance!
 
 See the examples notebook for futher ideas!
 
-Last modified February 2019
+Last modified May 2019

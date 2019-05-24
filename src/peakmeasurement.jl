@@ -15,7 +15,8 @@
 #############################################################################
 
 """
-	peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,ese_y=1.,y_smo_out=false)
+
+    peakmeas(x::Array{Float64},y::Array{Float64};smoothing = "yes", filter = :SavitzkyGolay, M=5,N=2,ese_y=1.,y_smo_out=false)
 
 The peakmeas function allows performing measurements of the position, width, intensity and centroïd of a dominant peak in a provided x-y signal.
 

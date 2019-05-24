@@ -1,10 +1,11 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
-.ipynb_checkpoints/
+.ipynb_checkpoints
 .DS_STORE
 gcvspl.o
 libgcvspl.so
 libgcvspl.dylib
 docs/build/
 docs/site/
+build.log

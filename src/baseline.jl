@@ -14,8 +14,7 @@
 #############################################################################
 
 """
-
-
+	baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
 
 Allows subtracting a baseline under a x y spectrum.
 
@@ -74,5 +73,5 @@ out2 : ndarray
 
 """
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
-	yout, bas = rampy[:baseline](x,y,roi,basetype,polynomial_order=polynomial_order, s=s, lam=lam, niter=niter, p0_exp=p0_exp, p0_log=p0_log)
+	yout, bas = rampy.baseline(x,y,roi,basetype,polynomial_order=polynomial_order, s=s, lam=lam, niter=niter, p0_exp=p0_exp, p0_log=p0_log)
 end

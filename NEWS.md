@@ -10,13 +10,23 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
+# 0.4.1
+
+- requires PyCall v0.19 or higher
+
+- calls to Python modules now follow the new PyCall API
+
+- mlregressor now calls the Python mlregressor class from the rampy library; see Jupyter notebook example.
+
+- various doc improvements
+
 # 0.4.0
 
 Breaking change:
 
 - Requires Julia 1.0 or above.
 
-- drop of multiple functions that probably where not useful to people: rameau (see the rampy Python package for this function), all functions in diffusions.jl, as well as in ctxremoval.jl
+- drop of multiple functions that probably were not useful to people: rameau (see the rampy Python package for this function), all functions in diffusions.jl, as well as in ctxremoval.jl
 
 - smooth() and baseline() are wrapper to the functions provided by rampy in Python. This is not a problem as speed is not the criterion when using such functions. Julia's speed will be helful at a latter stage, i.e. during peak fitting for instance.
 

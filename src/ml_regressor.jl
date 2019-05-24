@@ -12,121 +12,78 @@
 #############################################################################
 
 """
-	function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaler="MinMaxScaler",rand_state=42,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
-	
-Working on that, please be careful when using it.	
-	
-INPUTS
+function mlregressor(x::Array{Float64},y::Array{Float64};X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaler="MinMaxScaler",rand_state=42)
 
-	x: Array{Float64}, the spectra organised in rows (1 row = one spectrum). The spectra should share a common X axis;
+use machine learning algorithms from scikit learn to perform regression between spectra and an observed variable.
 
-	y::Array{Float64}, the target. Only a sigle target is possible for now.
+this calls the rampy.mlregressor function and creates a Python object.
 
-	algorithm: AbstractString, "KernelRidge" or "SVM" or "LinearRegression"
+any algorithm parameter can be modified in the model object created by a simple call
 
-OPTIONS
+	model = mlregressor(X,y)
 
-	X_test: Array{Float64}, spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis;
-	
-	y_test: Array{Float64}, the target that you want to use as a testing dataset. Those targets should not be present in the y (training) dataset;
-	
-	scaler: String, the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see http://scikit-learn.org/stable/modules/preprocessing.html for details. Default = "MinMaxScaler";
-	
-	rand_state: Float64, the random seed that is used for reproductibility of the results. Default = 42;
-	
-	param_grid_kr: Dictionary, containg the values of the hyperparameters that should be checked by gridsearch for the Kernel Ridge regression algorithm;
-	
-	param_grid_svm: Dictionary, containg the values of the hyperparameters that should be checked by gridsearch for the Support Vector regression algorithm.
-	
-For the last two parameters, the user is refered to the documentation of SciKit Learn. See the pages:
+See object attributes below.
 
-http://scikit-learn.org/stable/modules/kernel_ridge.html
+	Attributes
+	----------
+	x : {array-like, sparse matrix}, shape = (n_samples, n_features)
+		Spectra; n_features = n_frequencies.
+	y : array, shape = (n_samples,)
+		Returns predicted values.
+	X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
+		spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
+	y_test : array, shape = (n_samples,)
+		the target that you want to use as a testing dataset. Those targets should not be present in the y (training) dataset.
+	algorithm : String,
+		"KernelRidge", "SVM", "LinearRegression", "Lasso", "ElasticNet", "NeuralNet", "BaggingNeuralNet", default = "SVM"
+	scaling : Bool
+		True or False. If True, data will be scaled during fitting and prediction with the requested scaler (see below),
+	scaler : String
+		the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see http://scikit-learn.org/stable/modules/preprocessing.html for details. Default = "MinMaxScaler".
+	test_size : float
+		the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
+	rand_state : Float64
+		the random seed that is used for reproductibility of the results. Default = 42.
+	param_kr : Dictionary
+		contain the values of the hyperparameters that should be provided to KernelRidge and GridSearch for the Kernel Ridge regression algorithm.
+	param_svm : Dictionary
+		containg the values of the hyperparameters that should be provided to SVM and GridSearch for the Support Vector regression algorithm.
+	param_neurons : Dictionary
+		contains the parameters for the Neural Network (MLPregressor model in sklearn).
+		Default= dict(hidden_layer_sizes=(3,),solver = 'lbfgs',activation='relu',early_stopping=True)
+	param_bagging : Dictionary
+		contains the parameters for the BaggingRegressor sklearn function that uses a MLPregressor base method.
+		Default= dict(n_estimators=100, max_samples=1.0, max_features=1.0, bootstrap=True,
+						bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=1, random_state=rand_state, verbose=0)
+	prediction_train : Array{Float64}
+		the predicted target values for the training y dataset.
+	prediction_test : Array{Float64}
+		the predicted target values for the testing y_test dataset.
+	model : Scikit learn model
+		A Scikit Learn object model, see scikit learn library documentation.
+	X_scaler :
+		A Scikit Learn scaler object for the x values.
+	Y_scaler :
+		A Scikit Learn scaler object for the y values.
 
-http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html
+	Remarks
+	-------
 
-OUTPUTS
+	For details on hyperparameters of each algorithms, please directly consult the documentation of SciKit Learn at:
 
-	prediction_train: Array{Float64}, the predicted target values for the training y dataset;
-	
-	prediction_test: Array{Float64}, the predicted target values for the testing y_test dataset;
-	
-	model: A Scikit Learn object model, see the above link for details;
-	
-	X_scaler: A Scikit Learn scaler object for the x values;
-	
-	Y_scaler: A Scikit Learn scaler object for the y values;
-	
-NOTES 
+	http://scikit-learn.org/stable/
 
-	For Support Vector and Kernel Ridge regressions, mlregressor performs a cross_validation search with using 5 KFold cross validators. 
+	For Support Vector and Kernel Ridge regressions, mlregressor performs a cross_validation search with using 5 KFold cross validators.
 
 	If the results are poor with Support Vector and Kernel Ridge regressions, you will have to tune the param_grid_kr or param_grid_svm dictionnary that records the hyperparameter space to investigate during the cross validation.
-	
+
+	Results for machine learning algorithms can vary from run to run. A way to solve that is to fix the random_state. 
+	For neural nets, results from multiple neural nets (bagging technique) may also generalise better, such that
+	it may be better to use the BaggingNeuralNet function.
+
 """
-function mlregressor(x::Array{Float64},y::Array{Float64},algorithm::AbstractString;X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaling="yes",scaler="MinMaxScaler",rand_state=42,param_grid_kr = Dict("alpha"=> [1e1, 1e0, 0.5, 0.1, 5e-2, 1e-2, 5e-3, 1e-3],"gamma"=> logspace(-4, 4, 9)),param_grid_svm=Dict("C"=> [1e0, 2e0, 5e0, 1e1, 5e1, 1e2, 5e2, 1e3, 5e3, 1e4, 5e4, 1e5],"gamma"=> logspace(-4, 4, 9)),user_kernel="rbf")
-    
-	if size(X_test,1) == 1
-		X_train, X_test, y_train, y_test = model_selection[:train_test_split](x, reshape(y,size(y,1),1), test_size=test_sz, random_state=rand_state) 
-	elseif size(X_test,2) == size(x,2)
-		X_train = x[:,:]
-		y_train = y[:,:]
-	else
-		error("You tried to provide a testing dataset that has a different number of features (in columns) than the training set. Please correct this.")
-	end
+function mlregressor(x::Array{Float64},y::Array{Float64};X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0])
 	
-	# to avoid any problem with SciKit Learn quite annoying demands for the shape of arrays...
-	y_train =reshape(y_train,size(y_train,1),1)
-	y_test = reshape(y_test,size(y_test,1),1)
+	return rampy.mlregressor(x,y,X_test=X_test,y_test=y_test)
 	
-	# initialising the preprocessor scaler
-	if scaler == "StandardScaler"
-		X_scaler = preprocessing[:StandardScaler]()
-		Y_scaler = preprocessing[:StandardScaler]()
-	elseif scaler == "MinMaxScaler"
-		X_scaler = preprocessing[:MinMaxScaler]()
-		Y_scaler = preprocessing[:MinMaxScaler]()
-	else
-		error("Choose the scaler between MinMaxScaler and StandardScaler")
-	end
-		
-	X_scaler[:fit](X_train)
-	Y_scaler[:fit](y_train)
-	
-	#scaling the data
-	X_train_sc = X_scaler[:transform](X_train)
-	y_train_sc = Y_scaler[:transform](y_train)
-
-	X_test_sc = X_scaler[:transform](X_test)
-	y_test_sc = Y_scaler[:transform](y_test)
-
-	
-	if algorithm=="KernelRidge"
-		clf_kr = kernel_ridge[:KernelRidge](kernel=user_kernel, gamma=0.1)
-		model = model_selection[:GridSearchCV](clf_kr,cv=5,param_grid=param_grid_kr)
-	elseif algorithm=="SVM"
-		clf_svm = svm[:SVR](kernel=user_kernel, gamma=0.1)
-		model = model_selection[:GridSearchCV](clf_svm,cv=5,param_grid=param_grid_svm)
-	elseif algorithm=="Lasso"
-		clf_lasso = linear_model[:Lasso](alpha=0.1)
-		model = model_selection[:GridSearchCV](clf_lasso,cv=5,param_grid=Dict("alpha"=> [1e-3, 1e-2, 1e-1, 1., 1e1, 1e2, 1e3, 1e4]))
-	elseif algorithm=="ElasticNet"
-		clf_ElasticNet = linear_model[:ElasticNet](alpha=0.1,l1_ratio=0.5)
-		model = model_selection[:GridSearchCV](clf_ElasticNet,cv=5,param_grid=Dict("alpha"=> [1e-3, 1e-2, 1e-1, 1., 1e1, 1e2, 1e3, 1e4]))
-	elseif algorithm=="LinearRegression"
-		model = linear_model[:LinearRegression]()
-	end
-	
-	if scaling == "yes"
-		model[:fit](X_train_sc, vec(y_train_sc))
-		predict_train_sc = model[:predict](X_train_sc)
-		prediction_train = Y_scaler[:inverse_transform](predict_train_sc)
-		predict_test_sc = model[:predict](X_test_sc)
-		prediction_test = Y_scaler[:inverse_transform](predict_test_sc)
-		return prediction_train, prediction_test, model, X_scaler, Y_scaler
-	else 
-		model[:fit](X_train, vec(y_train))
-		prediction_train = model[:predict](X_train)
-		prediction_test = model[:predict](X_test)
-		return prediction_train, prediction_test, model
-	end
 end
