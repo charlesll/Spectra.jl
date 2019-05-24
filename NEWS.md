@@ -10,7 +10,7 @@ Licence MIT: see LICENCE.md
 
 As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
-# 0.4.1
+# 0.4.1 (in development)
 
 - requires PyCall v0.19 or higher
 
@@ -20,7 +20,7 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 - various doc improvements
 
-# 0.4.0
+# 0.4.0 (stable)
 
 Breaking change:
 
