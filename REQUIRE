@@ -4,7 +4,6 @@ StatsBase
 Dierckx
 Distributions
 LsqFit
-PyCall 1.90
+PyCall 1.91
 Conda
-NMF#aa/1.0
 Polynomials
