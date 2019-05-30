@@ -41,7 +41,7 @@ const signal = PyNULL()
 const rampy = PyNULL()
 
 function __init__()
-	
+
 	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
 	copy!(model_selection, pyimport_conda("sklearn.model_selection", "scikit-learn"))
 	copy!(decomposition, pyimport_conda("sklearn.decomposition", "scikit-learn"))
@@ -61,7 +61,7 @@ include("baseline.jl")
 include("bootstrap.jl")
 include("tlcorrection.jl")
 include("deprecated.jl")
-include("ml_regressor.jl")
+include("ml.jl")
 include("peakmeasurement.jl")
 
 #From integrale.jl
@@ -80,7 +80,7 @@ export bootsample, bootperf
 export tlcorrection
 
 #From ml_regressor
-export mlregressor
+export mlregressor, mlexplorer
 
 # From peakmeasurement
 export peakmeas

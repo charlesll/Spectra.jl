@@ -3,7 +3,7 @@ using PyCall, Conda
 println("Running build.jl for the Spectra package.")
 
 # Change that to whatever packages you need.
-const PACKAGES = ["gcvspline","rampy"]
+const PACKAGES = ["gcvspline","rampy>=0.4.4"]
 
 pyimport_conda("pip", "pip")
 
@@ -35,4 +35,3 @@ end
 println("Installing required python packages using pip")
 run(`$(PyCall.python) $(proxy_arg) -m conda install --upgrade pip setuptools`)
 run(`$(PyCall.python) $(proxy_arg) -m pip install $(PACKAGES)`) =#
-

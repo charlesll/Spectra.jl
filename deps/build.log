@@ -1,13 +1,18 @@
 Requirement already satisfied: gcvspline in /home/charles/.local/lib/python3.7/site-packages (0.4)
-Requirement already satisfied: rampy in /home/charles/.julia/conda/3/lib/python3.7/site-packages (0.4.3)
-Requirement already satisfied: numpy>=1.12 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy) (1.16.3)
-Requirement already satisfied: sklearn in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy) (0.0)
-Requirement already satisfied: scipy in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy) (1.2.1)
-Requirement already satisfied: pandas in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy) (0.24.1)
-Requirement already satisfied: scikit-learn in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from sklearn->rampy) (0.20.3)
-Requirement already satisfied: python-dateutil>=2.5.0 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from pandas->rampy) (2.7.5)
-Requirement already satisfied: pytz>=2011k in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from pandas->rampy) (2018.7)
-Requirement already satisfied: six>=1.5 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from python-dateutil>=2.5.0->pandas->rampy) (1.11.0)
+Collecting rampy>=0.4.4
+  Downloading https://files.pythonhosted.org/packages/bc/b9/c77d02f6062a6f9f2da247cd5714706af9d177c3718bdf4cb62076f5945b/rampy-0.4.4-py3-none-any.whl
+Requirement already satisfied: pandas in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy>=0.4.4) (0.24.1)
+Requirement already satisfied: numpy>=1.12 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy>=0.4.4) (1.16.4)
+Requirement already satisfied: scikit-learn in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy>=0.4.4) (0.20.3)
+Requirement already satisfied: scipy in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from rampy>=0.4.4) (1.2.1)
+Requirement already satisfied: pytz>=2011k in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from pandas->rampy>=0.4.4) (2018.7)
+Requirement already satisfied: python-dateutil>=2.5.0 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from pandas->rampy>=0.4.4) (2.7.5)
+Requirement already satisfied: six>=1.5 in /home/charles/.julia/conda/3/lib/python3.7/site-packages (from python-dateutil>=2.5.0->pandas->rampy>=0.4.4) (1.11.0)
+Installing collected packages: rampy
+  Found existing installation: rampy 0.4.3
+    Uninstalling rampy-0.4.3:
+      Successfully uninstalled rampy-0.4.3
+Successfully installed rampy-0.4.4
 You are using pip version 18.0, however version 19.1.1 is available.
 You should consider upgrading via the 'pip install --upgrade pip' command.
 Running build.jl for the Spectra package.

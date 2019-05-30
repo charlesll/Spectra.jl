@@ -18,6 +18,8 @@ As Spectra.jl starts to grow, I will summarize changes in this file starting at 
 
 - mlregressor now calls the Python mlregressor class from the rampy library; see Jupyter notebook example.
 
+- addition of mlexplorer that calls the rampy.mlexplorer Python function; see Jupyter notebook example.
+
 - various doc improvements
 
 # 0.4.0 (stable)
