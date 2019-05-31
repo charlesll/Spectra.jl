@@ -2,7 +2,7 @@
 
 ## Model adjustment
 
-Peak fitting is done with the JuMP framework (https://jump.readthedocs.org/en/latest/). Spectra.jl actually does not provide any peak fitting capacities by itself, but the combination of its functionality with JuMP helps making fitting procedure quite easy. An example is visible in the example section of Spectra.jl.
+Peak fitting is done with the JuMP framework (https://jump.readthedocs.org/en/latest/). Spectra actually does not provide any peak fitting capacities by itself, but the combination of its functionality with JuMP helps making fitting procedure quite easy. An example is visible in the example section of Spectra.
 
 One goal of Spectra is to promote the use of global optimisation models, where peak parameters are actually calculated from variation in other parameters (chemistry, temperature, etc.), or are shared between several spectra. I will provide very soon an example of such an approach. It can be implemented in a few lines of code with combining Spectra and JuMP, and has the advantage of greatly reducing the errors of the fits.
 
