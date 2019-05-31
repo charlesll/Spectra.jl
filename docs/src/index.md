@@ -40,3 +40,6 @@ You can cite Spectra as
 ## Index
 
 The functions that are in Spectra are listed below. See the other part of the documentation for further information.
+
+```@index
+```

@@ -1,23 +1,27 @@
 # Documentation: http://docs.travis-ci.com/user/languages/julia/
-language: julia
-os:
-  - linux
-  - osx
-julia:
-  - 1.0
-#before_install:
-#  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -qq update; fi
-addons:
-  apt_packages:
-    - gfortran
-notifications:
-  email: false
-env:
- - PYTHON=""
-script:
-  - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
-after_success:
-  - julia -e 'using Pkg; Pkg.add("Documenter")'
-  - julia -e 'cd(Pkg.dir("Spectra")); include(joinpath("docs", "make.jl"))'
+jobs:
+  include:
+    - stage: "Build and Test"
+      julia: 1.0
+      os:
+        - linux
+        - osx
+      addons:
+        apt_packages:
+          - gfortran
+      env:
+       - PYTHON=""
+      notifications:
+        email: false
+      script:
+        - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
+        - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+        - julia -e 'using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
+    - stage: "Documentation"
+      julia: 1.0
+      os: linux
+      script:
+        - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
+                                               Pkg.instantiate()'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip
