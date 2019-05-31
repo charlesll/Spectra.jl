@@ -30,10 +30,7 @@ pages:
   - Installation: Installation.md
   - Pre-Processing: PreProcessing.md
   - General Functions: GeneralFunctions.md
-  - Rameau: Rameau.md
-  - Machine Learning Regression: MLregressor.md
+  - Machine Learning: MachineLearning.md
   - Peak Fitting: PeakFitting.md
-  - Tutorial: Tutorial.md
   - Tips: Tips.md
-  - Todo: ToDo.md
   - References: References.md
