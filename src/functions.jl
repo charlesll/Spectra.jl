@@ -445,7 +445,6 @@ Eilers, P.H.C., 2003. A Perfect Smoother. Anal. Chem. 75, 3631–3636. https://d
 Scipy Cookbook: https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html?highlight=smooth
 
 """
-
 function smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 
 	return rampy.smooth(vec(x),vec(y),method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)

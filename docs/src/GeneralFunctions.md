@@ -23,7 +23,7 @@ peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "
 Spectra.jl provides functions that allow one to integrate the area under a region of a spectrum, or to calculate the area under Gaussian, Lorentzian or other bands.
 
 ```@docs
-trapz(x::Vector{Tx}, y::Vector{Ty})
+trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
 bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
 ```
 
