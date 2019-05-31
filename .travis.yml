@@ -1,22 +1,25 @@
 # Documentation: http://docs.travis-ci.com/user/languages/julia/
+language: julia
+notifications:
+  email: false
+os:
+  - linux
+  - osx
+julia:
+  -1.0
+env:
+ - PYTHON=""
+
+#addons:
+#  apt_packages:
+#    - gfortran
+script:
+  #- if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
+  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - julia -e 'using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
+
 jobs:
   include:
-    - stage: "Build and Test"
-      julia: 1.0
-      os:
-        - linux
-        - osx
-      addons:
-        apt_packages:
-          - gfortran
-      env:
-       - PYTHON=""
-      notifications:
-        email: false
-      script:
-        - if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
-        - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-        - julia -e 'using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
     - stage: "Documentation"
       julia: 1.0
       os: linux
