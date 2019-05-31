@@ -16,7 +16,7 @@
 """
 	baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
 
-Allows subtracting a baseline under a x y spectrum.
+Allows subtracting a baseline under a x y spectrum; uses the baseline function from the rampy Python package.
 
 Parameters
 ----------
@@ -25,24 +25,30 @@ x_input : ndarray
 y_input : ndarray
 	y values.
 bir : ndarray
-	Contain the regions of interest, organised per line. 
-	For instance, roi = np.array([[100., 200.],[500.,600.]]) will 
+	Contain the regions of interest, organised per line.
+	For instance, roi = np.array([[100., 200.],[500.,600.]]) will
 	define roi between 100 and 200 as well as between 500 and 600.
 	Note: This is NOT used by the "als" and "arPLS" algorithms, but still is a requirement when calling the function.
 	bir and method probably will become args in a futur iteration of rampy to solve this.
 methods : str
 	"poly": polynomial fitting, with splinesmooth the degree of the polynomial.
-	"unispline": spline with the UnivariateSpline function of Scipy, splinesmooth is 
+	"unispline": spline with the UnivariateSpline function of Scipy, splinesmooth is
 				 the spline smoothing factor (assume equal weight in the present case);
-	"gcvspline": spline with the gcvspl.f algorythm, really robust. 
+	"gcvspline": spline with the gcvspl.f algorythm, really robust.
 				 Spectra must have x, y, ese in it, and splinesmooth is the smoothing factor;
-				 For gcvspline, if ese are not provided we assume ese = sqrt(y). 
-				 Requires the installation of gcvspline with a "pip install gcvspline" call prior to use;
+				 For gcvspline, if ese are not provided we assume ese = sqrt(y).
+				 WARNING: Requires the installation of the gcvspline Python package prior to use in the Python ENV used by Julia.
+				 To do that, do:
+				 ```julia-repl
+				 julia> using PyCall
+				 julia> pyimport_conda("pip", "pip")
+				 julia> run(`$(PyCall.python) -m pip install $(PACKAGES)`)
+				 ```
 	"exp": exponential background;
 	"log": logarythmic background;
 	"rubberband": rubberband baseline fitting;
 	"als": automatic least square fitting following Eilers and Boelens 2005;
-	"arPLS": automatic baseline fit using the algorithm from Baek et al. 2015 
+	"arPLS": automatic baseline fit using the algorithm from Baek et al. 2015
 			 Baseline correction using asymmetrically reweighted penalized least squares smoothing, Analyst 140: 250-257.
 
 Options
@@ -71,6 +77,15 @@ out1 : ndarray
 out2 : ndarray
 	Contain the baseline.
 
+Example
+-------
+
+Consider a Y signal sampled at X. We want to fit a polynomial baseline (2nd order)
+in the regions of interest comprised between x1 and x2, as well as x3 and x4.
+
+```julia-repl
+julia> Y_corr, Y_baseline = baseline(X,Y,[x1 x2; x3 x4],"poly",polynomial_order=2)
+```
 """
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
 	yout, bas = rampy.baseline(x,y,roi,basetype,polynomial_order=polynomial_order, s=s, lam=lam, niter=niter, p0_exp=p0_exp, p0_log=p0_log)

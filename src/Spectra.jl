@@ -21,38 +21,16 @@ using Random
 using Statistics
 using SparseArrays
 using LinearAlgebra
-using PyPlot
 using LsqFit
 using PyCall
 using Dierckx
-#using NMF
 using Polynomials
 
 # For PyCall modules
-const preprocessing = PyNULL()
-const model_selection = PyNULL()
-const decomposition = PyNULL()
-const kernel_ridge = PyNULL()
-const svm = PyNULL()
-const linear_model = PyNULL()
-const gaussian_process = PyNULL()
-const pygcvspl = PyNULL()
-const signal = PyNULL()
 const rampy = PyNULL()
 
 function __init__()
-
-	copy!(preprocessing, pyimport_conda("sklearn.preprocessing", "scikit-learn"))
-	copy!(model_selection, pyimport_conda("sklearn.model_selection", "scikit-learn"))
-	copy!(decomposition, pyimport_conda("sklearn.decomposition", "scikit-learn"))
-	copy!(kernel_ridge, pyimport_conda("sklearn.kernel_ridge", "scikit-learn"))
-	copy!(svm, pyimport_conda("sklearn.svm","scikit-learn"))
-	copy!(gaussian_process, pyimport_conda("sklearn.gaussian_process", "scikit-learn"))
-	copy!(linear_model, pyimport_conda("sklearn.linear_model", "scikit-learn"))
-	copy!(pygcvspl, pyimport("gcvspline"))
 	copy!(rampy, pyimport("rampy"))
-	copy!(signal, pyimport_conda("scipy.signal", "scipy"))
-
 end
 
 include("integrale.jl")

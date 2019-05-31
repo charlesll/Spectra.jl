@@ -9,7 +9,7 @@
 #
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, #INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# functions.jl contains several mathematic functions 
+# functions.jl contains several mathematic functions
 #
 #
 #############################################################################
@@ -18,13 +18,16 @@
 
 This function just allows to build a polynomial curve.
 
-INPUTS:
+Inputs
+------
 
-	p: Vector{Float64}, containing the polynomial parameters. For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;
-	
-	x: Array{Float64}, containing the x values for calculation.
+	p: Vector{Float64}
+		polynomial parameters. For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;
+	x: Array{Float64}
+		x values for calculation.
 
-Output:
+Outputs
+-------
 
 	y: Array{Float64}, containing the result of calculation.
 """
@@ -43,31 +46,37 @@ gaussiennes, written in the plural french form there, is a function that allows 
 
     y = amplitude x exp(-ln(2) x [(x-centre)/hwhm]^2 )
 
-	You can enter the amplitude, centre and half-width at half-maximum (hwhm) values as arrays of float 64 (even containing one float value), without specifying style. hwhm is proportional to the standard deviation sigma:
+You can enter the amplitude, centre and half-width at half-maximum (hwhm) values as arrays of float 64 (even containing one float value), without specifying style. hwhm is proportional to the standard deviation sigma:
 
 	hwhm= sqrt(2xln(2)) x sigma
-	
+
 that is used in a normal distribution (see function normal_dist).
 
-INPUTS:
+Inputs
+------
 
-	amplitude: Array{Float64} containing the peaks amplitudes;
-	
-	centre: Array{Float64} containing the peaks centres;
-	
-	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-	
-	x: Array{Float64} containing the x axis values;
+	amplitude: Array{Float64}
+		peaks amplitudes
+	centre: Array{Float64}
+		peaks centres
+	hwhm: Array{Float64}
+		peaks half-width at middle heights (hwhm);
+	x: Array{Float64}
+		x axis values;
 
-OPTIONS:
+Options
+-------
 
-	style: ASCIIString = "None", see examples below.
+	style: ASCIIString = "None"
+		see examples below.
 
-OUTPUTS:
+Outputs
+-------
 
-	y_calc: Array{Float64} containing the calculated y values;
-	
-	y_peaks: Array{Float64} containing the y values of the different peaks.
+	y_calc: Array{Float64}
+		calculated y values
+	y_peaks: Array{Float64}
+		calculated y values of the different peaks.
 
 ----------
  Examples
@@ -75,7 +84,9 @@ OUTPUTS:
 
 To have four gaussian peaks centered at 800, 900, 1000 and 1100 cm-1 with hwhm of 50 cm-1 on a Raman spectrum, you will enter:
 
-   y_calc, y_peaks = gaussiennes([1.0,1.0,1.0,1.0], [800.0,900.0,1000.0,1100.0], [50.0,50.0,50.0,50.0], x)
+	```julia-repl
+	julia> y_calc, y_peaks = gaussiennes([1.0,1.0,1.0,1.0], [800.0,900.0,1000.0,1100.0], [50.0,50.0,50.0,50.0], x)
+    ```
 
 and y_peaks will contain in 4 columns the 4 different y values of the peaks, and y_calc their sum (the total model). Now, if you want to calculate more complex models, such as for instance contructing how the Raman peaks of water vary with pressure, you might like to parametrize the variations of the peak parameters rather than just fitting each spectrum. This will provide more robust fits of the spectra, as you will fit them together, and will also force you to find the correct underlying mathematical assumption.
 
@@ -85,23 +96,21 @@ Let's say for instance that we have one peak at 900 cm-1 in a pure material. It'
 
 How to write that with gaussiennes? Well, first you need to construct a relevant x axis: first column contains the frequency, and the second one contains the chemical variable value. In our case, we want to model the peak between 800 and 1000 cm-1, for 1 wt% H. So we have an x array build like:
 
-    frequency = collect(800:1:1000)
-	
-    x = ones(length(frequency),2)
-	
-    x[:,1] = frequency[:]
-	
-    x[:,2] = 1.0
+	```julia-repl
+    julia> frequency = collect(800:1:1000)
+    julia> x = ones(length(frequency),2)
+    julia> x[:,1] = frequency[:]
+    julia> x[:,2] = 1.0
+	```
 
 Ok, now lets build our y peaks:
 
-    amplitudes = [1.0 0.1 0.1]
-	
-    frequencies = [900.0 2.0]
-	
-    hwhm = 20.0
-
-    y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
+	```julia-repl
+    julia> amplitudes = [1.0 0.1 0.1]
+    julia> frequencies = [900.0 2.0]
+    julia> hwhm = 20.0
+    julia> y_calc, y_peaks = gaussiennes(amplitudes, frequencies, hwhm, x)
+	```
 
 This should provide you how the shape of the peak is as a function of both the frequency and the chemical composition there. If you want to go further, you might just want to stick gaussiennes in a loop, and play with creating various peaks with changing the chemical parameter in the x[:,2] column!
 """
@@ -114,7 +123,7 @@ function gaussiennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arra
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
             segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) .*exp.(-log.(2) .* ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
-        end	    	
+        end
     else
         error("Not implemented, see documentation")
     end
@@ -124,26 +133,29 @@ end
 """
 	lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
 
-INPUTS:
+Inputs
+------
 
 	amplitude: Array{Float64} containing the peaks amplitudes;
-	
+
 	centre: Array{Float64} containing the peaks centres;
-	
+
 	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-	
+
 	x: Array{Float64} containing the x axis values;
 
-OPTIONS:
+Options
+-------
 
 	style: ASCIIString = "None", see examples in the gaussiennes documentation.
 
-OUTPUTS:
+Outputs
+-------
 
 	y_calc: Array{Float64} containing the calculated y values;
 
 	y_peaks: Array{Float64} containing the y values of the different peaks.
-	
+
 
 """
 function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
@@ -155,7 +167,7 @@ function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Ar
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
             segments[:,i] = poly(vec(amplitude[i,:]),x[:,2]) ./ (1.0 .+ ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
-        end	    	
+        end
     else
         error("Not implemented, see documentation")
     end
@@ -167,27 +179,32 @@ end
 
 a Pearson 7 peak with formula a1 ./ (1 + ((x-a2)./a3).^2 .* (2.0.^(1./a4) - 1.0))
 
-INPUTS:
+Inputs
+------
 
 	a1: Array{Float64} ;
-	
-	a2: Array{Float64} ;
-	
-	a3: Array{Float64} ;
-	
-	a4: Array{Float64} ;
-	
-	x: Array{Float64} containing the x axis values;
 
-OPTIONS:
+	a2: Array{Float64} ;
+
+	a3: Array{Float64} ;
+
+	a4: Array{Float64} ;
+
+	x: Array{Float64}
+		x axis values
+
+Options
+-------
 
 	style: ASCIIString = "None", see examples in the gaussiennes documentation.
 
-OUTPUTS:
+Outputs
+-------
 
-	y_calc: Array{Float64} containing the calculated y values;
-
-	y_peaks: Array{Float64} containing the y values of the different peaks.
+	y_calc: Array{Float64}
+		calculated y values
+	y_peaks: Array{Float64}
+		y values of the different peaks.
 
 """
 function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::Array{Float64},x::Array{Float64};style::String = "None")
@@ -199,7 +216,7 @@ function pearson7(a1::Array{Float64},a2::Array{Float64},a3::Array{Float64},a4::A
     elseif style == "poly"
         for i = 1:size(a1)[1]
             segments[:,i] = poly(vec(a1[i,:]),x[:,2]) ./ (1. .+ ((x[:,1].-(poly(vec(a2[i,:]),x[:,2]))) ./poly(vec(a3[i,:]),x[:,2])) .^2 .* (2.0 .^(1,0 ./vec(a4[i,:])) .- 1.0))
-        end	    	
+        end
     else
         error("Not implemented, see documentation")
     end
@@ -211,23 +228,26 @@ end
 
 A mixture of gaussian and lorentzian peaks.
 
-INPUTS:
+Inputs
+------
 
 	amplitude: Array{Float64} containing the peaks amplitudes;
 
 	centre: Array{Float64} containing the peaks centres;
 
 	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-	
-	lorentzian_fraction: Array{Float64}, containing the lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1; 
-	
+
+	lorentzian_fraction: Array{Float64}, containing the lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1;
+
 	x: Array{Float64} containing the x axis values;
 
-OPTIONS:
+Options
+-------
 
 	style: ASCIIString = "None", see examples in the gaussiennes documentation.
 
-OUTPUTS:
+Outputs
+-------
 
 	y_calc: Array{Float64} containing the calculated y values;
 
@@ -247,42 +267,45 @@ function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Arr
         end
     elseif style == "poly"
         for i = 1:size(amplitude)[1]
-			segments[:,i] =  vec(lorentzian_fraction[i,:]) .* (poly(vec(amplitude[i,:]),x[:,2]) ./ (1 .+ ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2))     .+      (1.0 .- vec(lorentzian_fraction[i,:])) .* poly(vec(amplitude[i,:]),x[:,2]) .*exp.(-log(2) .* ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2) 
-        end	    	
+			segments[:,i] =  vec(lorentzian_fraction[i,:]) .* (poly(vec(amplitude[i,:]),x[:,2]) ./ (1 .+ ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2))     .+      (1.0 .- vec(lorentzian_fraction[i,:])) .* poly(vec(amplitude[i,:]),x[:,2]) .*exp.(-log(2) .* ((x[:,1].-(poly(vec(centre[i,:]),x[:,2])))./poly(vec(hwhm[i,:]),x[:,2])).^2)
+        end
     else
-        error("Not implemented, see documentation") 
+        error("Not implemented, see documentation")
 	end
     return sum(segments, dims=2), segments
-end	
+end
 
 
 """
 	normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
 
 The real normal distribution / gaussian function
-	
-INPUTS:
+
+Inputs
+------
 
 	amplitude: Array{Float64} containing the peaks amplitudes;
 
 	centre: Array{Float64} containing the peaks centres;
 
 	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-	
-	lorentzian_fraction: Array{Float64}, containing the lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1; 
-	
+
+	lorentzian_fraction: Array{Float64}, containing the lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1;
+
 	x: Array{Float64} containing the x axis values;
 
-OPTIONS:
+Options
+-------
 
 	style: ASCIIString = "None", see examples in the gaussiennes documentation.
 
-OUTPUTS:
+Outputs
+-------
 
 	y_calc: Array{Float64} containing the calculated y values;
 
 	y_peaks: Array{Float64} containing the y values of the different peaks.
-	
+
 """
 function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
     segments = zeros(size(x)[1],size(nd_amplitudes)[1])
@@ -313,20 +336,22 @@ To correct a spectrum for a p shift in X.
 
 Used in xshift_correction.
 
-INPUTS:
+Inputs
+------
 
 	original_x: Array{Float64}, containing x values;
-	
+
 	original_y: Array{Float64}, containing y values associated with x;
-	
+
 	p: Array{Float64}, containing the value of how much x should be shifted.
-	
-OUTPUTS:
+
+Outputs
+-------
 
 	original_x: Array{Float64}, same as input;
-	
-	corrected_y: Array{Float64}, the y values corrected from the p shift in original_x; 
-	
+
+	corrected_y: Array{Float64}, the y values corrected from the p shift in original_x;
+
 	p: Array{Float64}, same as input.
 
 """
@@ -338,27 +363,29 @@ end
 
 """
 	xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64}, ref_x::Array{Float64}, ref_y::Array{Float64},shifted_y::Array{Float64})
-	
+
 To correct a shift between two spectra using a reference peak.
 
-INPUTS:
+Inputs
+------
 
 	full_x: Array{Float64}, containing x values that are not good;
-	
+
 	full_shifted_y: Array{Float64}, containing y values associated with full_x;
-	
+
 	ref_x: Array{Float64}, containing x values that are good;
-	
+
 	ref_y: Array{Float64}, containing y values associated with ref_x.
-	
+
 	shifted_y: Array{Float64}, containing y values associated with a selected range of full_x that corresponds to ref_x (for instance, a specific peak that you want to use to correct the shift).
-	
-OUTPUTS:
+
+Outputs
+-------
 
 	full_x: Array{Float64}, same as input;
-	
-	corrected_y: Array{Float64}, the full_shifted_y values corrected from the shift; 
-	
+
+	corrected_y: Array{Float64}, the full_shifted_y values corrected from the shift;
+
 	p: Array{Float64}, same as input.
 
 ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.
@@ -371,7 +398,7 @@ end
 
 
 """
-	
+
 	smooth(x,y; method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
 
 smooth the provided y signal (sampled on x)
@@ -423,7 +450,7 @@ smooth the provided y signal (sampled on x)
 function smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 
 	return rampy.smooth(vec(x),vec(y),method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
-	
+
 end
 
 
