@@ -27,6 +27,6 @@ jobs:
        - PYTHON=""
       script:
         - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
-                                               Pkg.instantiate()'
+                                               Pkg.instantiate(); Pkg.build("Spectra")'
         - julia --project=docs/ docs/make.jl
       after_success: skip
