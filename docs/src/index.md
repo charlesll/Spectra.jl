@@ -22,14 +22,18 @@ For maintaining your packages up-to-date, something critical with the fast evolu
 Installation of Spectra is easy:
 
 	Pkg.add("Spectra")
-	
+
 See the Installation section for further details, in particular for Windows users.
 
 Any help developing and maintaining this Spectra.jl package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra.jl are not exhaustive, and a little help to add new ones will be more that welcome.
 
+# Examples
+
+Examples are available in the examples folder of Spectra.jl (https://github.com/charlesll/Spectra.jl/tree/master/examples).
+
 ## Citing Spectra
 
-You can cite Spectra as 
+You can cite Spectra as
 
 	LE LOSQ, C. (2016) Spectra.jl: a Julia package for processing spectroscopic data. Zenodo. 10.5281/zenodo.53940
 

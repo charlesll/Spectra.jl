@@ -44,9 +44,9 @@ INPUTS:
 OPTIONS:
 
 	correction: String, the equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
-	
+
 	normalisation: String, indicate if you want to normalise your signal or not. Choose between "intensity", "area", or "no". Default = "area".
-	
+
 	density: Float64, the density of the studied material in kg m-3, to be used with the "hehlen" equation. Default = 2210.0 (density of silica).
 
 OUTPUTS:
@@ -58,7 +58,7 @@ OUTPUTS:
 	long: Array{Float64}, containing the corrected y values;
 
 	eselong: Array{Float64}, containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
-	
+
 NOTES:
 
 This correction uses the formula reported in Galeener and Sen (1978), Mysen et al. (1982), Brooker et al. (1988) and Hehlen et al. (2010).
@@ -87,22 +87,22 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 
 	# get the Raman shift in m-1
 	nu::Array{Float64} = 100.0.*x # cm-1 -> m-1 Raman shift
-	
-    # then we proceed to the correction 
+
+    # then we proceed to the correction
 	if correction == "long"
 		# Formula used in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012) (corrected for using the Planck constant in the last reference)
 		# It is that reported in Brooker et al. (1988) with the addition of a scaling nu0^3 coefficient for adimentionality
     	frequency::Array{Float64} = nu0.^3.0.*nu./((nu0.-nu).^4) # frequency correction; dimensionless
     	boltzman::Array{Float64} = 1.0 .- exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
     	ycorr::Array{Float64} = y.*frequency.*boltzman; # correction
-		
+
 	elseif correction == "galeener"
 		# This uses the formula reported in Galeener and Sen (1978) and Brooker et al. (1988); it uses the Bose-Einstein / Boltzman distribution
 		# Formula from  without the scaling vo^3 coefficient reported in Mysen et al. (1982), Neuville and Mysen (1996) and Le Losq et al. (2012)
     	frequency = nu./((nu0.-nu).^4) # frequency correction; M^3
     	boltzman = 1.0 .- exp.(-h.*c.*nu./(k.*T)) # temperature correction with Boltzman distribution; dimensionless
     	ycorr = y.*frequency.*boltzman; # correction
-		
+
 	elseif correction =="hehlen"
 		# this uses the formula reported in Hehlen et al. 2010
     	frequency = 1.0./(nu0.^3.0.*density) # frequency + density correction; M/KG
@@ -111,17 +111,17 @@ function tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correctio
 	else
 		error("Not implemented, choose between long, galeener or hehlen.")
 	end
-	
+
 	if normalisation == "area"
     	ycorr = ycorr./trapz(x,ycorr) # area normalisation
 	elseif normalisation == "intensity"
 		ycorr= ycorr./maximum(ycorr) # max. intensity normalisation
 	elseif normalisation == "no"
 		# nothing will happen
-	else 
+	else
 		error("Set the optional normalisation parameter to area, intensity or no.")
 	end
-		
+
     esecorr::Array{Float64} = ese.*ycorr # error calculation
 
     return x, ycorr, esecorr

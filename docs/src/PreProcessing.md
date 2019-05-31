@@ -8,22 +8,12 @@ Raman spectra can be corrected from temperature and excitation line effects usin
 tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",normalisation="area",density=2210.0)
 ```
 
-## Removing cristal or epoxy signals
-
-Spectra.jl contains a function that helps removing the signal from crystals in the Raman spectra of glasses. Two spectra are needed: that of the mixed crystal+glass signals, and that of the pure cristal signals. Please note that it also can be used to remove signal from epoxy.
-
-This function is still under test and experimental. Further details on the code will be provided soon. For now, only a short description is provided.
-
-```@docs
-	ctxremoval(liste,in_path,out_path,roi_all;input_properties=('\t',0),algorithm="FastICA",plot_intermediate_show = "no",plot_mixing_show = "yes",plot_final_show = "no",save_fig_switch = "yes", shutdown = 1300.,scaling=100.)
-```
-
 ## Smoothing signals
 
-Smoothing the signal is achieved with the smooth function. Use of the GCVSplineNSmooth algorithm from the gcvspline Python library is recommended. It seems to give very reasonable smoothing signals. In the present call of GCVSplineNSmooth, errors as sqrt(y) are assumed.
+Smoothing the signal is achieved with the smooth function.
 
 ```@docs
-	smooth(x::Array{Float64},y::Array{Float64};filter=:SavitzkyGolay,M=5,N=2)
+	smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 ```
 
 ## Baseline subtraction
@@ -31,7 +21,7 @@ Smoothing the signal is achieved with the smooth function. Use of the GCVSplineN
 Baseline subtraction can be made with using the baseline function:
 
 ```@docs
-baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;p=1.0,SplOrder=3,roi_out="no")
+baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
 ```
 
 ## Frequency shifts correction
@@ -49,4 +39,18 @@ Sometime, two signals from the same mineral show a shift in the X axis, while th
 ```@docs
 xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64}, ref_x::Array{Float64}, ref_y::Array{Float64},shifted_y::Array{Float64})
 ```
-	
+
+## array manipulation
+
+For spectra recorded with decreasing frequencies, use the flipsp() function to
+put them back with increasing frequencies (necessary for some algo)
+
+```@docs
+flipsp(spectra::Array{Float64})
+```
+
+You can also resample a signal at wanted x_new values with resample()
+
+```@docs
+resample(x::Array{Float64},y::Array{Float64},x_new::Array{Float64})
+```

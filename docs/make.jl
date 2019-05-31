@@ -4,7 +4,7 @@ makedocs()
 
 deploydocs(
     deps = Deps.pip("mkdocs", "mkdocs-material"),
-    repo = "github.com/charlesll/Spectra.jl.git", 
-	julia  = "0.5",
+    repo = "github.com/charlesll/Spectra.jl.git",
+	julia  = "1.0",
 	osname = "linux",
 )
