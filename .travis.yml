@@ -15,7 +15,7 @@ env:
 #    - gfortran
 script:
   #- if [ $TRAVIS_OS_NAME = osx ]; then brew install gcc; fi
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  #- if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia -e 'using Pkg; Pkg.build("Spectra"); Pkg.test("Spectra"; coverage=true)';
 
 jobs:
@@ -23,6 +23,8 @@ jobs:
     - stage: "Documentation"
       julia: 1.0
       os: linux
+      env:
+       - PYTHON=""
       script:
         - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
                                                Pkg.instantiate()'
