@@ -1,4 +1,4 @@
-# Spectra.jl News
+# News
 
 Copyright (c) 2016-2019 Dr. Charles Le Losq
 
@@ -7,8 +7,6 @@ email: charles.lelosq@anu.edu.au
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.53940.svg)](http://dx.doi.org/10.5281/zenodo.53940)
 
 Licence MIT: see LICENCE.md
-
-As Spectra.jl starts to grow, I will summarize changes in this file starting at version 0.2.0
 
 # 0.4.1 (stable)
 
