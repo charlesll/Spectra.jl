@@ -38,12 +38,7 @@ methods : str
 				 Spectra must have x, y, ese in it, and splinesmooth is the smoothing factor;
 				 For gcvspline, if ese are not provided we assume ese = sqrt(y).
 				 WARNING: Requires the installation of the gcvspline Python package prior to use in the Python ENV used by Julia.
-				 To do that, do:
-				 ```julia-repl
-				 julia> using PyCall
-				 julia> pyimport_conda("pip", "pip")
-				 julia> run(`$(PyCall.python) -m pip install $(PACKAGES)`)
-				 ```
+				 See website for install instructions
 	"exp": exponential background;
 	"log": logarythmic background;
 	"rubberband": rubberband baseline fitting;

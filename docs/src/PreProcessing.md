@@ -23,6 +23,14 @@ Baseline subtraction can be made with using the baseline function:
 ```@docs
 baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
 ```
+Access to the gcvspline algorithm requires installation of the gcvspline Python package in Julia's
+PyENV. This can be done like:
+
+```julia-repl
+ julia> using PyCall
+ julia> pyimport_conda("pip", "pip")
+ julia> run(`$(PyCall.python) -m pip install $(PACKAGES)`)
+ ```
 
 ## Frequency shifts correction
 
