@@ -11,8 +11,8 @@ One goal of Spectra is to promote the use of global optimisation models, where p
 Error calculation can be done with using bootstrapping. Spectra provides a function that allows generating K new datasetes, by resampling the existing dataset in a non-parametric or parametric way.
 
 ```@docs
-bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np", ese::Array{Float64} = [0.0])
-bootperf(params_boot::Array{Float64}; plotting::String = "True", parameter::Int64 = 1, feature::Int64 = 1, histogram_step::Int64 = 100, savefigures::String = "False", save_bootrecord::String = "Boot_record.pdf", save_histogram::String = "Boot_histogram.pdf")
+bootsample
+bootperf
 ```
 
 For further details, see the following references
