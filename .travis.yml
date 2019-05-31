@@ -6,7 +6,7 @@ os:
   - linux
   - osx
 julia:
-  -1.0
+  - 1.0
 env:
  - PYTHON=""
 

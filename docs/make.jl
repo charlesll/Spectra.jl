@@ -1,6 +1,6 @@
 using Documenter, Spectra
 
-makedocs(sitename="Spectra webdoc", format = Documenter.HTML(prettyurls = false))
+makedocs(sitename="Spectra documentation", format = Documenter.HTML(prettyurls = false))
 
 deploydocs(
 	repo = "github.com/charlesll/Spectra.jl.git",
