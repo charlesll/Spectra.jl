@@ -17,10 +17,14 @@ Everything should install without trouble. Requirements in Spectra.jl are extens
 
 ### Notes on gcvspline for v0.4.1 and higher
 
-gcvspline Python library is optional. Follow the instructions in the baseline() function docs to install it and
-to be able to use it in the baseline() functions.
+gcvspline Python library is optional but give access to the GCV algorithms in the smooth() and basline() functions. Install as
 
-### Prior to v0.4.1:
+```julia-repl
+ julia> using PyCall
+ julia> pyimport_conda("pip", "pip")
+ julia> run(`$(PyCall.python) -m pip install $(PACKAGES)`)
+ ```
+#### Prior to v0.4.1:
 
 Please update to version v0.4.1 :)
 

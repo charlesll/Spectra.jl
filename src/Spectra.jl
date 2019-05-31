@@ -15,16 +15,15 @@ VERSION >= v"1.0.0" && __precompile__()
 
 module Spectra
 
-using StatsBase
-using Statistics
-using Random
-using Statistics
-using SparseArrays
+using Dierckx
 using LinearAlgebra
 using LsqFit
-using PyCall
-using Dierckx
 using Polynomials
+using PyCall
+using Random
+using SparseArrays
+using StatsBase
+using Statistics
 
 # For PyCall modules
 const rampy = PyNULL()

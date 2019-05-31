@@ -10,10 +10,6 @@ y_peak = collect(0.:1.:100.) .+ 100.0.*exp.(-log(2).*((x.-50.0)./5.0).^2) .+ 0.2
 roi = [0.0 40;60. 100.0]
 
 # testing baselines
-y_fit_gcvspl,bas_fit_gcvspl = baseline(x[:],y,[0. 100.],"gcvspline",s=0.01)
-@test isapprox(y_fit_gcvspl,(y-y[:]),atol=1e-4)
-@test isapprox(bas_fit_gcvspl,y[:],atol=1e-4)
-
 y_fit_dierckx,bas_fit_dierckx = baseline(x[:],y,[0. 100.],"unispline",s=0.01)
 @test isapprox(y_fit_dierckx,(y-y[:]),atol=1e-4)
 @test isapprox(bas_fit_dierckx,y[:],atol=1e-4)
@@ -37,4 +33,3 @@ y_fit_arPLS,bas_fit_arPLS = baseline(x[:],y_peak,roi,"arPLS",lam=10^9,p=0.001)
 #y_fit_whit,bas_fit_whit = baseline(x[:],y_peak[:],roi,"whittaker",lam=10^9)
 #@test isapprox(y_fit_whit,(y_peak-y[:]),10.)
 #@test isapprox(bas_fit_whit,y[:],10.)
-
