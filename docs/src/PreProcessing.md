@@ -13,7 +13,7 @@ tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",
 Smoothing the signal is achieved with the smooth function.
 
 ```@docs
-	smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
+smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 ```
 
 ## Baseline subtraction
