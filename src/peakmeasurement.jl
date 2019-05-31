@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2017 Charles Le Losq
+#Copyright (c) 2016-2019 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -17,7 +17,7 @@
 """
 
     peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
-	
+
 The peakmeas function allows performing measurements of the position, width, intensity and centroïd of a dominant peak in a provided x-y signal.
 
 It smooths the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity. It is advised to check that the M and N values of the Savitzky-Golay filter are adequate for your problem before trusting the results from peakmeas. For that, just use the y_smo_out option.

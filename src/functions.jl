@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2017 Charles Le Losq
+#Copyright (c) 2016-2019 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -324,7 +324,6 @@ to correct for shifts in X between two spectra, used in xshift_correction.
 function xshift_inversion(data::Array{Float64},p::Array{Float64})
     xaxis = data[:,1]
     shifted1 = data[:,2]
-
     spl = Spline1D(xaxis-p[1], shifted1.*p[2] + shifted1.^2.0.*p[3])
     y = evaluate(spl,xaxis)
 end
@@ -446,9 +445,7 @@ Scipy Cookbook: https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html?hi
 
 """
 function smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
-
 	return rampy.smooth(vec(x),vec(y),method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
-
 end
 
 
