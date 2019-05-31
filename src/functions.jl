@@ -398,52 +398,51 @@ end
 
 
 """
-
 	smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
 
 smooth the provided y signal (sampled on x)
 
-	Parameters
-	==========
-	x: vector
-		Nx1 array of x values (equally spaced).
-	y: vector
-		Nx1 array of y values (equally spaced).
-	method: str
-		Method for smoothing the signal;
-		choose between savgol (Savitzky-Golay), GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline, whittaker, 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'.
+Parameters
+==========
+x: vector
+	Nx1 array of x values (equally spaced).
+y: vector
+	Nx1 array of y values (equally spaced).
+method: str
+	Method for smoothing the signal;
+	choose between savgol (Savitzky-Golay), GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline, whittaker, 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'.
 
-	kwargs
-	======
-	window_length: int
-		The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
-	polyorder: int
-		The order of the polynomial used to fit the samples. polyorder must be less than window_length.
-	Lambda: float
-		smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
-	d: int
-		d parameter in Whittaker filter, see Eilers (2003).
-	ese_y: ndarray
-		errors associated with y (for the gcvspline algorithms)
+kwargs
+======
+window_length: int
+	The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
+polyorder: int
+	The order of the polynomial used to fit the samples. polyorder must be less than window_length.
+Lambda: float
+	smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
+d: int
+	d parameter in Whittaker filter, see Eilers (2003).
+ese_y: ndarray
+	errors associated with y (for the gcvspline algorithms)
 
-	Returns
-	=======
-	y_smo: ndarray
-		smoothed signal sampled on x.
+Returns
+=======
+y_smo: ndarray
+	smoothed signal sampled on x.
 
-	Note
-	====
+Note
+====
 
-	Use of GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline requires installation of gcvspline. See gcvspline documentation.
-	See also documentation for details on GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline.
+Use of GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline requires installation of gcvspline. See gcvspline documentation.
+See also documentation for details on GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline.
 
-	savgol uses the scipy.signal.savgol_filter() function.
+savgol uses the scipy.signal.savgol_filter() function.
 
-	References
-	==========
-	Eilers, P.H.C., 2003. A Perfect Smoother. Anal. Chem. 75, 3631–3636. https://doi.org/10.1021/ac034173t
+References
+==========
+Eilers, P.H.C., 2003. A Perfect Smoother. Anal. Chem. 75, 3631–3636. https://doi.org/10.1021/ac034173t
 
-	Scipy Cookbook: https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html?highlight=smooth
+Scipy Cookbook: https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html?highlight=smooth
 
 """
 
