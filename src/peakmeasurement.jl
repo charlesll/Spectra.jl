@@ -26,37 +26,36 @@ half-width at half-maximum are calculated as the width of the peak at half its m
 
 Centroïd is calculated as sum(y./sum(y).*x).
 
-INPUTS:
+Inputs
+------
+	x: Array{Float64}
+		x values
+	y: Array{Float64}
+		y values
 
-	x: Array{Float64}, the x values;
+Options
+-------
+	smoothing, String
+		triggers the smoothing of the spectrum if set to yes (default value);
+	filter, Symbol
+		the filter that will be used. See the smooth function documentation;
+	M=5, Int
+		M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
+	N=2, Int
+		M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
+	y_smo_out=false
+		Outputs the smoothed signal.
 
-	y: Array{Float64}, the y values.
-
-OPTIONS:
-
-	smoothing, String, triggers the smoothing of the spectrum if set to yes (default value);
-
-	filter, Symbol, the filter that will be used. See the smooth function documentation;
-
-	M=5, the M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
-
-	N=2, the M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
-
-	y_smo_out=false, the smoothed signal. Signal will be smoothed if set to true, using the SavitzkyGolayFilter function with the M and N values. y_smo output will also be provided.
-
-OUTPUTS:
-
-	intensity: Float64, the intensity of the peak;
-
-	position: Float64, the position of the peak;
-
-	hwhm: Float64, the half-width at half-maximum of the peak;
-
-	centroïd: Float64, the centroïd of the peak;
-
-	if y_smo_out is set to true, then another output is provided:
-
-	y_smo: Array{Float64}, the smoothed y signal.
+Outputs
+-------
+	intensity: Float64
+		peak intensity
+	position: Float64
+		peak position
+	hwhm: Float64
+	 	peak half-width at half-maximum
+	centroïd: Float64
+	 	peak centroid
 """
 function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL

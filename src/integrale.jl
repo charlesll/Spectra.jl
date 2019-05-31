@@ -18,19 +18,19 @@
 
 	trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
 
-Trapezoidal integration.
+Trapezoidal integration. This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).
 
-INPUTS:
+Inputs
+-----
+	x: Vector{Float64}
+		x values
+	y: Vector{Float64}
+		y values.
 
-	x: Vector{Float64} containing the x values;
-
-	y: Vector{Float64} containing the y values.
-
-OUTPUTS:
-
-	area: Vector{Float64}, the trapezoidal integration value.
-
-This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).
+Outputs
+-------
+	area: Vector{Float64}
+		trapezoidal integration value.
 
 """
 function trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
@@ -52,35 +52,37 @@ end
 
 	bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
 
-This function replaces the function gaussianarea in the version <0.1.9 of Spectra.jl. It allows to calculate the area under a specific band, with different shapes. For now, only Gaussian bands are supported, but other band shapes will be added soon. (This explains why gaussianarea is deprecated in favor of a more generic function)
+This function allows calculating the area under a specific band, with different shapes. For now, only Gaussian bands are supported, but other band shapes will be added soon.
 
-gaussianarea allows to calculate the area under a gaussian peak from its half-width at half maximum (hwhm) and its amplitude, with the possibility of calculating the error based on the inputs of the errors on hwhm and amplitude. Call it as:
+Inputs
+------
 
-    area, esearea = band(Amplitude,HWHM; peak_shape = "Gaussian", error_switch = "no", eseAmplitude = [0.0], eseHWHM = [0.0])
+	Amplitude: Array{Float64}
+		peak amplitude
+	HWHM: Array{Float64}
+		peak half width at half maximum
 
-INPUTS:
+Options
+-------
 
-	Amplitude: Array{Float64}, contains the amplitudes (intensity) of the band(s);
+	peak_shape: String
+		shape of the peak. Only "Gaussian" is supported for now
+	error_switch: String
+		should be "yes" or "no". If "yes", the arrays containing the errors affecting the band amplitude and widhts should be provided in eseAmplitude and eseHWHM (see below);
+	eseAmplitude: Array{Float64}
+		array containing the errors affecting Amplitude
+	eseHWHM: Array{Float64}
+		array containing the errors affecting HWHM;
 
-	HWHM: Array{Float64}, contains the half width at half maximum of the peaks;
-
-OPTIONS
-
-	peak_shape: String, indicates the shape of the component. Only "Gaussian" is supported for now;
-
-	error_switch: String, should be "yes" or "no". If "yes", the arrays containing the errors affecting the band amplitude and widhts should be provided in eseAmplitude and eseHWHM (see below);
-
-	eseAmplitude: Array{Float64}, an array that contains the errors affecting Amplitude;
-
-	eseHWHM: Array{Float64}, an array that contains the errors affecting HWHM;
-
-OUTPUTS:
-
-	area: Array{Float64}, an array that contains the areas;
+Outputs
+-------
+	area: Array{Float64}
+		array containing peak areas
 
 	if error_switch is set to "yes", then a second output is provided:
 
-	esearea: Array{Float64}, an array that contains the propagated errors affecting the areas calculations.
+	esearea: Array{Float64}
+		array that contains the propagated errors affecting the areas calculations.
 """
 function bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
 

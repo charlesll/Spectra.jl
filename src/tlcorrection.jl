@@ -14,33 +14,36 @@
 """
 	tlcorrection(data::Array{Float64},temp::Float64,wave::Float64;correction="long",normalisation="area",density=2210.0)
 
-INPUTS:
+Inputs
+------
+	data: Array{Float64}
+		input spectrum with x and y in first and second columns respectively
+	temp: Float64
+		temperature in °C
+	wave: Float64
+		wavenumber at which the spectrum was acquirred in nm
 
-	data: Array{Float64}, input spectrum with x and y in first and second columns respectively;
+Options
+-------
+	correction: String
+		equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
+	normalisation: String
+		indicate if you want to normalise your signal or not. Choose between "intensity", "area", or "no". Default = "area".
+	density: Float64
+		density of the studied material in kg m-3, to be used with the "hehlen" equation. Default = 2210.0 (density of silica).
 
-	temp: Float64, the temperature in °C;
-
-	wave: Float64, the wavenumber at which the spectrum was acquirred in nm.
-
-OPTIONS:
-
-	correction: String, the equation used for the correction. Choose between "long", "galeener", or "hehlen". Default = "long".
-
-	normalisation: String, indicate if you want to normalise your signal or not. Choose between "intensity", "area", or "no". Default = "area".
-
-	density: Float64, the density of the studied material in kg m-3, to be used with the "hehlen" equation. Default = 2210.0 (density of silica).
-
-OUTPUTS:
-
+Outputs
+-------
 (are combined in one array if only one output name is given)
+	x: Array{Float64}
+		x values
+	long: Array{Float64}
+		corrected y values
+	eselong: Array{Float64}
+		errors calculated as sqrt(y) on raw data and propagated after the correction.
 
-	x: Array{Float64}, containing the x values;
-
-	long: Array{Float64}, containing the corrected y values;
-
-	eselong: Array{Float64}, containing the errors calculated as sqrt(y) on raw data and propagated after the correction.
-
-NOTES:
+Notes
+-------
 
 This correction uses the formula reported in Galeener and Sen (1978), Mysen et al. (1982), Brooker et al. (1988) and Hehlen et al. (2010).
 

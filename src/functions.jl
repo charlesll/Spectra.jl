@@ -136,13 +136,14 @@ end
 Inputs
 ------
 
-	amplitude: Array{Float64} containing the peaks amplitudes;
-
-	centre: Array{Float64} containing the peaks centres;
-
-	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-
-	x: Array{Float64} containing the x axis values;
+	amplitude: Array{Float64}
+		peaks amplitudes
+	centre: Array{Float64}
+		peaks centres
+	hwhm: Array{Float64}
+		peaks half-width at middle heights (hwhm)
+	x: Array{Float64}
+		x axis values
 
 Options
 -------
@@ -152,10 +153,10 @@ Options
 Outputs
 -------
 
-	y_calc: Array{Float64} containing the calculated y values;
-
-	y_peaks: Array{Float64} containing the y values of the different peaks.
-
+	y_calc: Array{Float64}
+		calculated y values
+	y_peaks: Array{Float64}
+		calculated y values of the different peaks.
 
 """
 function lorentziennes(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},x::Array{Float64};style::String = "None")
@@ -182,14 +183,14 @@ a Pearson 7 peak with formula a1 ./ (1 + ((x-a2)./a3).^2 .* (2.0.^(1./a4) - 1.0)
 Inputs
 ------
 
-	a1: Array{Float64} ;
-
-	a2: Array{Float64} ;
-
-	a3: Array{Float64} ;
-
-	a4: Array{Float64} ;
-
+	a1: Array{Float64}
+		parameter a1
+	a2: Array{Float64}
+		parameter a2
+	a3: Array{Float64}
+		parameter a3
+	a4: Array{Float64}
+		parameter a4
 	x: Array{Float64}
 		x axis values
 
@@ -230,17 +231,16 @@ A mixture of gaussian and lorentzian peaks.
 
 Inputs
 ------
-
-	amplitude: Array{Float64} containing the peaks amplitudes;
-
-	centre: Array{Float64} containing the peaks centres;
-
-	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-
-	lorentzian_fraction: Array{Float64}, containing the lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1;
-
-	x: Array{Float64} containing the x axis values;
-
+	amplitude: Array{Float64}
+		peaks amplitudes
+	centre: Array{Float64}
+		peaks centres
+	hwhm: Array{Float64}
+		peaks half-width at middle heights (hwhm)
+	lorentzian_fraction: Array{Float64}
+		lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1;
+	x: Array{Float64}
+		x axis values
 Options
 -------
 
@@ -248,10 +248,10 @@ Options
 
 Outputs
 -------
-
-	y_calc: Array{Float64} containing the calculated y values;
-
-	y_peaks: Array{Float64} containing the y values of the different peaks.
+	y_calc: Array{Float64}
+		calculated y values
+	y_peaks: Array{Float64}
+		y values of the different peaks
 
 """
 function pseudovoigts(amplitude::Array{Float64},centre::Array{Float64},hwhm::Array{Float64},lorentzian_fraction::Array{Float64},x::Array{Float64};style::String = "None")
@@ -284,15 +284,14 @@ The real normal distribution / gaussian function
 Inputs
 ------
 
-	amplitude: Array{Float64} containing the peaks amplitudes;
-
-	centre: Array{Float64} containing the peaks centres;
-
-	hwhm: Array{Float64} containing the peaks half-width at middle heights (hwhm);
-
-	lorentzian_fraction: Array{Float64}, containing the lorentzian fraction of the pseudovoigt function. Should be comprised between 0 and 1;
-
-	x: Array{Float64} containing the x axis values;
+	nd_amplitudes: Array{Float64}
+		distribution probability
+	nd_centres: Array{Float64}
+		distribution position
+	nd_sigmas: Array{Float64}
+		sigma value of the distribution
+	x: Array{Float64}
+		x axis values
 
 Options
 -------
@@ -302,9 +301,10 @@ Options
 Outputs
 -------
 
-	y_calc: Array{Float64} containing the calculated y values;
-
-	y_peaks: Array{Float64} containing the y values of the different peaks.
+	y_calc: Array{Float64}
+		calculated y values
+	y_peaks: Array{Float64}
+		y values of the different peaks
 
 """
 function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd_sigmas::Array{Float64},x::Array{Float64})
@@ -338,20 +338,22 @@ Used in xshift_correction.
 Inputs
 ------
 
-	original_x: Array{Float64}, containing x values;
-
-	original_y: Array{Float64}, containing y values associated with x;
-
-	p: Array{Float64}, containing the value of how much x should be shifted.
+	original_x: Array{Float64}
+		x values
+	original_y: Array{Float64}
+		y values associated with x
+	p: Array{Float64}
+		value of how much x should be shifted
 
 Outputs
 -------
 
-	original_x: Array{Float64}, same as input;
-
-	corrected_y: Array{Float64}, the y values corrected from the p shift in original_x;
-
-	p: Array{Float64}, same as input.
+	original_x: Array{Float64}
+		same as input
+	corrected_y: Array{Float64}
+		the y values corrected from the p shift in original_x
+	p: Array{Float64}
+		same as input.
 
 """
 function xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
@@ -368,24 +370,26 @@ To correct a shift between two spectra using a reference peak.
 Inputs
 ------
 
-	full_x: Array{Float64}, containing x values that are not good;
-
-	full_shifted_y: Array{Float64}, containing y values associated with full_x;
-
-	ref_x: Array{Float64}, containing x values that are good;
-
-	ref_y: Array{Float64}, containing y values associated with ref_x.
-
-	shifted_y: Array{Float64}, containing y values associated with a selected range of full_x that corresponds to ref_x (for instance, a specific peak that you want to use to correct the shift).
+	full_x: Array{Float64}
+		x values that are not good
+	full_shifted_y: Array{Float64}
+		y values associated with full_x
+	ref_x: Array{Float64}
+		x values that are good
+	ref_y: Array{Float64}
+		y values associated with ref_x
+	shifted_y: Array{Float64}
+		y values associated with a selected range of full_x that corresponds to ref_x (for instance, a specific peak that you want to use to correct the shift).
 
 Outputs
 -------
 
-	full_x: Array{Float64}, same as input;
-
-	corrected_y: Array{Float64}, the full_shifted_y values corrected from the shift;
-
-	p: Array{Float64}, same as input.
+	full_x: Array{Float64}
+		same as input
+	corrected_y: Array{Float64}
+		the full_shifted_y values corrected from the shift
+	p: Array{Float64}
+		same as input.
 
 ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.
 """
@@ -401,18 +405,18 @@ end
 
 smooth the provided y signal (sampled on x)
 
-Parameters
-==========
-x: vector
-	Nx1 array of x values (equally spaced).
-y: vector
-	Nx1 array of y values (equally spaced).
-method: str
-	Method for smoothing the signal;
-	choose between savgol (Savitzky-Golay), GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline, whittaker, 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'.
+Inputs
+----------
+	x: vector
+		Nx1 array of x values (equally spaced).
+	y: vector
+		Nx1 array of y values (equally spaced).
+	method: str
+		Method for smoothing the signal;
+		choose between savgol (Savitzky-Golay), GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline, whittaker, 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'.
 
-kwargs
-======
+Options
+-------
 window_length: int
 	The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
 polyorder: int
@@ -424,8 +428,8 @@ d: int
 ese_y: ndarray
 	errors associated with y (for the gcvspline algorithms)
 
-Returns
-=======
+Outputs
+-------
 y_smo: ndarray
 	smoothed signal sampled on x.
 
