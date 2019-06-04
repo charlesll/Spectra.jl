@@ -417,21 +417,21 @@ Inputs
 
 Options
 -------
-window_length: int
-	The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
-polyorder: int
-	The order of the polynomial used to fit the samples. polyorder must be less than window_length.
-Lambda: float
-	smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
-d: int
-	d parameter in Whittaker filter, see Eilers (2003).
-ese_y: ndarray
-	errors associated with y (for the gcvspline algorithms)
+	window_length: int
+		The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
+	polyorder: int
+		The order of the polynomial used to fit the samples. polyorder must be less than window_length.
+	Lambda: float
+		smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
+	d: int
+		d parameter in Whittaker filter, see Eilers (2003).
+	ese_y: ndarray
+		errors associated with y (for the gcvspline algorithms)
 
 Outputs
 -------
-y_smo: ndarray
-	smoothed signal sampled on x.
+	y_smo: ndarray
+		smoothed signal sampled on x.
 
 Note
 ====

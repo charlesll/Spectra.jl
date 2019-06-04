@@ -20,57 +20,57 @@ Allows subtracting a baseline under a x y spectrum; uses the baseline function f
 
 Parameters
 ----------
-x_input : ndarray
-	x values.
-y_input : ndarray
-	y values.
-bir : ndarray
-	Contain the regions of interest, organised per line.
-	For instance, roi = np.array([[100., 200.],[500.,600.]]) will
-	define roi between 100 and 200 as well as between 500 and 600.
-	Note: This is NOT used by the "als" and "arPLS" algorithms, but still is a requirement when calling the function.
-	bir and method probably will become args in a futur iteration of rampy to solve this.
-methods : str
-	"poly": polynomial fitting, with splinesmooth the degree of the polynomial.
-	"unispline": spline with the UnivariateSpline function of Scipy, splinesmooth is
-				 the spline smoothing factor (assume equal weight in the present case);
-	"gcvspline": spline with the gcvspl.f algorythm, really robust.
-				 Spectra must have x, y, ese in it, and splinesmooth is the smoothing factor;
-				 For gcvspline, if ese are not provided we assume ese = sqrt(y).
-				 WARNING: Requires the installation of the gcvspline Python package prior to use in the Python ENV used by Julia.
-				 See website for install instructions
-	"exp": exponential background;
-	"log": logarythmic background;
-	"rubberband": rubberband baseline fitting;
-	"als": automatic least square fitting following Eilers and Boelens 2005;
-	"arPLS": automatic baseline fit using the algorithm from Baek et al. 2015
-			 Baseline correction using asymmetrically reweighted penalized least squares smoothing, Analyst 140: 250-257.
+	x_input : ndarray
+		x values.
+	y_input : ndarray
+		y values.
+	bir : ndarray
+		Contain the regions of interest, organised per line.
+		For instance, roi = np.array([[100., 200.],[500.,600.]]) will
+		define roi between 100 and 200 as well as between 500 and 600.
+		Note: This is NOT used by the "als" and "arPLS" algorithms, but still is a requirement when calling the function.
+		bir and method probably will become args in a futur iteration of rampy to solve this.
+	methods : str
+		"poly": polynomial fitting, with splinesmooth the degree of the polynomial.
+		"unispline": spline with the UnivariateSpline function of Scipy, splinesmooth is
+					 the spline smoothing factor (assume equal weight in the present case);
+		"gcvspline": spline with the gcvspl.f algorythm, really robust.
+					 Spectra must have x, y, ese in it, and splinesmooth is the smoothing factor;
+					 For gcvspline, if ese are not provided we assume ese = sqrt(y).
+					 WARNING: Requires the installation of the gcvspline Python package prior to use in the Python ENV used by Julia.
+					 See website for install instructions
+		"exp": exponential background;
+		"log": logarythmic background;
+		"rubberband": rubberband baseline fitting;
+		"als": automatic least square fitting following Eilers and Boelens 2005;
+		"arPLS": automatic baseline fit using the algorithm from Baek et al. 2015
+				 Baseline correction using asymmetrically reweighted penalized least squares smoothing, Analyst 140: 250-257.
 
 Options
 ------
-polynomial_order : Int
-	The degree of the polynomial (0 for a constant), default = 1.
-s : Float
-	spline smoothing coefficient for the unispline and gcvspline algorithms.
-lam : Float
-	float, the lambda smoothness parameter for the ALS and ArPLS algorithms. Typical values are between 10**2 to 10**9, default = 10**5.
-p : Float
-	float, for the ALS algorithm, advised value between 0.001 to 0.1, default = 0.01.
-ratio : float
-	ratio parameter of the arPLS algorithm. default = 0.01.
-niter : Int
-	number of iteration of the ALS algorithm, default = 10.
-p0_exp : List
-	containg the starting parameter for the exp baseline fit with curve_fit. Default = [1.,1.,1.].
-p0_log : List
-	containg the starting parameter for the log baseline fit with curve_fit. Default = [1.,1.,1.,1.].
+	polynomial_order : Int
+		The degree of the polynomial (0 for a constant), default = 1.
+	s : Float
+		spline smoothing coefficient for the unispline and gcvspline algorithms.
+	lam : Float
+		float, the lambda smoothness parameter for the ALS and ArPLS algorithms. Typical values are between 10**2 to 10**9, default = 10**5.
+	p : Float
+		float, for the ALS algorithm, advised value between 0.001 to 0.1, default = 0.01.
+	ratio : float
+		ratio parameter of the arPLS algorithm. default = 0.01.
+	niter : Int
+		number of iteration of the ALS algorithm, default = 10.
+	p0_exp : List
+		containg the starting parameter for the exp baseline fit with curve_fit. Default = [1.,1.,1.].
+	p0_log : List
+		containg the starting parameter for the log baseline fit with curve_fit. Default = [1.,1.,1.,1.].
 
 Returns
 -------
-out1 : ndarray
-	Contain the corrected signal.
-out2 : ndarray
-	Contain the baseline.
+	out1 : ndarray
+		Contain the corrected signal.
+	out2 : ndarray
+		Contain the baseline.
 
 Example
 -------
@@ -78,9 +78,9 @@ Example
 Consider a Y signal sampled at X. We want to fit a polynomial baseline (2nd order)
 in the regions of interest comprised between x1 and x2, as well as x3 and x4.
 
-```julia-repl
-julia> Y_corr, Y_baseline = baseline(X,Y,[x1 x2; x3 x4],"poly",polynomial_order=2)
-```
+	```julia-repl
+	julia> Y_corr, Y_baseline = baseline(X,Y,[x1 x2; x3 x4],"poly",polynomial_order=2)
+	```
 """
 function baseline(x::Array{Float64},y::Array{Float64},roi::Array{Float64},basetype::AbstractString;polynomial_order=1, s = 1.0, lam = 10^5, p = 0.01, ratio = 0.01, niter = 10, p0_exp = [1.,1.,1.],p0_log =[1.,1.,1.])
 	yout, bas = rampy.baseline(x,y,roi,basetype,polynomial_order=polynomial_order, s=s, lam=lam, niter=niter, p0_exp=p0_exp, p0_log=p0_log)

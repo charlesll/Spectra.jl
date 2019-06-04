@@ -34,7 +34,7 @@ Options
 
 Outputs
 -------
-(are combined in one array if only one output name is given)
+
 	x: Array{Float64}
 		x values
 	long: Array{Float64}
