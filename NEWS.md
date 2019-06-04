@@ -8,7 +8,7 @@ email: charles.lelosq@anu.edu.au
 
 Licence MIT: see LICENCE.md
 
-# 0.4.1 (stable)
+# 0.4.2 (stable)
 
 - requires PyCall v0.19 or higher
 
