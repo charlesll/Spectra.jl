@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Machine Learning · Spectra documentation</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link href="assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>Spectra documentation</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="GeneralFunctions.html">General Functions</a></li><li><a class="toctext" href="Installation.html">Installation</a></li><li class="current"><a class="toctext" href="MachineLearning.html">Machine Learning</a><ul class="internal"></ul></li><li><a class="toctext" href="PeakFitting.html">Peak fitting</a></li><li><a class="toctext" href="PreProcessing.html">Pre-Processing</a></li><li><a class="toctext" href="References.html">References</a></li><li><a class="toctext" href="Tips.html">Tips</a></li><li><a class="toctext" href="index.html">Welcome to Spectra&#39;s documentation!</a></li></ul></nav><article id="docs"><header><nav><ul><li><a href="MachineLearning.html">Machine Learning</a></li></ul><a class="edit-page" href="https://github.com/charlesll/Spectra.jl/blob/master/docs/src/MachineLearning.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>Machine Learning</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="Machine-Learning-1" href="#Machine-Learning-1">Machine Learning</a></h1><p>Spectra calls the rampy.mlregressor and rampy.mlexplorer functions to provide easy-to-use access to some machine learning algorithms from the SciKit Learn python library.</p><p>More advanced ML treatments can be done within the Julia ecosystem (e.g. using Flux, MXNet, Tensorflow etc.), but this is outsite Spectra.</p><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Spectra.mlregressor" href="#Spectra.mlregressor"><code>Spectra.mlregressor</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">mlregressor(x::Array{Float64},y::Array{Float64};X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaler=&quot;MinMaxScaler&quot;,rand_state=42)</code></pre><p>Uses machine learning algorithms from scikit learn to perform regression between spectra and an observed variable. This calls the rampy.mlregressor function and creates a Python object. Any algorithm parameter can be modified in the model object.</p><p><strong>Example</strong></p><pre><code class="language-none">```julia-repl
+julia&gt; using Spectra
+julia&gt; model = mlregressor(X,y)
+julia&gt; model.algorithm = &quot;SVM&quot;
+julia&gt; model.user_kernel = &quot;poly&quot;
+julia&gt; model.fit()
+julia&gt; y_new = model.predict(X_new)
+```</code></pre><p><strong>Docstring from rampy.mlexporer</strong></p><p><strong>Attributes</strong></p><pre><code class="language-none">x : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	Spectra; n_features = n_frequencies.
+y : array, shape = (n_samples,)
+	Returns predicted values.
+X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
+y_test : array, shape = (n_samples,)
+	the target that you want to use as a testing dataset. Those targets should not be present in the y (training) dataset.
+algorithm : String,
+	&quot;KernelRidge&quot;, &quot;SVM&quot;, &quot;LinearRegression&quot;, &quot;Lasso&quot;, &quot;ElasticNet&quot;, &quot;NeuralNet&quot;, &quot;BaggingNeuralNet&quot;, default = &quot;SVM&quot;
+scaling : Bool
+	True or False. If True, data will be scaled during fitting and prediction with the requested scaler (see below),
+scaler : String
+	the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see [http://scikit-learn.org/stable/modules/preprocessing.html](http://scikit-learn.org/stable/modules/preprocessing.html) for details. Default = &quot;MinMaxScaler&quot;.
+test_size : float
+	the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
+rand_state : Float64
+	the random seed that is used for reproductibility of the results. Default = 42.
+param_kr : Dictionary
+	contain the values of the hyperparameters that should be provided to KernelRidge and GridSearch for the Kernel Ridge regression algorithm.
+param_svm : Dictionary
+	containg the values of the hyperparameters that should be provided to SVM and GridSearch for the Support Vector regression algorithm.
+param_neurons : Dictionary
+	contains the parameters for the Neural Network (MLPregressor model in sklearn).
+	Default= dict(hidden_layer_sizes=(3,),solver = &#39;lbfgs&#39;,activation=&#39;relu&#39;,early_stopping=True)
+param_bagging : Dictionary
+	contains the parameters for the BaggingRegressor sklearn function that uses a MLPregressor base method.
+	Default= dict(n_estimators=100, max_samples=1.0, max_features=1.0, bootstrap=True,
+					bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=1, random_state=rand_state, verbose=0)
+prediction_train : Array{Float64}
+	the predicted target values for the training y dataset.
+prediction_test : Array{Float64}
+	the predicted target values for the testing y_test dataset.
+model : Scikit learn model
+	A Scikit Learn object model, see scikit learn library documentation.
+X_scaler :
+	A Scikit Learn scaler object for the x values.
+Y_scaler :
+	A Scikit Learn scaler object for the y values.</code></pre><p><strong>Remarks</strong></p><p>For details on hyperparameters of each algorithms, please directly consult the documentation of SciKit Learn at:</p><p><a href="http://scikit-learn.org/stable/">http://scikit-learn.org/stable/</a></p><p>For Support Vector and Kernel Ridge regressions, mlregressor performs a cross_validation search with using 5 KFold cross validators.</p><p>If the results are poor with Support Vector and Kernel Ridge regressions, you will have to tune the param<em>grid</em>kr or param<em>grid</em>svm dictionnary that records the hyperparameter space to investigate during the cross validation.</p><p>Results for machine learning algorithms can vary from run to run. A way to solve that is to fix the random_state. For neural nets, results from multiple neural nets (bagging technique) may also generalise better, such that it may be better to use the BaggingNeuralNet function.</p></div></div><a class="source-link" target="_blank" href="https://github.com/charlesll/Spectra.jl/blob/aa369ae314ee3b94b1fb11d1513243ef035d0da2/src/ml.jl#L14-L89">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Spectra.mlexplorer" href="#Spectra.mlexplorer"><code>Spectra.mlexplorer</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-julia">mlexplorer(x::Array{Float64})</code></pre><p>Use machine learning algorithms from scikit learn to explore spectroscopic datasets. Performs automatic scaling and train/test split before NMF or PCA fit.</p><p><strong>Example</strong></p><pre><code class="language-none">```julia-repl
+julia&gt; explo = mlexplorer(X) # X is an array of signals built by mixing two partial components
+julia&gt; explo.algorithm = &quot;NMF&quot; # using Non-Negative Matrix factorization
+julia&gt; explo.nb_compo = 2 # number of components to use
+julia&gt; explo.test_size = 0.3 # size of test set
+julia&gt; explo.scaler = &quot;MinMax&quot; # scaler
+julia&gt; explo.fit() # fitting!
+julia&gt; W = explo.model.transform(explo.X_train_sc) # getting the mixture array
+julia&gt; H = explo.X_scaler.inverse_transform(explo.model.components_) # components in the original space
+julia&gt; plot(X,H.T) # plot the two components
+```</code></pre><p><strong>Docstring from rampy.mlexporer</strong></p><p><strong>Attributes</strong></p><pre><code class="language-none">x : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	Spectra; n_features = n_frequencies.
+X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
+algorithm : String,
+	&quot;PCA&quot;, &quot;NMF&quot;, default = &quot;PCA&quot;
+scaling : Bool
+	True or False. If True, data will be scaled prior to fitting (see below),
+scaler : String
+	the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see [http://scikit-learn.org/stable/modules/preprocessing.html](http://scikit-learn.org/stable/modules/preprocessing.html) for details. Default = &quot;MinMaxScaler&quot;.
+test_size : float
+	the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
+rand_state : Float64
+	the random seed that is used for reproductibility of the results. Default = 42.
+model : Scikit learn model
+	A Scikit Learn object model, see scikit learn library documentation.</code></pre><p><strong>Remarks</strong></p><p>For details on hyperparameters of each algorithms, please directly consult the documentation of SciKit Learn at:</p><p><a href="http://scikit-learn.org/stable/">http://scikit-learn.org/stable/</a></p><p>Results for machine learning algorithms can vary from run to run. A way to solve that is to fix the random_state.</p></div></div><a class="source-link" target="_blank" href="https://github.com/charlesll/Spectra.jl/blob/aa369ae314ee3b94b1fb11d1513243ef035d0da2/src/ml.jl#L96-L146">source</a></section><footer><hr/><a class="previous" href="Installation.html"><span class="direction">Previous</span><span class="title">Installation</span></a><a class="next" href="PeakFitting.html"><span class="direction">Next</span><span class="title">Peak fitting</span></a></footer></article></body></html>
