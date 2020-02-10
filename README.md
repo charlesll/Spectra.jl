@@ -2,7 +2,7 @@
 
 Copyright (c) 2016-2019 Dr. Charles Le Losq
 
-email: charles.lelosq@anu.edu.au
+email: lelosq@ipgp.fr
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.53940.svg)](http://doi.org/10.5281/zenodo.635346)
 
