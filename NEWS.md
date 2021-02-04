@@ -8,7 +8,11 @@ email: charles.lelosq@anu.edu.au
 
 Licence MIT: see LICENCE.md
 
-# 0.4.2 (stable)
+# 0.4.3 (stable)
+
+- solves a problem with deps/build.log
+
+# 0.4.2
 
 - requires PyCall v0.19 or higher
 
