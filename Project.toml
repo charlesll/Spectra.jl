@@ -1,7 +1,7 @@
 name = "Spectra"
 uuid = "391af1a9-06f1-59d3-8d21-0be089654739"
-author = "Charles Le Losq <charles.lelosq@anu.edu.au>"
-version = "0.4.2"
+author = "Charles Le Losq <lelosq@ipgp.fr>"
+version = "0.4.3"
 
 [deps]
 Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
