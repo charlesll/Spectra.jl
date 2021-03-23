@@ -20,6 +20,14 @@ See the NEWS.md
 
 In Julia 1.0 and later, use the `pkg` environment (key `]`), then directly run `add Spectra`.
 
+*If you don't already have PyCall installed, or are getting errors with regards to Spectra not being able to find rampy, run the following:
+```
+pkg] add PyCall
+julia> using PyCall
+julia> @pyimport pip
+julia> pip.main(["install","rampy"])
+```
+
 # Examples
 
 See the examples notebooks in the ./examples/ folder for usage examples.
