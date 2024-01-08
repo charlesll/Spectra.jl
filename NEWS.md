@@ -8,8 +8,9 @@ email: lelosq@ipgp.fr
 
 Licence MIT: see LICENCE.md
 
-# 0.4.3 (stable)
+# 1.0.0 (stable)
 
+- Spectra is pretty stable now, switching to version 1.0
 - solves a problem with deps/build.log
 - add functions normalise, despiking, centroid
 
