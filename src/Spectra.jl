@@ -45,7 +45,9 @@ include("peakmeasurement.jl")
 export trapz, bandarea
 
 #From functions.jl
-export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist, xshift_inversion, xshift_direct,xshift_correction, smooth, flipsp, resample
+export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
+export xshift_inversion, xshift_direct,xshift_correction
+export smooth, flipsp, resample, centroid, normalise, despiking
 
 #From baseline.jl
 export baseline

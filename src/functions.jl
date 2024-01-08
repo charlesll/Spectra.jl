@@ -498,17 +498,17 @@ end
     y_norm : Array
         Normalised signal(s)
 """
-function normalise(y::Array{Float64}; x::Array{Float64}=0, method="intensity")
+function normalise(y; x=0, method="intensity")
     
     if method == "area"
         if x == 0
             throw(ArgumentError("Input array of x values for area normalisation"))
         end
-        y = y ./ trapz(x, y, dims=1)
+        y = y ./ trapz(vec(x), vec(y))
     elseif method == "intensity"
-        y = y ./ maximum(y, dims=1)
+        y = y ./ maximum(y)
     elseif method == "minmax"
-        y = (y .- minimum(y, dims=1)) ./ (maximum(y, dims=1) - minimum(y, dims=1))
+        y = (y .- minimum(y)) ./ (maximum(y) - minimum(y))
     else
         throw(ArgumentError("Wrong method name, choose between area, intensity and minmax."))
     end
@@ -543,9 +543,6 @@ function centroid(x, y; smoothing=false, kwargs...)
     y_ = copy(y)
 
     if smoothing
-        # Note: Julia does not have a direct equivalent to the Python `rampy.smooth` function.
-        # You might need to use a Julia package or implement smoothing yourself.
-        # For example, using a placeholder `smooth` function (which needs to be defined)
         for i in 1:size(x, 2)
             y_[:, i] = smooth(x[:, i], y[:, i]; kwargs...)
         end
