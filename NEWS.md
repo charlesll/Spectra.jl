@@ -1,8 +1,8 @@
 # News
 
-Copyright (c) 2016-2019 Dr. Charles Le Losq
+Copyright (c) 2016-2024 Dr. Charles Le Losq
 
-email: charles.lelosq@anu.edu.au
+email: lelosq@ipgp.fr
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.53940.svg)](http://dx.doi.org/10.5281/zenodo.53940)
 
@@ -11,6 +11,7 @@ Licence MIT: see LICENCE.md
 # 0.4.3 (stable)
 
 - solves a problem with deps/build.log
+- add functions normalise, despiking, centroid
 
 # 0.4.2
 

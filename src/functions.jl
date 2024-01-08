@@ -480,3 +480,123 @@ function resample(x::Array{Float64},y::Array{Float64},x_new::Array{Float64})
     spl = Spline1D(x,y,bc="zero")
     return evaluate(spl, x_new)
 end
+
+"""
+    normalise y signal(s)
+
+    Parameters
+    ==========
+    x : Array, m values by n samples
+        x values
+    y : Array, m values by n samples
+        corresponding y values
+    method : String
+        method used, choose between area, intensity, minmax
+
+    Returns
+    =======
+    y_norm : Array
+        Normalised signal(s)
+"""
+function normalise(y::Array{Float64}; x::Array{Float64}=0, method="intensity")
+    
+    if method == "area"
+        if x == 0
+            throw(ArgumentError("Input array of x values for area normalisation"))
+        end
+        y = y ./ trapz(x, y, dims=1)
+    elseif method == "intensity"
+        y = y ./ maximum(y, dims=1)
+    elseif method == "minmax"
+        y = (y .- minimum(y, dims=1)) ./ (maximum(y, dims=1) - minimum(y, dims=1))
+    else
+        throw(ArgumentError("Wrong method name, choose between area, intensity and minmax."))
+    end
+
+    return y
+end
+
+"""
+    Calculation of y signal centroid(s)
+
+    as sum(y / sum(y) .* x)
+
+    Parameters
+    ==========
+    x: Array, m values by n samples
+        x values
+    y: Array, m values by n samples
+        y values
+
+    Options
+    =======
+    smoothing: Bool
+        True or False. Smooth the signals with arguments provided as kwargs. Default method is Whittaker smoothing.
+
+    Returns
+    =======
+    centroid: Array, n samples
+        Signal centroid(s)
+"""
+function centroid(x, y; smoothing=false, kwargs...)
+
+    y_ = copy(y)
+
+    if smoothing
+        # Note: Julia does not have a direct equivalent to the Python `rampy.smooth` function.
+        # You might need to use a Julia package or implement smoothing yourself.
+        # For example, using a placeholder `smooth` function (which needs to be defined)
+        for i in 1:size(x, 2)
+            y_[:, i] = smooth(x[:, i], y[:, i]; kwargs...)
+        end
+    end
+
+    return sum(y_ ./ sum(y_, dims=1) .* x, dims=1)
+end
+
+"""
+    Remove spikes from the y 1D signal given a threshold
+
+    This function smooths the spectra, calculates the residual error RMSE, and removes points above threshold*RMSE using the neighboring points
+
+    Parameters
+    ----------
+    x: 1D Array
+        Signal to despike
+    y: 1D Array
+        Signal to despike
+    neigh: Int
+        Numbers of points around the spikes to select for calculating average value for despiking
+    threshold: Int
+        Multiplier of sigma, default = 3
+
+    Returns
+    -------
+    y_out: 1D Array
+        The signal without spikes
+"""
+function despiking(x, y; neigh=4, threshold=3)
+    y_out = copy(y) # To avoid overwriting y
+    
+    # Placeholder for the smoothing function. You need to replace this with an actual implementation.
+    y_smo = smooth(x, y; method="savgol")
+    rmse_local = sqrt.((y - y_smo) .^ 2)
+    rmse_mean = sqrt(mean((y - y_smo) .^ 2))
+
+    # Identify spikes
+    spikes = rmse_local .> threshold * rmse_mean
+
+    for i in 1:length(y)
+        if spikes[i] # If there is a spike in position i
+            # Avoiding the boundaries
+            low_i = max(1, i - neigh)
+            high_i = min(length(y), i + 1 + neigh)
+
+            w = low_i:high_i # Select 2m + 1 points around our spike
+            w2 = w[.!spikes[w]] # Choose the ones which are not spikes
+            y_out[i] = mean(y[w2]) # Average their values
+        end
+    end
+
+    return y_out
+end
