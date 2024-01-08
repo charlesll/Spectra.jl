@@ -1,3 +1,4 @@
+push!(LOAD_PATH,"../src/")
 using Documenter, Spectra
 
 makedocs(sitename="Spectra documentation", format = Documenter.HTML(prettyurls = false))
