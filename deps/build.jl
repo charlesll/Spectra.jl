@@ -1,16 +1,17 @@
 using Conda
+using PyCall
 
 println("Running build.jl for the Spectra package.")
+#Conda.pip_interop(true)
+#Conda.pip("install", "rampy")
 
-Conda.pip("install", "rampy")
+#Change that to whatever packages you need.
+const PACKAGES = ["rampy>=0.5"]
 
-# Change that to whatever packages you need.
-#const PACKAGES = ["rampy>=0.4.4"]
-
-#pyimport_conda("pip", "pip")
+pyimport_conda("pip", "pip")
 
 #Conda.add("pip")
-#run(`$(PyCall.python) -m pip install $(PACKAGES)`)#
+run(`$(PyCall.python) -m pip install $(PACKAGES)`)#
 #run(`pip install --upgrade gcvspline`)
 
 # Change that to whatever packages you need.
