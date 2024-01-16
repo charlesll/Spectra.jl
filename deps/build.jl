@@ -4,6 +4,7 @@ using PyCall
 println("Running build.jl for the Spectra package.")
 Conda.pip_interop(true)
 Conda.pip("install", "rampy")
+Conda.pip("install", "gcvspline")
 
 #Change that to whatever packages you need.
 #const PACKAGES = ["rampy>=0.5"]
