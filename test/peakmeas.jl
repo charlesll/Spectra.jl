@@ -43,3 +43,10 @@ int_tot = int2_th + int_th
 
 centroid_th = int_th./int_tot.*freq_th .+ int2_th./int_tot.*freq2_th # this works because the peaks have the same hwhm
 @test isapprox(centroid_th,centroid_mea3,atol=1e-4)
+
+#### centroid test
+p = [10.,50.,5.]
+y_calc, y_peaks = gaussiennes([p[1]],[p[2]],[p[3]],x)
+y_centroid = centroid(x, y_calc)
+println(size(y_centroid))
+@test isapprox(50.,y_centroid[1,1])

@@ -6,15 +6,10 @@ The following functions are useful when generating peaks with various shapes. Se
 
 ```@docs
 gaussiennes
+normal_dist
 lorentziennes
 pearson7
 pseudovoigts
-```
-
-## Peak measurement
-
-```@docs
-peakmeas
 ```
 
 ## Integration

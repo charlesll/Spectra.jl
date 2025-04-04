@@ -1,6 +1,6 @@
 # Spectra.jl
 
-Copyright (c) 2016-2024 Dr. Charles Le Losq
+Copyright (c) 2016-2025 Dr. Charles Le Losq
 
 email: lelosq@ipgp.fr
 

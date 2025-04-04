@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2019 Charles Le Losq
+#Copyright (c) 2016-2025 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -87,9 +87,9 @@ For neural nets, results from multiple neural nets (bagging technique) may also 
 it may be better to use the BaggingNeuralNet function.
 
 """
-function mlregressor(x::Array{Float64},y::Array{Float64};X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0])
+function mlregressor(x::Array{Float64}, y::Array{Float64}; X_test::Array{Float64}=[0.0], y_test::Array{Float64}=[0.0])
 
-	return rampy.mlregressor(x,y,X_test=X_test,y_test=y_test)
+	return rampy.mlregressor(x, y, X_test=X_test, y_test=y_test)
 
 end
 

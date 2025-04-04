@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2019 Charles Le Losq
+#Copyright (c) 2016-2025 Charles Le Losq
 #
 #The MIT License (MIT)
 #

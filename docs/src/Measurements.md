@@ -1,0 +1,6 @@
+# Measurements
+
+```@docs
+centroid
+peakmeas
+```

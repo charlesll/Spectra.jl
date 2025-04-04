@@ -1,6 +1,6 @@
 # News
 
-Copyright (c) 2016-2024 Dr. Charles Le Losq
+Copyright (c) 2016-2025 Dr. Charles Le Losq
 
 email: lelosq@ipgp.fr
 
@@ -8,7 +8,13 @@ email: lelosq@ipgp.fr
 
 Licence MIT: see LICENCE.md
 
-# 1.0.0 (stable)
+# 1.1.0 (stable)
+
+- baseline function was a wrapper of the rampy.baseline function. This created problems. This is now using only Julia code.
+- smooth function entirely re-written using Julia deps and code (leveraging in particular DSP.jl and StagedFilters.jl)
+- docs are revised
+
+# 1.0.0
 
 - Spectra is pretty stable now, switching to version 1.0
 - solves a problem with deps/build.log

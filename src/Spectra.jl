@@ -24,6 +24,11 @@ using Random
 using SparseArrays
 using StatsBase
 using Statistics
+using Optim
+using QHull
+using RegularizationTools, DataInterpolations
+using DSP
+using StagedFilters
 
 # For PyCall modules
 const rampy = PyNULL()
@@ -34,7 +39,9 @@ end
 
 include("integrale.jl")
 include("functions.jl")
+include("preprocessing.jl")
 include("baseline.jl")
+include("smoothing.jl")
 include("bootstrap.jl")
 include("tlcorrection.jl")
 include("deprecated.jl")
@@ -46,11 +53,18 @@ export trapz, bandarea
 
 #From functions.jl
 export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
-export xshift_inversion, xshift_direct,xshift_correction
-export smooth, flipsp, resample, centroid, normalise, despiking
+export funexp, funlog, gaussian
+
+# From preprocessing.jl
+export xshift_inversion, xshift_direct, xshift_correction
+export flipsp, resample, normalise, despiking, get_portion_interest, extract_signal
 
 #From baseline.jl
 export baseline
+export arPLS_baseline, drPLS_baseline, als_baseline, rubberband_baseline
+
+# From smoothing.jl
+export whittaker, ddmat, smooth
 
 #From bootstrap
 export bootsample, bootperf
@@ -62,6 +76,6 @@ export tlcorrection
 export mlregressor, mlexplorer
 
 # From peakmeasurement
-export peakmeas
+export peakmeas, centroid
 
 end # module

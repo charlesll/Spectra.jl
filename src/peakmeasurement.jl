@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2019 Charles Le Losq
+#Copyright (c) 2016-2025 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -16,9 +16,9 @@
 
 """
 
-    peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
+peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing::Bool = true, method::String = "savgol", window_length::Int=5, polyorder::Int=2, ese_y::Float64=1., y_smo_out::Bool=false)
 
-The peakmeas function allows performing measurements of the position, width, intensity and centroïd of a dominant peak in a provided x-y signal.
+The peakmeas function allows performing measurements of the position, width, intensity and centroid of a dominant peak in a provided `x`-`y` signal.
 
 It smooths the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity. It is advised to check that the M and N values of the Savitzky-Golay filter are adequate for your problem before trusting the results from peakmeas. For that, just use the y_smo_out option.
 
@@ -26,36 +26,25 @@ half-width at half-maximum are calculated as the width of the peak at half its m
 
 Centroïd is calculated as sum(y./sum(y).*x).
 
-Inputs
-------
-	x: Array{Float64}
-		x values
-	y: Array{Float64}
-		y values
+# Inputs
 
-Options
--------
-	smoothing, String
-		triggers the smoothing of the spectrum if set to yes (default value);
-	filter, Symbol
-		the filter that will be used. See the smooth function documentation;
-	M=5, Int
-		M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
-	N=2, Int
-		M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation;
-	y_smo_out=false
-		Outputs the smoothed signal.
+	`x::Array{Float64}`: the x values
+	`y::Array{Float64}`: the y values
 
-Outputs
--------
-	intensity: Float64
-		peak intensity
-	position: Float64
-		peak position
-	hwhm: Float64
-	 	peak half-width at half-maximum
-	centroïd: Float64
-	 	peak centroid
+# Options
+
+    `smoothing::String`: triggers the smoothing of the spectrum if set to yes (default value);
+    `filter::Symbol`: the filter that will be used. See the smooth function documentation;
+    `M::Int`: M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation. Default = 5.
+    `N::Int`: N parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation. Default = 2. 
+    `y_smo_out::bool`: Outputs the smoothed signal.
+
+# Outputs
+
+	`intensity::Float64`: peak intensity
+	`position::Float64`: peak position
+	`hwhm: Float6:: peak` half-width at half-maximum
+	`centroïd::Float64`: peak centroid
 """
 function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
@@ -98,4 +87,43 @@ function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", m
       error("Set y_smo_out to true or false.")
     end
 
+end
+
+"""
+
+    centroid(x::Array{Float64,2}, y::Array{Float64,2}; smoothing::Bool = false, kwargs...)
+
+Returns the centroids of pairs of x (n by m) - y (n by m) signal(s) of n frequencies, m samples. To smooth the signal(s), set `smoothing::Bool` to `true`. See [`smooth`](@ref) for optional smoothing arguments. 
+
+# Notes
+
+Centroids are calculated as ``sum(y[:,i] / sum(y[:,i]) .* x[:,i])`` `
+
+# Example
+
+```julia
+Using Spectra
+x = collect(0.:1.:100.)
+y_sum, ys = gaussiennes([10., 20.],[50., 60.], [3., 2.], x)
+centroid(x, y_sum)
+
+# output
+
+1×1 Matrix{Float64}:
+55.71428571428571
+
+```
+
+"""
+function centroid(x::Array{Float64}, y::Array{Float64}; smoothing::Bool = false, kwargs...)
+
+    y_ = copy(y)
+
+    if smoothing
+        for i in 1:size(x, 2)
+            y_[:, i] = smooth(x[:, i], y[:, i]; kwargs...)
+        end
+    end
+
+    return sum(y_ ./ sum(y_, dims=1) .* x, dims=1)
 end

@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2019 Charles Le Losq
+#Copyright (c) 2016-2025 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -9,32 +9,32 @@
 #
 #THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, #INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
-# functions.jl contains several mathematic functions
-#
-#
 #############################################################################
+# Helper functions for baseline methods
+function gaussian(x, a, b, c)
+    return a * exp.(-log(2) * ((x .- b) ./ c).^2)
+end
+
+function funexp(x, a, b, c)
+    return a * exp.(b * (x .- c))
+end
+
+function funlog(x, a, b, c, d)
+    return a * log.(-b * (x .- c)) .- d * x.^2
+end
+
 """
-	poly(p::Vector{Float64},x::Array{Float64})
+	poly(p::Vector{Float64},x::Vector{Float64})
 
-This function just allows to build a polynomial curve.
+Builds a polynomial curve given parameters `p::Vector{Float64}` at the `x::Vector{Float64}` values.
 
-Inputs
-------
+For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;
 
-	p: Vector{Float64}
-		polynomial parameters. For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;
-	x: Array{Float64}
-		x values for calculation.
-
-Outputs
--------
-
-	y: Array{Float64}, containing the result of calculation.
 """
-function poly(p::Vector{Float64},x::Array{Float64})
+function poly(p::Vector{Float64}, x::Vector{Float64})
     segments = zeros(size(x)[1],size(p)[1])
     for i = 1:size(p)[1]
-        segments[:,i] = p[i].*x[:].^(i-1)
+        segments[:,i] = p[i].*x.^(i-1)
     end
     return sum(segments, dims=2)
 end
@@ -52,8 +52,7 @@ You can enter the amplitude, centre and half-width at half-maximum (hwhm) values
 
 that is used in a normal distribution (see function normal_dist).
 
-Inputs
-------
+# Inputs
 
 	amplitude: Array{Float64}
 		peaks amplitudes
@@ -64,23 +63,19 @@ Inputs
 	x: Array{Float64}
 		x axis values;
 
-Options
--------
+# Options
 
 	style: ASCIIString = "None"
 		see examples below.
 
-Outputs
--------
+# Outputs
 
 	y_calc: Array{Float64}
 		calculated y values
 	y_peaks: Array{Float64}
 		calculated y values of the different peaks.
 
-----------
- Examples
-----------
+# Examples
 
 To have four gaussian peaks centered at 800, 900, 1000 and 1100 cm-1 with hwhm of 50 cm-1 on a Raman spectrum, you will enter:
 
@@ -315,285 +310,3 @@ function normal_dist(nd_amplitudes::Array{Float64},nd_centres::Array{Float64},nd
     return sum(segments, dims=2), segments
 end
 
-"""
-	xshift_inversion(data::Array{Float64},p::Array{Float64})
-
-to correct for shifts in X between two spectra, used in xshift_correction.
-
-"""
-function xshift_inversion(data::Array{Float64},p::Array{Float64})
-    xaxis = data[:,1]
-    shifted1 = data[:,2]
-    spl = Spline1D(xaxis-p[1], shifted1.*p[2] + shifted1.^2.0.*p[3])
-    y = evaluate(spl,xaxis)
-end
-
-"""
-	xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
-
-To correct a spectrum for a p shift in X.
-
-Used in xshift_correction.
-
-Inputs
-------
-
-	original_x: Array{Float64}
-		x values
-	original_y: Array{Float64}
-		y values associated with x
-	p: Array{Float64}
-		value of how much x should be shifted
-
-Outputs
--------
-
-	original_x: Array{Float64}
-		same as input
-	corrected_y: Array{Float64}
-		the y values corrected from the p shift in original_x
-	p: Array{Float64}
-		same as input.
-
-"""
-function xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
-    spl = Spline1D(original_x-p, original_y)
-    corrected_y = evaluate(spl,original_x)
-	return original_x, corrected_y, p
-end
-
-"""
-	xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64}, ref_x::Array{Float64}, ref_y::Array{Float64},shifted_y::Array{Float64})
-
-To correct a shift between two spectra using a reference peak.
-
-Inputs
-------
-
-	full_x: Array{Float64}
-		x values that are not good
-	full_shifted_y: Array{Float64}
-		y values associated with full_x
-	ref_x: Array{Float64}
-		x values that are good
-	ref_y: Array{Float64}
-		y values associated with ref_x
-	shifted_y: Array{Float64}
-		y values associated with a selected range of full_x that corresponds to ref_x (for instance, a specific peak that you want to use to correct the shift).
-
-Outputs
--------
-
-	full_x: Array{Float64}
-		same as input
-	corrected_y: Array{Float64}
-		the full_shifted_y values corrected from the shift
-	p: Array{Float64}
-		same as input.
-
-ref_x is the common X axis of two particular ref_y and shifted_y signals, that should be for instance an intense and well defined peak in your spectra. If ref_y and shifted_y do not share the same X axis, you can use first the Dierckx spline to re-sample one of them and have both sharing a common X axis. See the examples for further details.
-"""
-function xshift_correction(full_x::Array{Float64}, full_shifted_y::Array{Float64}, ref_x::Array{Float64}, ref_y::Array{Float64},shifted_y::Array{Float64})
-	fit = curve_fit(xshift_inversion, [ref_x shifted_y], ref_y, [1.0, 1.0,1.0])
-	parameters = fit.param
-	return xshift_direct(full_x, full_shifted_y, parameters[1])
-end
-
-
-"""
-	smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
-
-smooth the provided y signal (sampled on x)
-
-Inputs
-----------
-	x: vector
-		Nx1 array of x values (equally spaced).
-	y: vector
-		Nx1 array of y values (equally spaced).
-	method: str
-		Method for smoothing the signal;
-		choose between savgol (Savitzky-Golay), GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline, whittaker, 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'.
-
-Options
--------
-	window_length: int
-		The length of the filter window (i.e. the number of coefficients). window_length must be a positive odd integer.
-	polyorder: int
-		The order of the polynomial used to fit the samples. polyorder must be less than window_length.
-	Lambda: float
-		smoothing parameter of the Whittaker filter described in Eilers (2003). The higher the smoother the fit.
-	d: int
-		d parameter in Whittaker filter, see Eilers (2003).
-	ese_y: ndarray
-		errors associated with y (for the gcvspline algorithms)
-
-Outputs
--------
-	y_smo: ndarray
-		smoothed signal sampled on x.
-
-Note
-====
-
-Use of GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline requires installation of gcvspline. See gcvspline documentation.
-See also documentation for details on GCVSmoothedNSpline, MSESmoothedNSpline, DOFSmoothedNSpline.
-
-savgol uses the scipy.signal.savgol_filter() function.
-
-References
-==========
-Eilers, P.H.C., 2003. A Perfect Smoother. Anal. Chem. 75, 3631–3636. https://doi.org/10.1021/ac034173t
-
-Scipy Cookbook: https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html?highlight=smooth
-
-"""
-function smooth(x,y;method="whittaker", window_length=5, polyorder = 2, Lambda = 10.0.^5, d=2, ese_y=1.0)
-	return rampy.smooth(vec(x),vec(y),method="whittaker", window_length=window_length, polyorder = polyorder, Lambda = Lambda, d=d, ese_y=ese_y)
-end
-
-
-"""
-
-	flipsp(spectra::Array{Float64})
-
-Flip an array along the row dimension (dim = 1) if the first column values are in decreasing order.
-
-"""
-function flipsp(spectra::Array{Float64})
-    if spectra[end,1] < spectra[1,1]
-        spectra = spectra[end:-1:1,:]
-    end
-	return spectra
-end
-
-"""
-
-	resample(x::Array{Float64},y::Array{Float64},x_new::Array{Float64})
-
-Resample a y signal associated with x, along the x_new values.
-
-Uses the Dierckx spline library.
-
-"""
-function resample(x::Array{Float64},y::Array{Float64},x_new::Array{Float64})
-    spl = Spline1D(x,y,bc="zero")
-    return evaluate(spl, x_new)
-end
-
-"""
-    normalise y signal(s)
-
-    Parameters
-    ==========
-    x : Array, m values by n samples
-        x values
-    y : Array, m values by n samples
-        corresponding y values
-    method : String
-        method used, choose between area, intensity, minmax
-
-    Returns
-    =======
-    y_norm : Array
-        Normalised signal(s)
-"""
-function normalise(y; x=0, method="intensity")
-    
-    if method == "area"
-        if x == 0
-            throw(ArgumentError("Input array of x values for area normalisation"))
-        end
-        y = y ./ trapz(vec(x), vec(y))
-    elseif method == "intensity"
-        y = y ./ maximum(y)
-    elseif method == "minmax"
-        y = (y .- minimum(y)) ./ (maximum(y) - minimum(y))
-    else
-        throw(ArgumentError("Wrong method name, choose between area, intensity and minmax."))
-    end
-
-    return y
-end
-
-"""
-    Calculation of y signal centroid(s)
-
-    as sum(y / sum(y) .* x)
-
-    Parameters
-    ==========
-    x: Array, m values by n samples
-        x values
-    y: Array, m values by n samples
-        y values
-
-    Options
-    =======
-    smoothing: Bool
-        True or False. Smooth the signals with arguments provided as kwargs. Default method is Whittaker smoothing.
-
-    Returns
-    =======
-    centroid: Array, n samples
-        Signal centroid(s)
-"""
-function centroid(x, y; smoothing=false, kwargs...)
-
-    y_ = copy(y)
-
-    if smoothing
-        for i in 1:size(x, 2)
-            y_[:, i] = smooth(x[:, i], y[:, i]; kwargs...)
-        end
-    end
-
-    return sum(y_ ./ sum(y_, dims=1) .* x, dims=1)
-end
-
-"""
-    Remove spikes from the y 1D signal given a threshold
-
-    This function smooths the spectra, calculates the residual error RMSE, and removes points above threshold*RMSE using the neighboring points
-
-    Parameters
-    ----------
-    x: 1D Array
-        Signal to despike
-    y: 1D Array
-        Signal to despike
-    neigh: Int
-        Numbers of points around the spikes to select for calculating average value for despiking
-    threshold: Int
-        Multiplier of sigma, default = 3
-
-    Returns
-    -------
-    y_out: 1D Array
-        The signal without spikes
-"""
-function despiking(x, y; neigh=4, threshold=3)
-    y_out = copy(y) # To avoid overwriting y
-    
-    # Placeholder for the smoothing function. You need to replace this with an actual implementation.
-    y_smo = smooth(x, y; method="savgol")
-    rmse_local = sqrt.((y - y_smo) .^ 2)
-    rmse_mean = sqrt(mean((y - y_smo) .^ 2))
-
-    # Identify spikes
-    spikes = rmse_local .> threshold * rmse_mean
-
-    for i in 1:length(y)
-        if spikes[i] # If there is a spike in position i
-            # Avoiding the boundaries
-            low_i = max(1, i - neigh)
-            high_i = min(length(y), i + 1 + neigh)
-
-            w = low_i:high_i # Select 2m + 1 points around our spike
-            w2 = w[.!spikes[w]] # Choose the ones which are not spikes
-            y_out[i] = mean(y[w2]) # Average their values
-        end
-    end
-
-    return y_out
-end

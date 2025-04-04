@@ -1,5 +1,7 @@
 [deps]
+DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+StagedFilters = "c9c6d8d2-eaa5-11e8-3089-811798346984"
 
 [compat]
 Documenter = "~0.22"

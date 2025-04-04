@@ -18,6 +18,8 @@ Galeener, F. L., and Sen, P. N. 1978. “Theory of the First-Order Vibrational S
 
 Hehlen, B. 2010. “Inter-Tetrahedra Bond Angle of Permanently Densified Silicas Extracted from Their Raman Spectra.” Journal of Physics: Condensed Matter 22 (2): 025401.
 
+Le Losq, C., Neuville, D.R., Moretti, R., and Roux, J. (2012) Determination of water content in silicate glasses using Raman spectrometry: Implications for the study of explosive volcanism. American Mineralogist, 97, 779–790.
+
 Le Losq C., Neuville D. R., Florian P., Henderson G. S. and Massiot D., 2014, The role of Al3+ on rheology and structural changes in sodium silicate and aluminosilicate glasses and melts. Geochimica et Cosmochimica Acta 126, 495-517.
 
 Neuville, D. R., and B. O. Mysen. 1996. “Role of Aluminium in the Silicate Network: In Situ, High-Temperature Study of Glasses and Melts on the Join SiO₂-NaAl0₂.” Geochimica et Cosmochimica Acta 60: 1727–37.
