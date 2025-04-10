@@ -109,7 +109,7 @@ end
 
 """
     smooth(x::Vector{Float64}, y::Union{Vector{Float64}, Matrix{Float64}}; 
-           method::String = "whittaker", 
+           method::String = "gcvspline", 
            window_length::Int = 5, 
            polyorder::Int = 2, 
            lambda::Float64 = 10.0^5, 
@@ -170,7 +170,7 @@ println(smoothed_y)
 - For Window-based filtering,see DSP.jl documentation: [https://docs.juliadsp.org/stable/windows/](https://docs.juliadsp.org/stable/windows/)
 """
 function smooth(x::Vector{Float64}, y::Vector{Float64}; 
-    method::String = "whittaker", 
+    method::String = "gcvspline", 
     window_length::Int = 5, 
     polyorder::Int = 2, 
     lambda::Float64 = 10.0^5, 

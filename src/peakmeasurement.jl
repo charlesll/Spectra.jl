@@ -89,40 +89,89 @@ function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", m
 end
 
 """
+    centroid(x::Vector{Float64}, y::Vector{Float64}; smoothing::Bool = false, kwargs...)
+    centroid(spectrum::Matrix{Float64}; smoothing::Bool = false, kwargs...)
+    centroid(x::Vector{Float64}, y::Matrix{Float64}; smoothing::Bool = false, kwargs...)
+    centroid(spectra::Vector{<:Matrix}; smoothing::Bool = false, kwargs...)
 
-    centroid(x::Array{Float64,2}, y::Array{Float64,2}; smoothing::Bool = false, kwargs...)
+Calculates the centroid of a spectrum or a set of spectra.
 
-Returns the centroids of pairs of x (n by m) - y (n by m) signal(s) of n frequencies, m samples. To smooth the signal(s), set `smoothing::Bool` to `true`. See [`smooth`](@ref) for optional smoothing arguments. 
+This function computes the centroid (center of mass) of spectral data, which is useful for analyzing the distribution of intensity values in relation to their corresponding x-axis values. The function supports optional smoothing and handles various input formats, including single spectra, matrices, and lists of spectra.
 
-# Notes
+# Methods
+1. `centroid(x::Vector{Float64}, y::Vector{Float64}; smoothing::Bool = false, kwargs...)`
+   Computes the centroid for a single spectrum.
+2. `centroid(spectrum::Matrix{Float64}; smoothing::Bool = false, kwargs...)`
+   Computes the centroid for a two-column matrix where the first column represents x values and the second column represents y values.
+3. `centroid(x::Vector{Float64}, y::Matrix{Float64}; smoothing::Bool = false, kwargs...)`
+   Computes the centroid for multiple spectra stored as columns in a matrix.
+4. `centroid(spectra::Vector{<:Matrix}; smoothing::Bool = false, kwargs...)`
+   Computes the centroids for a list of x-y spectra.
 
-Centroids are calculated as ``sum(y[:,i] / sum(y[:,i]) .* x[:,i])`` `
+# Arguments
+- `x::Vector{Float64}`: The x-axis values (e.g., wavelengths or time points).
+- `y::Union{Vector{Float64}, Matrix{Float64}}`: The y-axis values (e.g., intensities), either as a single vector or multiple columns (for multiple spectra).
+- `spectrum::Matrix{Float64}`: A two-column matrix with x values in the first column and y values in the second column.
+- `spectra::Vector{<:Matrix}`: A list of matrices, each representing an x-y spectrum.
+- `smoothing::Bool`: Whether to apply smoothing to the y-axis values before calculating the centroid. Default is `false`.
+- `kwargs...`: Additional keyword arguments passed to the smoothing function if smoothing is enabled.
 
-# Example
+# Returns
+- For single spectrum (`x`, `y`): A scalar value representing the centroid position.
+- For multiple spectra (`x`, `y` as matrix): A vector where each element is the centroid of a corresponding column in `y`.
+- For two-column spectrum (`spectrum`): A scalar value representing the centroid position.
+- For list of spectra (`spectra`): A vector where each element is the centroid of a corresponding spectrum in the list.
 
-```julia
-Using Spectra
+# Examples
+## Example 1: Centroid of a single spectrum
+```@example
 x = collect(0.:1.:100.)
-y_sum, ys = gaussiennes([10., 20.],[50., 60.], [3., 2.], x)
-centroid(x, y_sum)
-
-# output
-
-1×1 Matrix{Float64}:
-55.71428571428571
-
+y_peak = gaussian(x, 1., 50., 10.)
+centroid_peak = centroid(x, y_peak)
 ```
 
+## Example 2: Centroid of a single spectrum with smoothing
+```@example
+x = collect(0.:1.:100.)
+y_peak = gaussian(x, 1., 50., 10.)
+centroid_peak = centroid(x, y_peak, smoothing=true, method="gcvspline")
+```
+
+## Example 3: Centroid of a single spectrum as an array
+```@example
+my_spectrum = [x y_peak]
+centroid_peak = centroid(my_spectrum)
+```
+
+## Example 4: Centroids of an array of y spectra
+```@example
+ys = [y_peak y_peak y_peak y_peak]
+centroid_peaks = centroid(x, ys)
+```
+
+## Example 5: Centroids of a vector of x-y spectra
+```@example
+vector_spectra = [[x y_peak], [x y_peak], [x y_peak]]
+centroid_peaks = centroid(vector_spectra)
+````
+
+# Notes
+- The optional smoothing operation uses an external function (`smooth`) and accepts additional parameters via `kwargs...`.
+- Ensure that input dimensions are consistent (e.g., matching lengths for `x` and `y`, or proper formatting for matrices).
 """
-function centroid(x::Array{Float64}, y::Array{Float64}; smoothing::Bool = false, kwargs...)
-
-    y_ = copy(y)
-
-    if smoothing
-        for i in 1:size(x, 2)
-            y_[:, i] = smooth(x[:, i], y[:, i]; kwargs...)
-        end
-    end
-
-    return sum(y_ ./ sum(y_, dims=1) .* x, dims=1)
+function centroid(x::Vector{Float64}, y::Vector{Float64}; smoothing::Bool = false, kwargs...)
+    smoothing == true ?  out = smooth(x, y; kwargs...) : out = deepcopy(y)
+    return sum(out ./ sum(out) .* x)
+end
+function centroid(spectrum::Matrix{Float64}; smoothing::Bool = false, kwargs...)
+    # treat a 2 column spectrum
+    return centroid(spectrum[:, 1], spectrum[:, 2]; smoothing=smoothing, kwargs...)
+end
+function centroid(x::Vector{Float64}, y::Matrix{Float64}; smoothing::Bool = false, kwargs...)
+    # treat an array of y spectra
+    return [centroid(x, y[:, i]; smoothing=smoothing, kwargs...) for i = 1:size(y, 2)]
+end
+function centroid(spectra::Vector{<:Matrix}; smoothing::Bool = false, kwargs...)
+    # treat a list of x-y spectra
+    return [centroid(sp; smoothing=smoothing, kwargs...) for sp in spectra]
 end
