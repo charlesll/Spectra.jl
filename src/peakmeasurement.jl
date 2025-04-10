@@ -48,10 +48,9 @@ Centroïd is calculated as sum(y./sum(y).*x).
 """
 function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
-    if x[end,1] < x[1,1]
-        x = flipdim(x,1)
-        y = flipdim(y,1)
-    end
+    sp = flipsp([x y])
+    x = deepcopy(sp[:,1])
+    y = deepcopy(sp[:,2])
 
 	if smoothing == "yes"
     	y_smo = vec(smooth(x,y,method = method, window_length=window_length, polyorder=polyorder))

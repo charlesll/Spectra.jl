@@ -19,17 +19,32 @@ For maintaining your packages up-to-date, something critical with the fast evolu
 
 	Pkg.update()
 
-Installation of Spectra is easy:
+## Installation
 
-	Pkg.add("Spectra")
+Two ways of using Spectra: [1] with using a cloud-computing approach and [2] with installing everything on your computer.
 
-See the Installation section for further details, in particular for Windows users.
+[1] [JuliaHub](https://juliahub.com/) allows you to run Julia in your browser. You still need to add Spectra. To do so, run a notebook, and in the first instance, type
+
+```julia
+Using Pkg
+Pkg.add("Spectra")
+```
+
+Everything should install without trouble. Requirements in Spectra are extensive and will provide you all the packages needed by Spectra's functions and examples.
+
+[2] You can download the current version of Julia and follow the [installation instruction](http://julialang.org/downloads/). Then, type `]` in the Julia REPL shell. You should see `Pkg>` instead of `julia>` on the prompt. If yes, do
+
+```julia-repl
+Pkg> add Spectra
+```
+
+## Examples
+
+Examples are available in the [examples folder of Spectra](https://github.com/charlesll/Spectra/tree/master/examples).
+
+## Contributing
 
 Any help developing and maintaining this Spectra package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra are not exhaustive, and a little help to add new ones will be more that welcome.
-
-# Examples
-
-Examples are available in the examples folder of Spectra (https://github.com/charlesll/Spectra/tree/master/examples).
 
 ## Citing Spectra
 

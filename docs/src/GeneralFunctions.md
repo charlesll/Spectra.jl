@@ -5,11 +5,14 @@
 The following functions are useful when generating peaks with various shapes. See the examples for using them during peak fitting for instance.
 
 ```@docs
+gaussian
+lorentzian
+pseudovoigt
 gaussiennes
-normal_dist
 lorentziennes
-pearson7
 pseudovoigts
+normal_dist
+pearson7
 ```
 
 ## Integration

@@ -11,8 +11,67 @@
 #
 #############################################################################
 # Helper functions for baseline methods
-function gaussian(x, a, b, c)
-    return a * exp.(-log(2) * ((x .- b) ./ c).^2)
+
+"""
+	gaussian(x, amplitude, center, width)
+	gaussian(x, p)
+
+Gaussian function with parameters amplitude, center, width or a vector p = [amplitude, center, width]
+
+# Notes:
+- width is here the half-width at half maximum (hwhm) of the gaussian peak, and is related to the standard deviation sigma by: hwhm = sqrt(2*log(2)) * sigma
+- gaussian(x, p) is a shorthand for gaussian(x, p[1], p[2], p[3])
+"""
+function gaussian(x, amplitude, center, width)
+    return amplitude * exp.(-log(2) * ((x .- center) ./ width).^2)
+end
+function gaussian(x, p)
+    return gaussian(x, p[1], p[2], p[3])# p = [amplitude, center, width]
+end
+
+
+"""
+	lorentzian(x, amplitude, center, width)
+	lorentzian(x, p)
+
+Lorentzian function with parameters amplitude, center, width or a vector p = [amplitude, center, width]
+
+# Notes:
+- width is here the half-width at half maximum (hwhm) of the lorentzian peak
+- lorentzian(x, p) is a shorthand for lorentzian(x, p[1], p[2], p[3])
+"""
+function lorentzian(x, amplitude, center, width)
+    return amplitude ./ (1.0 .+ ((x .-center) ./ width).^2)
+end
+function lorentzian(x, p)
+    # p = [amplitude, center, width]
+    return lorentzian(x, p[1], p[2], p[3])
+end
+
+"""
+	pseudovoigt(x, amplitude, center, width, lorentzian_fraction)
+	pseudovoigt(x, p)
+
+Pseudovoigt function with parameters amplitude, center, width, lorentzian_fraction or a vector p = [amplitude, center, width, lorentzian_fraction]
+
+Calculated as lorentzian_fraction*lorentzian + (1 - lorentzian_fraction)*gaussian
+
+# Notes:
+- width is here the half-width at half maximum (hwhm) of the pseudo-voight peak
+- pseudovoigt(x, p) is a shorthand for lorentzian(x, p[1], p[2], p[3], p[4])
+- lorentzian_fraction is a value between 0 and 1 that controls the mixing between Gaussian and Lorentzian
+"""
+function pseudovoigt(x, amplitude, center, width, lorentzian_fraction)
+    g = gaussian(x, amplitude, center, width)
+    l = lorentzian(x, amplitude, center, width)
+    return (1-lorentzian_fraction) * g + lorentzian_fraction * l
+end
+function pseudovoigt(x, p)
+    # p = [amplitude, center, width, fraction]
+    # fraction controls mixing between Gaussian and Lorentzian
+    g = gaussian(x, p[1:3])
+    l = lorentzian(x, p[1:3])
+    return p[4] * g + (1 - p[4]) * l
 end
 
 function funexp(x, a, b, c)

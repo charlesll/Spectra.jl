@@ -28,4 +28,6 @@ Mysen, B. O., L. W. Finger, D. Virgo, and F. A. Seifert. 1982. “Curve-Fitting 
 
 Shuker, Reuben, and Robert Gammon. 1970. “Raman-Scattering Selection-Rule Breaking and the Density of States in Amorphous Materials.” Physical Review Letters 25 (4): 222–25.
 
+Tarantola, A. (2005) Inverse problem theory and methods for model parameter estimation, 342 p. Society for Industrial and Applied Mathematics, Philadelphia, PA.
+
 Woltring, 1986, A FORTRAN package for generalized, cross-validatory spline smoothing and differentiation. Adv. Eng. Softw. 8, 104-113.

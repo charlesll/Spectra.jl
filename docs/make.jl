@@ -1,7 +1,19 @@
 push!(LOAD_PATH,"../src/")
 using Documenter, Spectra
 
-makedocs(sitename="Spectra documentation", format = Documenter.HTML(prettyurls = false))
+makedocs(sitename="Spectra documentation", 
+pages = [
+        "index.md",
+        "PreProcessing" => "PreProcessing.md",
+        "Baseline" => "Baselines.md",
+        "Smoothing" => "Smoothing.md",
+        "Functions" => "GeneralFunctions.md",
+        "Peak Fitting" => "PeakFitting.md",
+        "Machine Learning" => "MachineLearning.md",
+        "Tips" => "Tips.md",
+        "References" => "References.md",
+    ],
+format = Documenter.HTML(prettyurls = false))
 
 #deploydocs(
 #	repo = "github.com/charlesll/Spectra.jl.git",

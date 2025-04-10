@@ -17,28 +17,24 @@
 """
 	bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np", ese::Array{Float64} = [0.0])
 
-Inputs
-------
+# Inputs
+	`x: Array{Float64}`: the x axis. It can have multiple columns.
+	`y: Array{Float64}`: the y axis. It can have multiple columns.
 
-	x: Array{Float64}, the x axis. It can have multiple columns.
+# Options
+- `boottype: ASCIIString`: either "np" or "p", this is the type of bootstrapping performed. "np" performes a non-parametric resampling fo the dataset with replacement. "p" performs a parametric resampling. The data are resample from a gaussian distribution centered on the y values with errors that should be provided in the ese variable.
+- `ese: Array{Float64}`: containing the errors affecting the y values that are used during parametric bootstrapping.
 
-	y: Array{Float64}, the y axis. It can have multiple columns.
-
-Options
--------
-
-	boottype: ASCIIString, either "np" or "p", this is the type of bootstrapping performed. "np" performes a non-parametric resampling fo the dataset with replacement. "p" performs a parametric resampling. The data are resample from a gaussian distribution centered on the y values with errors that should be provided in the ese variable.
-
-	ese: Array{Float64}, containing the errors affecting the y values that are used during parametric bootstrapping.
-
-Outputs
--------
-
-	b_x_f: Array{Float64}, the bootstrapped x values
-
-	b_y_f: Array{Float64}, the bootstrapped y values
+# Outputs
+- `b_x_f:Array{Float64}`: the bootstrapped x values
+- `b_y_f:Array{Float64}`: the bootstrapped y values
 
 The bootstrap function can be embedded in a for loop, and will each time produce a different dataset. Performing K times the bootstrapping and fitting each time the model will allow to estimate the error distribution on the peak parameters. This technic has the advantage of making no prior assumption on the probability distribution functions of parameters errors. However, it is  much more time consuming that using the covariance matrix.
+
+# References
+- Efron, B. 1979. “Bootstrap Methods: Another Look at the Jackknife.” The Annals of Statistics 7 (1): 1–26.
+- Efron, Bradley. 1981. “Nonparametric Estimates of Standard Error: The Jackknife, the Bootstrap and Other Methods.” Biometrika 68 (3): 589–99. doi:10.1093/biomet/68.3.589.
+- Efron, B., and Tibshirani, R. 1994. An Introduction to the Bootstrap. CRC press.
 
 """
 function bootsample(x::Array{Float64}, y::Array{Float64}; boottype::String = "np", ese::Array{Float64} = [0.0])

@@ -15,22 +15,37 @@
 #############################################################################
 
 """
-
 	trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
 
-Trapezoidal integration. This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).
+	Calculates the area under a curve defined by `x` and `y` values using trapezoidal integration. 
+	
+It is particularly useful for applications such as spectrum normalization, area comparison, and other numerical integration tasks.
 
-Inputs
------
-	x: Vector{Float64}
-		x values
-	y: Vector{Float64}
-		y values.
+# Arguments
+- `x::Vector{Tx}`: The x-axis values (e.g., time points or wavelengths), where `Tx <: Number`.
+- `y::Vector{Ty}`: The y-axis values (e.g., signal intensities), where `Ty <: Number`.
 
-Outputs
--------
-	area: Vector{Float64}
-		trapezoidal integration value.
+# Returns
+- `area::Tx + Ty`: The computed integral value using the trapezoidal rule.
+
+# Examples
+## Example 1: Compute the area under a curve:
+```julia
+x = [0.0, 1.0, 2.0, 3.0]
+y = [0.0, 1.0, 4.0, 9.0]
+area = trapz(x, y)
+```
+
+## Example 2: Handle edge cases:
+```julia
+x = [1.0]
+y = [2.0]
+area = trapz(x, y) # Returns zero since integration requires at least two points.
+```
+
+# Notes
+- The input vectors `x` and `y` must have the same length; otherwise, an error is raised.
+- If the input contains only one point (`length(x) == 1`), the function returns zero as no integration can be performed.
 
 """
 function trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}

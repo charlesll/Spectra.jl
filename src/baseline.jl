@@ -14,39 +14,51 @@
 #############################################################################
 """
 
-    baseline(x::Vector{Float64}, y::Union{Vector{Float64}, Matrix{Float64}}; roi::Matrix{Float64}, method::String, kwargs...)
+    baseline(x_input::Vector{Float64}, y_input::Vector{Float64}; roi::Union{Matrix{Float64}, Nothing} = nothing, method::String = "polynomial", kwargs...)
+    baseline(x_input::Vector{Float64}, y_input::Matrix{Float64}; roi::Union{Matrix{Float64}, Nothing} = nothing,  method::String = "polynomial", kwargs...)
 
-Allows subtracting a baseline under a spectrum or a set of spectra `y` sampled at `x` values, using a specific `method`.
+Subtracts a baseline from a spectrum or a set of spectra using specified methods.
 
-# Optional arguments
-- roi: regions of interest, organized per line. (default = nothing)
-- method: baseline method to use. (default = "polynomial")
-    - "polynomial": polynomial fitting ("poly" also accepted)
-    - "Dspline": 1D spline from Dierckx library
-    - "gcvspline": spline using Gcvspl (Generalized Cross Validation Spline)
-    - "exp": exponential background
-    - "log": logarithmic background
-    - "rubberband": rubberband baseline fitting
-    - "als": baseline least square fitting
-    - "arPLS": asymmetrically reweighted penalized least squares
-    - "drPLS": doubly reweighted penalized least squares
-- polynomial_order::Int : degree of polynomial (default=1)
-- s::Float64 : spline smoothing coefficient (default=2.0)
-- lambda::Float64 : smoothness parameter for ALS, arPLS, drPLS, Whittaker
-- p::Float64: parameter for ALS algorithm (default=0.01)
-- ratio::Float64: parameter for arPLS and drPLS (default=0.01)
-- niter::Int: number of iterations for ALS and drPLS
-- eta::Float64: roughness parameter for drPLS (default=0.5)
-- d::Int: order of differences for the ALS, arPSL, drPLS and Whittaker algorithms (default = 2)
-- d_gcv::Int: order of differences for the GCV spline algorithm (default=3)
-- p0_exp::Vector{Float64}: starting parameters for exp baseline (default=[1.,1.,1.])
-- p0_log::Vector{Float64}: starting parameters for log baseline (default=[1.,1.,1.,1.])
+This function performs baseline correction on spectral data `y` sampled at `x` values.
+It supports various baseline fitting methods and allows optional constraints within
+regions of interest (`roi`).
+
+# Arguments
+- `x_input::Vector{Float64}`: The x-axis values (e.g., wavelengths or time points).
+- `y_input::Union{Vector{Float64}, Matrix{Float64}}`: The spectral data to correct. Can be a single spectrum (vector) or multiple spectra (matrix).
+- `roi::Union{Matrix{Float64}, Nothing}`: Regions of interest for baseline fitting, specified as a matrix where each row defines a range `[start, end]`. Default is `nothing`.
+- `method::String`: The baseline fitting method. Default is `"polynomial"`. Supported methods:
+    - `"polynomial"` or `"poly"`: Polynomial fitting.
+    - `"Dspline"`: 1D spline fitting using Dierckx library.
+    - `"gcvspline"`: Generalized Cross Validation Spline fitting.
+    - `"exp"`: Exponential background fitting.
+    - `"log"`: Logarithmic background fitting.
+    - `"rubberband"`: Rubberband baseline fitting.
+    - `"als"`: Asymmetric least squares baseline fitting.
+    - `"arPLS"`: Asymmetrically reweighted penalized least squares fitting.
+    - `"drPLS"`: Doubly reweighted penalized least squares fitting.
+
+# Keyword Arguments
+Optional parameters for specific methods:
+- `polynomial_order::Int`: Degree of polynomial for polynomial fitting. Default is `1`.
+- `s::Float64`: Smoothing coefficient for spline methods. Default is `2.0`.
+- `lambda::Float64`: Smoothness parameter for ALS, arPLS, drPLS, and Whittaker methods.
+- `p::Float64`: Parameter for ALS algorithm. Default is `0.01`.
+- `ratio::Float64`: Parameter for arPLS and drPLS algorithms. Default is `0.01`.
+- `niter::Int`: Number of iterations for ALS and drPLS algorithms. Default is `10`.
+- `eta::Float64`: Roughness parameter for drPLS algorithm. Default is `0.5`.
+- `d::Int`: Order of differences for smoothing algorithms. Default is `2`.
+- `d_gcv::Int`: Order of differences for GCV spline algorithm. Default is `3`.
+- `p0_exp::Vector{Float64}`: Initial parameters for exponential fitting. Default is `[1., 1., 1.]`.
+- `p0_log::Vector{Float64}`: Initial parameters for logarithmic fitting. Default is `[1., 1., 1., 1.]`.
 
 # Returns
-- corrected_signal: the baseline-corrected signal
-- baseline: the calculated baseline
+- `corrected_signal::Union{Vector{Float64}, Matrix{Float64}}`: Baseline-corrected signal(s).
+- `baseline::Union{Vector{Float64}, Matrix{Float64}}`: Calculated baseline(s).
 
-# Example
+# Examples
+## Correcting a single spectrum:
+
 ```julia-repl
 x = collect(50:1.0:500)
 background = 10.0 .* sin.(x./50.0) + 0.1.*x
@@ -54,18 +66,18 @@ y = 50.0 .* exp.(-log(2) .* ((x .-250.0)./1.0).^2) + background
 y_corrected, y_baseline = baseline(x, y, method="drPLS")
 ```
 
-You can also constrain the fit of the baseline in specific regions, for instance between 50 and 200, and 300 and 400:
+## Correcting with regions of interest, GCV spline method:
 ```julia-repl
 roi = [[50.0, 200.0], [300.0, 500.0]]
 y_corrected, y_baseline = baseline(x, y, roi=roi, method="gcvspline")
 ```
 
-Here the gcvspline method automatically adjusts the smoothing coefficient `s`, but you could also define it:
+You can also adjust manually the smoothing spline coefficient `s`:
 ```julia-repl
 y_corrected, y_baseline = baseline(x, y, roi=roi, method="gcvspline", s=1.0)
 ```
 
-You can provide vector or arrays of y values:
+## Using a vector or arrays of y values:
 ```julia-repl
 using Spectra, Plots
 

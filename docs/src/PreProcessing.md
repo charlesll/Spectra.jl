@@ -12,16 +12,9 @@ tlcorrection
 
 In case your spectra are shifted from a reference value, Spectra offers several functions that allows you to correct it from this shift.
 
-To correct a spectrum from a shift of P wavenumbers, you can simply call:
-
 ```@docs
 xshift_direct
-```
-
-Sometime, two signals from the same mineral show a shift in the X axis, while they share a common X axis. To correct from such thing, you can use the function:
-
-```@docs
-xshift_correction
+correct_xshift
 ```
 
 ## Array manipulation
@@ -33,7 +26,7 @@ put them back with increasing frequencies (necessary for some algo)
 flipsp
 ```
 
-You can also resample a signal or several signals at wanted x_new values with resample()
+## Resampling
 
 ```@docs
 resample
@@ -51,4 +44,9 @@ despiking
 
 ```@docs
 normalise
+```
+## Signal extraction
+
+```@docs
+extract_signal
 ```

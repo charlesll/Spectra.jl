@@ -29,6 +29,8 @@ using QHull
 using RegularizationTools, DataInterpolations
 using DSP
 using StagedFilters
+using ForwardDiff
+using Plots
 
 # For PyCall modules
 const rampy = PyNULL()
@@ -47,16 +49,18 @@ include("tlcorrection.jl")
 include("deprecated.jl")
 include("ml.jl")
 include("peakmeasurement.jl")
+include("fitting.jl")
 
 #From integrale.jl
 export trapz, bandarea
 
 #From functions.jl
 export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
-export funexp, funlog, gaussian
+export gaussian, lorentzian, pseudovoigt
+export funexp, funlog
 
 # From preprocessing.jl
-export xshift_inversion, xshift_direct, xshift_correction
+export xshift_direct, correct_xshift
 export flipsp, resample, normalise, despiking, get_portion_interest, extract_signal
 
 #From baseline.jl
@@ -77,5 +81,8 @@ export mlregressor, mlexplorer
 
 # From peakmeasurement
 export peakmeas, centroid
+
+# From fitting
+export fit_peaks
 
 end # module

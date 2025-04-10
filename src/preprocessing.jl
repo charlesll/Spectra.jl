@@ -77,7 +77,7 @@ new_spectra_list = corrected(old_spectra_list, shift)
 function correct_xshift(x::Vector{Float64}, y::Vector{Float64}, shift::Float64)
     # method 1: y vector signal associated with x
     interp = AkimaInterpolation(y, x-shift; extrapolation_right=ExtrapolationType.Extension, extrapolation_left=ExtrapolationType.Extension)
-    return interp(x)
+    return interp.(x)
 end
 function correct_xshift(x::Vector{Float64}, y::Matrix{Float64}, shift::Float64)
     # method 2: x vector and an array of y signals
@@ -229,7 +229,7 @@ function resample(x::Vector{Float64},y::Vector{Float64},x_new::Vector{Float64}; 
     p = sortperm(x)# we automatically sort the data
     interp = getfield(DataInterpolations, Symbol(method))(y[p], x[p]; extrapolation_right=ExtrapolationType.Extension, extrapolation_left=ExtrapolationType.Extension)
     
-    return interp(x_new)
+    return interp.(x_new)
 end
 function resample(x::Vector{Float64},y::Matrix{Float64},x_new::Vector{Float64}; method::String = "AkimaInterpolation")
     # this method treats an array of y signals with a common X
