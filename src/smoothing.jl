@@ -146,8 +146,8 @@ Smooth a signal using various smoothing methods.
 
 # Example
 
-```julia
-using Spectra
+```@example
+using Spectra, Plots
 
 x = collect(1:10)
 y = [1.0, 2.5, 3.0, 4.2, 5.1, 6.0, 7.3, 8.1, 9.4, 10.0]
@@ -155,7 +155,8 @@ method = "hanning"
 window_length = 3
 
 smoothed_y = smooth(x, y; method=method, window_length=window_length)
-println(smoothed_y)
+p1 = plot(x, [y smoothed_y], label=["Original" "Smoothed"], title="Smoothing Example", xlabel="X-axis", ylabel="Y-axis")
+display(p1)
 ```
 
 # Errors

@@ -46,14 +46,14 @@ Centroïd is calculated as sum(y./sum(y).*x).
 	`hwhm: Float6:: peak` half-width at half-maximum
 	`centroïd::Float64`: peak centroid
 """
-function peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
+function peakmeas(x::Vector{Float64}, y::Vector{Float64}; smoothing = "yes", method = "savgol", window_length=5, polyorder=2, ese_y=1., y_smo_out=false)
     ### PRELIMINARY CHECK: INCREASING SIGNAL
     sp = flipsp([x y])
     x = deepcopy(sp[:,1])
     y = deepcopy(sp[:,2])
 
 	if smoothing == "yes"
-    	y_smo = vec(smooth(x,y,method = method, window_length=window_length, polyorder=polyorder))
+    	y_smo = smooth(x,y,method = method, window_length=window_length, polyorder=polyorder)
 	else
 		y_smo = collect(y)
 	end
@@ -153,7 +153,7 @@ centroid_peaks = centroid(x, ys)
 ```@example
 vector_spectra = [[x y_peak], [x y_peak], [x y_peak]]
 centroid_peaks = centroid(vector_spectra)
-````
+```
 
 # Notes
 - The optional smoothing operation uses an external function (`smooth`) and accepts additional parameters via `kwargs...`.
@@ -174,4 +174,125 @@ end
 function centroid(spectra::Vector{<:Matrix}; smoothing::Bool = false, kwargs...)
     # treat a list of x-y spectra
     return [centroid(sp; smoothing=smoothing, kwargs...) for sp in spectra]
+end
+
+"""
+    find_peaks(
+    x::Vector{Float64}, 
+    y::Vector{Float64};
+    smoothing::Bool = false,
+    window_size::Int = 20,
+    min_height::Float64 = 0., max_height::Float64 = Inf,
+    min_prom::Float64 = 0., max_prom::Float64 = Inf,
+    min_width::Float64 = 0., max_width::Float64 = Inf, relwidth::Float64 = 0.5,
+    kwargs...
+    )
+
+Detects peaks in a spectrum using the Peaks.jl package. This function identifies peaks in spectral data (`x`, `y`) based on specified criteria such as height, prominence, and width. It optionally applies smoothing to the signal before peak detection.
+
+# Arguments
+- `x::Vector{Float64}`: The x-axis values (e.g., wavelengths or time points).
+- `y::Vector{Float64}`: The y-axis values (e.g., intensities).
+- `smoothing::Bool`: Whether to apply smoothing to the signal before peak detection. Default is `false`.
+- `window_size::Int`: Size of the window for peak detection (in indices). Default is `20`.
+- `min_height::Float64`: Minimum height of peaks to consider. Default is `0.0`.
+- `max_height::Float64`: Maximum height of peaks to consider. Default is `100.0`.
+- `min_prom::Float64`: Minimum prominence of peaks to consider. Default is `0.0`.
+- `max_prom::Float64`: Maximum prominence of peaks to consider. Default is infinity (`Inf`).
+- `min_width::Float64`: Minimum width of peaks to consider (in indices). Default is `0.0`.
+- `max_width::Float64`: Maximum width of peaks to consider (in indices). Default is infinity (`Inf`).
+- `relwidth::Float64`: Relative width parameter for peak widths. Default is `0.5`.
+- Additional keyword arguments (`kwargs...`) are passed to the smoothing function if smoothing is enabled.
+
+# Returns
+A named tuple containing:
+- `peak_positions::Vector{Float64}`: X positions of detected peaks.
+- `peak_heights::Vector{Float64}`: Heights of detected peaks.
+- `peak_prominences::Vector{Float64}`: Prominences of detected peaks.
+- `peak_hwhms::Vector{Float64}`: Half-width at half maximum values for detected peaks.
+- `peak_centroids::Vector{Float64}`: Centroid positions for detected peaks.
+- A plot object showing the detected peaks (`plot_peaks`), using the recipe from the Peaks.jl package.
+
+# Examples
+
+## Example 1: Basic peak detection
+```@example
+x = collect(1:1.0:100)
+y = gaussian(x, 1.0, 30.0, 3.0) + lorentzian(x, 1.0, 60.0, 6.0) + 0.01*randn(length(x))
+
+result = find_peaks(x, y; smoothing=false, window_size=10, min_height=0.2)
+
+println("Peak positions: ", result.peak_positions)
+println("Peak heights: ", result.peak_heights)
+display(result.plot_peaks)
+```
+
+## Example 2: Peak detection with gcvspline smoothing
+```@example
+x = collect(1:1.0:100)
+y = gaussian(x, 1.0, 30.0, 3.0) + lorentzian(x, 1.0, 60.0, 6.0) + 0.01*randn(length(x))
+
+result = find_peaks(x, y; smoothing=true, method="gcvspline", window_size=10, min_height=0.2)
+
+println("Peak positions: ", result.peak_positions)
+println("Peak heights: ", result.peak_heights)
+display(result.plot_peaks)
+```
+
+# Notes
+- this function is a convenient wrapper around the Peaks.jl functionalities to find peaks in a vector y. For more control, you can directly use the Peaks.jl functions, the package should be available in your environment as it is a dependency for Spectra!
+- for smoothing, try the `method = "gcvspline"` or `method = "savgol"` options, which are the most efficient for peak detection.
+- the `window_size` parameter is not in the units of `x`, but in the units of index. For example, if you have 1000 points in your x-axis and you want to detect peaks with a window of 10 points, set `window_size=10`.
+- the `min_width` and `max_width` parameters are also not in the units of `x`, but in the units of index. For example, if you have 1000 points in your x-axis and you want to detect peaks with a width of 10 points, set `min_width=10` and `max_width=10`.
+- the `relwidth` parameter is a relative width parameter for peak widths. It is used to calculate the width of the peak at a certain relative height. For example, if you set `relwidth=0.5`, it will calculate the width of the peak at half its maximum height.
+
+"""
+function find_peaks(
+    x::Vector{Float64}, 
+    y::Vector{Float64};
+    smoothing::Bool = false, # do you want smoothing?
+    window_size::Int = 20, # what is the size of the window for peak detection? warning => not in the units of X but in the units of index!
+    min_height::Float64 = 0., max_height::Float64 = Inf, # options for peak heights
+    min_prom::Float64 = 0., max_prom::Float64 = Inf, # options for peak prominences
+    min_width::Float64 = 0., max_width::Float64 = Inf, relwidth::Float64 = 0.5, # option for widths, warning min/max are not in the units of X!
+    kwargs... # additional arguments for the smoothing function
+)
+    # Validate inputs
+    if length(x) != length(y)
+        error("Vectors 'x' and 'y' must have the same length.")
+    end
+    if window_size <= 0
+        error("'window_size' must be a positive integer.")
+    end
+
+    # Apply optional smoothing
+    y_input = smoothing ? smooth(x, y; kwargs...) : deepcopy(y)
+
+    # Peak detection steps
+    pks_init = findmaxima(y_input, window_size)
+    pks_1 = peakheights(pks_init; min=min_height, max=max_height)
+    pks_2 = peakproms(pks_1; min=min_prom, max=max_prom)
+    pks_3 = peakwidths(pks_2; min=min_width, max=max_width)
+    pks_3bis = peakwidths(pks_2; relheight=relwidth)
+
+    # Calculate HWHMs
+    hwhms = [(x[round(Int, i[2])] - x[round(Int, i[1])]) / 2 for i in pks_3.edges]
+
+    # Calculate centroids
+    centroids = Float64[]
+    for i in pks_3bis.edges
+        lb = x[round(Int, i[1])]
+        hb = x[round(Int, i[2])]
+        push!(centroids, centroid(x[lb .< x .< hb], y_input[lb .< x .< hb]))
+    end
+
+    # Return results as a named tuple
+    return (
+        peak_positions=x[pks_3.indices],
+        peak_heights=pks_3.heights,
+        peak_prominences=pks_3.proms,
+        peak_hwhms=hwhms,
+        peak_centroids=centroids,
+        plot_peaks=plotpeaks(x, y_input; peaks=pks_3.indices, prominences=true, widths=true)
+    )
 end

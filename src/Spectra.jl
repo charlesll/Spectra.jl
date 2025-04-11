@@ -31,6 +31,7 @@ using DSP
 using StagedFilters
 using ForwardDiff
 using Plots
+using Peaks
 
 # For PyCall modules
 const rampy = PyNULL()
@@ -80,7 +81,7 @@ export tlcorrection
 export mlregressor, mlexplorer
 
 # From peakmeasurement
-export peakmeas, centroid
+export peakmeas, centroid, find_peaks
 
 # From fitting
 export fit_peaks

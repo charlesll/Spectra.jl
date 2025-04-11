@@ -120,7 +120,7 @@ function baseline(
 	y = StatsBase.transform(Y_scaler, y_input)
 
     # List of methods that require roi
-    methods_requiring_roi = ["polynomial", "Dspline", "gcvspline", "exp", "log", "whittaker"]
+    methods_requiring_roi = ["polynomial", "poly", "Dspline", "gcvspline", "exp", "log", "whittaker"]
 
     if method in methods_requiring_roi
         # Raise an error if roi is not provided and the method requires it

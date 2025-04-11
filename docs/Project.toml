@@ -1,3 +1,4 @@
 [deps]
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Peaks = "18e31ff7-3703-566c-8e60-38913d67486b"
 Spectra = "391af1a9-06f1-59d3-8d21-0be089654739"

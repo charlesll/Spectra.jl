@@ -150,7 +150,7 @@ Resample a signal or signals onto a new set of x-coordinates using interpolation
     - First column: x-coordinates
     - Second column: y-values (signal intensities)
 - `x_new::Vector{Float64}`: The new x-coordinates onto which the signal(s) will be resampled.
-- `method::String="AkimaInterpolation"`: The interpolation method to use. Options include:
+- `method::String="LinearInterpolation"`: The interpolation method to use. Options include:
     - methods available in the `DataInterpolations.jl` package: [https://docs.sciml.ai/DataInterpolations/stable/methods/](https://docs.sciml.ai/DataInterpolations/stable/methods/).
 
 # Returns
@@ -221,17 +221,17 @@ display(p3)
 ```
 
 """
-function resample(x::Vector{Float64},y::Vector{Float64},x_new::Vector{Float64}; method::String = "AkimaInterpolation")
+function resample(x::Vector{Float64},y::Vector{Float64},x_new::Vector{Float64}; method::String = "LinearInterpolation")
     # this is the parent method: treat x-y Vectors
     if length(x) != length(y)
         throw(ArgumentError("x and y must have the same length"))
     end
     p = sortperm(x)# we automatically sort the data
-    interp = getfield(DataInterpolations, Symbol(method))(y[p], x[p]; extrapolation_right=ExtrapolationType.Extension, extrapolation_left=ExtrapolationType.Extension)
+    interp = getfield(DataInterpolations, Symbol(method))(y[p], x[p]; extrapolation=ExtrapolationType.Linear)
     
     return interp.(x_new)
 end
-function resample(x::Vector{Float64},y::Matrix{Float64},x_new::Vector{Float64}; method::String = "AkimaInterpolation")
+function resample(x::Vector{Float64},y::Matrix{Float64},x_new::Vector{Float64}; method::String = "LinearInterpolation")
     # this method treats an array of y signals with a common X
     out = ones((size(x_new,1), size(y,2)))
     for i = 1:size(y,2)
@@ -239,7 +239,7 @@ function resample(x::Vector{Float64},y::Matrix{Float64},x_new::Vector{Float64}; 
     end
     return out
 end
-function resample(multiple_spectra::Vector{<:Matrix{Float64}},x_new::Vector{Float64}; method::String = "AkimaInterpolation")
+function resample(multiple_spectra::Vector{<:Matrix{Float64}},x_new::Vector{Float64}; method::String = "LinearInterpolation")
     # this method treats a list of input spectra
     out = ones((size(x_new,1), size(multiple_spectra,1)))
     for (index,i) in enumerate(multiple_spectra)

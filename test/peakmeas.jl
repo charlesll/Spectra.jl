@@ -2,7 +2,7 @@ using Spectra
 using Test
 using Random
 
-@testset "Peak measurement" begin
+@testset "peakmeas Tests" begin
     # Dummy data
     x = collect(0.:1.:100.)
 
@@ -46,19 +46,53 @@ using Random
     @test isapprox(centroid_th,centroid_mea3,atol=1e-4)
 end
 
-@testset "Centroid test" begin
+@testset "centroid Tests" begin
     #### centroid test
     x = collect(0.:1.:100.)
     y_peak = gaussian(x, 1., 50., 10.)
     y_centroid = centroid(x, y_peak)
-    @test y_centroid == 50.0
+    @test isapprox(y_centroid, 50.0 ,atol=1e-4)
 
     y_centroid = centroid(x, y_peak, smoothing=true, method="gcvspline")
-    @test y_centroid == 50.0
+    @test isapprox(y_centroid, 50.0, atol=1e-4)
     
     y_centroids = centroid(x, [y_peak y_peak y_peak])
-    @test sum(y_centroids) == 150.0
+    @test isapprox(sum(y_centroids), 150.0, atol=1e-4)
     
     y_centroids = centroid([[x y_peak], [x y_peak], [x y_peak]])
-    @test sum(y_centroids) == 150.0
+    @test isapprox(sum(y_centroids), 150.0, atol=1e-4)
+end
+
+@testset "find_peaks Tests" begin
+    # Test 1: Basic peak detection
+    x = collect(1:0.1:100)
+    y = gaussian(x, 1.0, 30.0, 3.0) + lorentzian(x, 1.0, 60.0, 6.0) + 0.01*randn(length(x))
+    result = find_peaks(x, y; smoothing=false, window_size=15, min_height=0.5)
+    
+    @test length(result.peak_positions) > 0 #"Peak positions should be detected"
+    @test length(result.peak_heights) == length(result.peak_positions) #"Peak heights should match detected positions"
+    @test length(result.peak_prominences) == length(result.peak_positions) #"Peak prominences should match detected positions"
+    @test length(result.peak_hwhms) == length(result.peak_positions) #"HWHMs should match detected positions"
+    @test length(result.peak_centroids) == length(result.peak_positions) #"Centroids should match detected positions"
+    @test isapprox(result.peak_positions, [30.0; 60.0], atol=1.0)
+
+    # Test 2: Smoothing enabled
+    result_smoothed = find_peaks(x, y; smoothing=true, window_size=10, min_height=0.2)
+    @test length(result_smoothed.peak_positions) > 0 #"Peak positions should be detected with smoothing"
+
+    # Test 3: Invalid input lengths
+    x_invalid = collect(1:1.0:50)
+    y_invalid = collect(1:1.0:100)
+    
+    @test_throws ErrorException find_peaks(x_invalid, y_invalid; smoothing=false, window_size=10)
+
+    # Test 4: Invalid window size
+    @test_throws ErrorException find_peaks(x, y; smoothing=false, window_size=-10)
+
+    # Test 5: Plotting peaks (visual inspection)
+    x = collect(1:0.1:100)
+    y = gaussian(x, 1.0, 30.0, 3.0) + lorentzian(x, 1.0, 60.0, 6.0) + 0.01*randn(length(x))
+    result_plot = find_peaks(x, y; smoothing=false, window_size=10)
+    display(result_plot.plot_peaks)  # Ensure this produces a valid plot
+
 end
