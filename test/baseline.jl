@@ -3,12 +3,13 @@ using Test
 
 @testset "Baseline" begin
     # Dummy data
-    x = collect(0.:1.:100.)
-    y = collect(0.:1.:100.)
-    x2 = collect(-100.:0.1:100.)
-    y_poly4 = 1.0 .+ x2 .+ 0.25 .* x2.^2 + 0.0001 .* x2.^3 + 1.e-6 .* x2.^4
-    y_peak = y .+ 100.0 .* exp.(-log(2) .* ((x .- 50.0) ./ 5.0).^2) .+ 0.2 .* randn(size(x, 1))
-    roi = [0.0 40; 60. 100.0]
+    x = collect(0.0:1.0:100.0)
+    y = collect(0.0:1.0:100.0)
+    x2 = collect(-100.0:0.1:100.0)
+    y_poly4 = 1.0 .+ x2 .+ 0.25 .* x2 .^ 2 + 0.0001 .* x2 .^ 3 + 1.e-6 .* x2 .^ 4
+    y_peak =
+        y .+ 100.0 .* exp.(-log(2) .* ((x .- 50.0) ./ 5.0) .^ 2) .+ 0.2 .* randn(size(x, 1))
+    roi = [0.0 40; 60.0 100.0]
 
     # Testing baselines
     # Polynomial baseline (order 2)

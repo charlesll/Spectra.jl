@@ -39,15 +39,15 @@ p1 = plot(x, true_y); plot!(x, y); plot!(x, z), display(p1)
 Matlab version by Paul Eilers, 2003
 Julia translation by Charles Le Losq 2017, revised 2025
 """
-function whittaker(x::Vector{Float64}, y::Vector{Float64}, w::Vector{Float64}, lambda::Float64; d::Int=2)
-    
+function whittaker(
+    x::Vector{Float64}, y::Vector{Float64}, w::Vector{Float64}, lambda::Float64; d::Int=2
+)
     if length(x) != length(y)
         error("x must be the same length as y")
     elseif length(y) != length(w)
         error("w must be the same length as y")
     end
-        
-    
+
     # Check if x values are equally spaced
     differences = diff(x)
     is_equally_spaced = all(abs.(differences .- differences[1]) .< 1e-10)  # Tolerance for floating-point comparison
@@ -161,8 +161,8 @@ display(p1)
 
 # Errors
 - Throws an error if an unsupported or deprecated method is specified.
+- Throws an error if `window_length` is not a positive odd integer.
 - For Savitzky-Golay smoothing:
-    - Throws an error if `window_length` is not a positive odd integer.
     - Throws an error if `polyorder` is greater than or equal to `window_length`.
 - For Whittaker smoothing:
     - Throws an error if weights (`w`) are provided but do not match the length of `x`.
@@ -170,35 +170,45 @@ display(p1)
 # References
 - For Window-based filtering,see DSP.jl documentation: [https://docs.juliadsp.org/stable/windows/](https://docs.juliadsp.org/stable/windows/)
 """
-function smooth(x::Vector{Float64}, y::Vector{Float64}; 
-    method::String = "gcvspline", 
-    window_length::Int = 5, 
-    polyorder::Int = 2, 
-    lambda::Float64 = 10.0^5, 
-    d::Int = 2,
-    w = nothing,
-    d_gcv::Int = 3)
+function smooth(
+    x::Vector{Float64},
+    y::Vector{Float64};
+    method::String="gcvspline",
+    window_length::Int=5,
+    polyorder::Int=2,
+    lambda::Float64=10.0^5,
+    d::Int=2,
+    w=nothing,
+    d_gcv::Int=3,
+)
+    isodd(window_length) || error("window_length must be a positive odd integer")
+    window_length > 0 || error("window_length must be a positive odd integer")
+    polyorder > 0 || error("polyorder must be a positive integer")
+    polyorder < window_length || error("polyorder must be less than window_length")
 
     if method in ["GCVSmoothedNSpline", "MSESmoothedNSpline", "DOFSmoothedNSpline"]
-        error("The methods GCVSmoothedNSpline, MSESmoothedNSpline, and DOFSmoothedNSpline are deprecated and no longer supported.")
-    
+        error(
+            "The methods GCVSmoothedNSpline, MSESmoothedNSpline, and DOFSmoothedNSpline are deprecated and no longer supported.",
+        )
+
     elseif method == "gcvspline"
         # from the DataInterpolations package
-        smoother = RegularizationSmooth(y, x, d_gcv; alg =:gcv_svd)
+        smoother = RegularizationSmooth(y, x, d_gcv; alg=:gcv_svd)
         return smoother.(x)
-
 
     elseif method == "whittaker"
         if w == nothing
             w = ones(size(y))
         end
-        return whittaker(x, y, w, lambda, d=d)
+        return whittaker(x, y, w, lambda; d=d)
 
     elseif method in ["flat", "hanning", "hamming", "bartlett", "blackman"]
         # We use the DSP package, which allows a nearly direct translation of my Python code (thanks Perplexity AI)
 
         # Step 1: Extend the signal symmetrically
-        s = vcat(reverse(y[2:window_length]), y, reverse(y[end-window_length+1:end-1]))
+        s = vcat(
+            reverse(y[2:window_length]), y, reverse(y[(end - window_length + 1):(end - 1)])
+        )
 
         # Step 2: Create the smoothing window
         w = if method == "flat"  # Moving average
@@ -212,35 +222,34 @@ function smooth(x::Vector{Float64}, y::Vector{Float64};
 
         # Step 4: Adjust for edge effects
         shift = Int((length(y_filt) - length(y)) / 2)
-        return y_filt[shift+1:end-shift]
+        return y_filt[(shift + 1):(end - shift)]
 
     elseif method == "savgol"
         # Savitzky-Golay filter
-        if window_length % 2 == 0
-            error("window_length must be a positive odd integer")
-        end
-        if polyorder >= window_length
-            error("polyorder must be less than window_length")
-        end
-
+        # OLD CODE WITH STAGEDFILTERS, CREATE ISSUES AT THE BOUNDARY
         # Create type-stable output vector
-        smoothed = zeros(eltype(y),length(y)); # <--- wholesome, type stable code.
+        #smoothed = zeros(eltype(y), length(y)); # <--- wholesome, type stable code.
+        #return smooth!(SavitzkyGolayFilter{window_length,polyorder}, y, smoothed)
 
-        # Apply the Savitzky-Golay filter
-        return smooth!(SavitzkyGolayFilter{window_length, polyorder}, y, smoothed)
+        # NEW CODE WITH SavitzkyGolay.jl, no problem at the boundaries
+        sg = savitzky_golay(y, window_length, polyorder)
+        return sg.y
         
     else
         error("Unknown smoothing method: $method")
     end
 end
-function smooth(x::Vector{Float64}, y::Matrix{Float64}; 
-    method::String = "whittaker", 
-    window_length::Int = 5, 
-    polyorder::Int = 2, 
-    lambda::Float64 = 10.0^5, 
-    d::Int = 2,
-    w = nothing,
-    d_gcv::Int = 3)
+function smooth(
+    x::Vector{Float64},
+    y::Matrix{Float64};
+    method::String="whittaker",
+    window_length::Int=5,
+    polyorder::Int=2,
+    lambda::Float64=10.0^5,
+    d::Int=2,
+    w=nothing,
+    d_gcv::Int=3,
+)
     # Check if y is a matrix
     if ndims(y) != 2
         error("y must be a matrix")
@@ -254,13 +263,23 @@ function smooth(x::Vector{Float64}, y::Matrix{Float64};
             error("w must be the same size as y")
         end
     end
-    
+
     # Initialize an empty matrix for the smoothed output
     smoothed = zeros(eltype(y), size(y))
 
     # Loop through each column of y and apply the smoothing function
     for i in 1:size(y, 2)
-        smoothed[:, i] = smooth(x, vec(y[:, i]); method=method, window_length=window_length, polyorder=polyorder, lambda=lambda, d=d, w=w, d_gcv=d_gcv)
+        smoothed[:, i] = smooth(
+            x,
+            vec(y[:, i]);
+            method=method,
+            window_length=window_length,
+            polyorder=polyorder,
+            lambda=lambda,
+            d=d,
+            w=w,
+            d_gcv=d_gcv,
+        )
     end
     return smoothed
 end

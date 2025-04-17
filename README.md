@@ -6,9 +6,11 @@ email: lelosq@ipgp.fr
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.53940.svg)](http://doi.org/10.5281/zenodo.635346)
 
-Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia. Spectra.jl aim is to provide a simplest way to perform actions like baseline fitting and removal, or peak fitting for instance, while respecting the freedom offered by data treatment through using a computer code instead of a Graphic User Interface.
+Spectra.jl is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment under Julia. Spectra.jl aim is to provide a simplest way to perform actions like smoothing, baseline fitting and removal, or peak fitting for instance.
 
 # Documentation
+
+If you don't know Spectra, the first place to look into is the documentation!
 
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://charlesll.github.io/Spectra.jl/latest) [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://charlesll.github.io/Spectra.jl/stable)
 

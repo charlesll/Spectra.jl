@@ -37,7 +37,7 @@ Corrects a spectrum for a p shift in X. Used in xshift_correction.
 function xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
     spl = Spline1D(original_x-p, original_y)
     corrected_y = spl(original_x)
-	return original_x, corrected_y, p
+    return original_x, corrected_y, p
 end
 
 """
@@ -76,22 +76,26 @@ new_spectra_list = corrected(old_spectra_list, shift)
 """
 function correct_xshift(x::Vector{Float64}, y::Vector{Float64}, shift::Float64)
     # method 1: y vector signal associated with x
-    interp = AkimaInterpolation(y, x-shift; extrapolation_right=ExtrapolationType.Extension, extrapolation_left=ExtrapolationType.Extension)
+    interp = AkimaInterpolation(
+        y,
+        x-shift;
+        extrapolation_right=ExtrapolationType.Extension,
+        extrapolation_left=ExtrapolationType.Extension,
+    )
     return interp.(x)
 end
 function correct_xshift(x::Vector{Float64}, y::Matrix{Float64}, shift::Float64)
     # method 2: x vector and an array of y signals
     y_out = copy(y)
-    for i = 1:size(y,2)
-        y_out[:,i] = correct_xshift(x, y[:,i], shift)
+    for i in 1:size(y, 2)
+        y_out[:, i] = correct_xshift(x, y[:, i], shift)
     end
     return y_out
 end
 function correct_xshift(sps::Vector{<:Matrix}, shift::Float64)
     # method 3: a list of spectra in 2 column arrays
-    return [correct_xshift(sp[:,1], sp[:,2], shift) for sp in spectra]
+    return [correct_xshift(sp[:, 1], sp[:, 2], shift) for sp in spectra]
 end
-
 
 """
 
@@ -127,9 +131,9 @@ flipsp(sps)
 ```
 """
 function flipsp(spectra::Matrix{Float64})
-    x = spectra[:,1]
+    x = spectra[:, 1]
     p = sortperm(x)
-    return spectra[p,:]
+    return spectra[p, :]
 end
 function flipsp(spectra::Vector{<:Matrix})
     return [flipsp(sp) for sp in spectra]
@@ -174,43 +178,49 @@ This function provides three methods to handle different input types:
 - For the collection of spectra method, each spectrum matrix must have exactly two columns: x-coordinates in the first column and y-values in the second column. However, something great: the different spectra can have different lengths!
 - Automatically sorts the data
 
-# Example
-```julia
+# Examples
+
+## Example 1: resample a vector y or a matrix of ys (multiple spectra)
+```@example
 using Spectra, Plots
 
 # signal creation
 x = collect(0.:0.8:10.)
-y, ys = gaussiennes([10.,5.], [4.,6.], [1.1,0.8], x)
+# create the signals with create_peaks()
+peak_infos = [
+    Dict(:type => :gaussian, :amplitude => 10.0, :center => 4.0, :hwhm => 0.6),
+    Dict(:type => :gaussian, :amplitude => 5.0, :center => 6.0, :hwhm => 0.4),
+]
+ys, y = create_peaks(x, peak_infos)
 
 # the new x axis
 x_new = collect(0.:0.05:10.)
 
 # resampling y as a vector
-y2 = resample(x, vec(y), x_new)
+y2 = resample(x, y, x_new)
 
 # resampling the ys array of the two peaks
 y3 = resample(x, ys, x_new)
 
-y_true, ys_true = gaussiennes([10.,5.], [4.,6.], [1.1,0.8], x_new)
-
 # plotting
-p1 = scatter(x,y, label="Original data")
-plot!(x_new, y_true, label="True y")
-plot!(x_new,y2, label="Resampled y")
+p1 = scatter(x, y, label="Original data")
+plot!(x_new, y2, label="Resampled y")
 display(p1)
 
 p2 = scatter(x, ys, label="Original peak data")
-plot!(x_new, ys_true, label="True peaks data")
 plot!(x_new, y3, label="Resampled peaks")
 display(p2)
+```
 
-# resampling a collection of spectra
+## Example 2: resampling a collection of spectra
+
+```@example
 x = collect(0.:0.8:10.)
-y, ys = gaussiennes([10.,5.], [4.,6.], [1.1,0.8], x)
+y, ys = create_peaks(x, peak_infos)
 x2 = collect(0.:0.8:10.)
-y2, ys2 = gaussiennes([10.,5.], [4.,6.], [1.1,0.8], x2)
+y2, ys2 = create_peaks(x2, peak_infos)
 x3 = collect(0.:0.8:10.)
-y3, ys3 = gaussiennes([10.,5.], [4.,6.], [1.1,0.8], x3)
+y3, ys3 = create_peaks(x3, peak_infos)
 
 spectra_ = [[x y], [x2 y2], [x3 y3]]
 x_new = collect(0.:0.05:10.)
@@ -221,29 +231,45 @@ display(p3)
 ```
 
 """
-function resample(x::Vector{Float64},y::Vector{Float64},x_new::Vector{Float64}; method::String = "LinearInterpolation")
+function resample(
+    x::Vector{Float64},
+    y::Vector{Float64},
+    x_new::Vector{Float64};
+    method::String="LinearInterpolation",
+)
     # this is the parent method: treat x-y Vectors
     if length(x) != length(y)
         throw(ArgumentError("x and y must have the same length"))
     end
     p = sortperm(x)# we automatically sort the data
-    interp = getfield(DataInterpolations, Symbol(method))(y[p], x[p]; extrapolation=ExtrapolationType.Linear)
-    
+    interp = getfield(DataInterpolations, Symbol(method))(
+        y[p], x[p]; extrapolation = ExtrapolationType.Constant
+    )
+
     return interp.(x_new)
 end
-function resample(x::Vector{Float64},y::Matrix{Float64},x_new::Vector{Float64}; method::String = "LinearInterpolation")
+function resample(
+    x::Vector{Float64},
+    y::Matrix{Float64},
+    x_new::Vector{Float64};
+    method::String="LinearInterpolation",
+)
     # this method treats an array of y signals with a common X
-    out = ones((size(x_new,1), size(y,2)))
-    for i = 1:size(y,2)
-        out[:,i] = resample(x, vec(y[:,i]), x_new; method=method)
+    out = ones((size(x_new, 1), size(y, 2)))
+    for i in 1:size(y, 2)
+        out[:, i] = resample(x, vec(y[:, i]), x_new; method=method)
     end
     return out
 end
-function resample(multiple_spectra::Vector{<:Matrix{Float64}},x_new::Vector{Float64}; method::String = "LinearInterpolation")
+function resample(
+    multiple_spectra::Vector{<:Matrix{Float64}},
+    x_new::Vector{Float64};
+    method::String="LinearInterpolation",
+)
     # this method treats a list of input spectra
-    out = ones((size(x_new,1), size(multiple_spectra,1)))
-    for (index,i) in enumerate(multiple_spectra)
-        out[:, index] = resample(i[:,1], i[:,2], x_new; method=method)
+    out = ones((size(x_new, 1), size(multiple_spectra, 1)))
+    for (index, i) in enumerate(multiple_spectra)
+        out[:, index] = resample(i[:, 1], i[:, 2], x_new; method=method)
     end
     return out
 end
@@ -293,7 +319,7 @@ plot(x, y_norm)
 ```
 
 """
-function normalise(y::Vector{Float64}; x = nothing, method::String="intensity")
+function normalise(y::Vector{Float64}; x=nothing, method::String="intensity")
     # a function for Vector inputs
     if method == "area"
         if x == nothing
@@ -305,17 +331,18 @@ function normalise(y::Vector{Float64}; x = nothing, method::String="intensity")
     elseif method == "minmax"
         out = (y .- minimum(y)) ./ (maximum(y) - minimum(y))
     else
-        throw(ArgumentError("Wrong method name, choose between area, intensity and minmax."))
+        throw(
+            ArgumentError("Wrong method name, choose between area, intensity and minmax.")
+        )
     end
 
     return out
 end
-
-function normalise(y::Matrix{Float64}; x = nothing, method::String="intensity")
+function normalise(y::Matrix{Float64}; x=nothing, method::String="intensity")
     # a method for array inputs of Y values (several spectra, per column)
     out = copy(y)
-    for i =1:size(y)[2]
-        out[:, i] = normalise(y[:,i], x=x, method=method)
+    for i in 1:size(y)[2]
+        out[:, i] = normalise(y[:, i]; x=x, method=method)
     end
 
     return out
@@ -360,29 +387,34 @@ This function provides three methods to handle different input types:
 
 # Examples
 
-Example 1: Despiking a single signal
-
+## Example 1: Despiking a single signal
+```@example
 x = collect(0:0.1:10)
 y = sin.(x) + 0.1*randn(length(x))
-y = 5.0 # Add a spike
+y[30] = 5.0 # Add a spike
 y_clean = despiking(x, y)
-Example 2: Despiking multiple signals with common x-axis
+```
+## Example 2: Despiking multiple signals with common x-axis
 
+```@example
 x = collect(0:0.1:10)
 y1 = sin.(x) + 0.1randn(length(x))
 y2 = cos.(x) + 0.1randn(length(x))
-y1 = 5.0 # Add a spike to first signal
-y2 = -4.0 # Add a spike to second signal
+y1[30] = 5.0 # Add a spike to first signal
+y2[40] = -4.0 # Add a spike to second signal
 y_matrix = hcat(y1, y2)
 y_clean_matrix = despiking(x, y_matrix)
-Example 3: Despiking a collection of spectra
+```
 
+## Example 3: Despiking a collection of spectra
+```@example
 spectrum1 = hcat(collect(0:0.1:10), sin.(collect(0:0.1:10)) + 0.1randn(101))
-spectrum1 = 5.0 # Add a spike
+spectrum1[30, 2] = 5.0 # Add a spike
 spectrum2 = hcat(collect(0:0.1:8), cos.(collect(0:0.1:8)) + 0.1randn(81))
-spectrum2 = -4.0 # Add a spike
+spectrum2[40, 2] = -4.0 # Add a spike
 spectra_collection = [spectrum1, spectrum2]
 clean_spectra = despiking(spectra_collection)
+```
 
 # Errors
 - Throws an `ArgumentError` if `x` and `y` have different lengths.
@@ -402,7 +434,7 @@ function despiking(x::Vector{Float64}, y::Vector{Float64}; neigh::Int=4, thresho
     if threshold < 0 || threshold != round(Int, threshold)
         throw(ArgumentError("threshold must be a positive integer"))
     end
-   # smoothing
+    # smoothing
     y_smo = smooth(x, y; method="gcvspline")
     rmse_local = sqrt.((y - y_smo) .^ 2)
     rmse_mean = sqrt(mean((y - y_smo) .^ 2))
@@ -428,31 +460,19 @@ function despiking(x::Vector{Float64}, y::Matrix{Float64}; neigh::Int=4, thresho
     # this method treats an array of y
     y_out = copy(y) # To avoid overwriting y
     # Check if x and y are of the same length
-    if length(x) != size(y,1)
+    if length(x) != size(y, 1)
         throw(ArgumentError("x and y must have the same length"))
     end
     # loop over y
-    for i = 1:size(y,2)
-        y_out[:,i] = despiking(x, y[:,i]; neigh=neigh, threshold=threshold)
+    for i in 1:size(y, 2)
+        y_out[:, i] = despiking(x, y[:, i]; neigh=neigh, threshold=threshold)
     end
     return y_out
 end
-function despiking(multiple_spectra::Vector{<:Matrix{Float64}}; neigh::Int=4, threshold::Int=3)
-    # this method treats a list of input spectra
-    y_out = similar(multiple_spectra)
-    
-    for (idx, spectrum) in enumerate(multiple_spectra)
-        # Check if the spectrum has at least 2 columns
-        if size(spectrum, 2) < 2
-            throw(ArgumentError("Each spectrum must have at least 2 columns (x and y values)"))
-        end        
-        # Apply despiking to this spectrum
-        y_clean = despiking(spectrum[:,1], spectrum[:,2]; neigh=neigh, threshold=threshold)
-        # Create a new matrix with the original x values and cleaned y values
-        y_out[idx] = hcat(x_vals, y_clean)
-    end
-    
-    return y_out
+function despiking(
+    multiple_spectra::Vector{<:Matrix{Float64}}; neigh::Int=4, threshold::Int=3
+)
+    return [despiking(spectrum[:, 1], spectrum[:, 2]; neigh=neigh, threshold=threshold) for spectrum in multiple_spectra]
 end
 
 """
@@ -515,7 +535,7 @@ function extract_signal(x::Vector{Float64}, y::Vector{Float64}, roi::Matrix{Floa
     # verify that roi has at least 1 row
     if size(roi, 1) < 1
         throw(ArgumentError("roi must have at least 1 row"))
-    end 
+    end
 
     # sort x-y for safety
     p = sortperm(x)
@@ -523,13 +543,13 @@ function extract_signal(x::Vector{Float64}, y::Vector{Float64}, roi::Matrix{Floa
     y_ = y[p]
 
     # sort roi for safety
-    roi = sort(roi, dims=1)
+    roi = sort(roi; dims=1)
 
     # find the indices of the x values that are in the roi
-    interest_index::Vector{Int64} = findall(roi[1,1] .<= x_ .<= roi[1,2])
+    interest_index::Vector{Int64} = findall(roi[1, 1] .<= x_ .<= roi[1, 2])
     if size(roi, 1) > 1
         for i in 2:size(roi, 1)
-            interest_index = vcat(interest_index, findall(roi[i,1] .<= x_ .<= roi[i,2]))
+            interest_index = vcat(interest_index, findall(roi[i, 1] .<= x_ .<= roi[i, 2]))
         end
     end
 
@@ -538,7 +558,7 @@ function extract_signal(x::Vector{Float64}, y::Vector{Float64}, roi::Matrix{Floa
 end
 function extract_signal(spectrum::Matrix{Float64}, roi::Matrix{Float64})
     # method for an spectrum in an array [x y]
-    return extract_signal(spectrum[:,1], spectrum[:,2], roi)
+    return extract_signal(spectrum[:, 1], spectrum[:, 2], roi)
 end
 function extract_signal(multiple_spectra::Vector{<:Matrix{Float64}}, roi::Matrix{Float64})
     # method for a list of spectra
@@ -547,6 +567,48 @@ function extract_signal(multiple_spectra::Vector{<:Matrix{Float64}}, roi::Matrix
 end
 function get_portion_interest(x::Vector{Float64}, y::Vector{Float64}, roi::Matrix{Float64})
     # method for an spectrum in an array [x y]
-    println("Old name function get_portion_interest() is now extract_signal(). Please use extract_signal() instead.") 
+    println(
+        "Old name function get_portion_interest() is now extract_signal(). Please use extract_signal() instead.",
+    )
     return extract_signal(x, y, roi)
+end
+
+"""
+    invcm_to_nm(shift_inv_cm::Vector{Float64}; laser_nm=532.0)
+
+Converts Raman shifts in inverse centimeters (cm⁻¹) to absolute wavelengths in nanometers (nm), 
+given `laser_nm`, the wavelength of the excitation laser in nanometers.
+
+# Example
+If using a 532 nm laser line, you will do:
+```@example
+x_inv_cm = collect(557:1.0:560) # unit = cm^-1
+x_wavelength_nm = invcm_to_nm(x_inv_cm; laser_nm = 532.0)
+```
+"""
+function invcm_to_nm(shift_inv_cm::Vector{Float64}; laser_nm::Float64=532.0)
+    laser_inv_cm = 1.0 ./ (laser_nm .* 1.0e-7)
+    x_inv_cm = laser_inv_cm .- shift_inv_cm
+    x_nm = 1.0 ./ (x_inv_cm .* 1.0e-7)
+    return x_nm
+end
+
+"""
+    nm_to_invcm(x::Vector{Float64}; laser_nm = 532.0)
+
+Converts absolute wavelengths in nanometers (nm) to Raman shifts in inverse centimeters (cm⁻¹), 
+given `laser_nm`, the wavelength of the excitation laser in nanometers.
+
+# Example
+If using a 532 nm laser line, you will do:
+```@example
+x_wavelength_nm = collect(557:1.0:560) # unit = nm
+x_inv_cm = nm_to_invcm(x_wavelength_nm; laser_nm = 532.0)
+```
+"""
+function nm_to_invcm(x::Vector{Float64}; laser_nm::Float64=532.0)
+    x_inv_cm = 1.0 ./ (x .* 1.0e-7)
+    laser_inv_cm = 1.0 ./ (laser_nm*1.0e-7)
+    shift_inv_cm = laser_inv_cm .- x_inv_cm
+    return shift_inv_cm
 end

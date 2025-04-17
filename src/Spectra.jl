@@ -28,16 +28,18 @@ using Optim
 using QHull
 using RegularizationTools, DataInterpolations
 using DSP
-using StagedFilters
+using SavitzkyGolay
 using ForwardDiff
 using Plots
 using Peaks
+using SpecialFunctions
+using Distributions
 
 # For PyCall modules
 const rampy = PyNULL()
 
 function __init__()
-	copy!(rampy, pyimport("rampy"))
+    copy!(rampy, pyimport("rampy"))
 end
 
 include("integrale.jl")
@@ -53,12 +55,13 @@ include("peakmeasurement.jl")
 include("fitting.jl")
 
 #From integrale.jl
-export trapz, bandarea
+export trapz
 
 #From functions.jl
-export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
-export gaussian, lorentzian, pseudovoigt
+export poly, normal_dist
+export gaussian, lorentzian, pseudovoigt, pearson7, create_peaks
 export funexp, funlog
+export invcm_to_nm, nm_to_invcm
 
 # From preprocessing.jl
 export xshift_direct, correct_xshift
@@ -72,7 +75,7 @@ export arPLS_baseline, drPLS_baseline, als_baseline, rubberband_baseline
 export whittaker, ddmat, smooth
 
 #From bootstrap
-export bootsample, bootperf
+export bootsample
 
 #From tlcorrection
 export tlcorrection
@@ -81,9 +84,17 @@ export tlcorrection
 export mlregressor, mlexplorer
 
 # From peakmeasurement
-export peakmeas, centroid, find_peaks
+export peakmeas, centroid, find_peaks, area_peaks
 
 # From fitting
-export fit_peaks
+export FitContext, 
+    prepare_context, 
+    fit_peaks, 
+    print_params, 
+    plot_fit, 
+    get_peak_results, 
+    fit_qNewton, 
+    fit_Optim,
+    bootstrap
 
 end # module

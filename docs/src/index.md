@@ -3,21 +3,19 @@
 
 ## Introduction
 
-Spectra is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment written with the [Julia programming language](http://julialang.org/). It's aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding. Therefore, Spectra is aimed to be used explicitly with other packages like [JuMP](http://www.juliaopt.org/) for building models. The key is to provide functions for simplifying the life of the spectroscopist, while still leaving him all the freedom offered by treating data with a performant computer language.
-
-Spectra is particularly focused on large datasets because of the high speed of Julia's, e.g. for performing peak fitting along Infrared diffusion profiles. For peak fitting for instance, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with solvers such as Ipopt or NLopt.
+Spectra is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment written with the [Julia programming language](http://julialang.org/). It's aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding. The key is to provide functions for simplifying the life of the spectroscopist, while still leaving him all the freedom offered by treating data with a performant computer language.
 
 Please consult this documentation to learn using Spectra, do not forget to check the Tips_ section if you have issues, and please report anything you want!
 
 ## Starting Notes
 
-Using Julia and Spectra for processing your data is quite similar to Matlab, with the flexibility offered by the open-source and free character of Julia. Reading the docs is strongly recommended. A good start will be to read the [docs of Julia itself](http://docs.julialang.org/en/release-0.5/).
+Reading the docs is strongly recommended! 
 
-Programming can be done locally using your browser and the [IJulia notebooks](https://github.com/JuliaLang/IJulia.jl), very similar to the IPython ones. For a Matlab-like interface, you can use [Atom with Juno](http://junolab.org/).
+If you are new to Julia, a good start will be to read the [docs of Julia itself](https://docs.julialang.org/en/v1/).
 
-For maintaining your packages up-to-date, something critical with the fast evolution of Julia packages, I suggest running each day of Julia use the update command:
+To implement your code, you can modify .jl files in Visual Studio Code for instance and run them from the terminal.
 
-	Pkg.update()
+Programming can also be done locally using your browser and the [IJulia Jupyter notebooks](https://github.com/JuliaLang/IJulia.jl), or the reactive [Pluto notebooks](https://plutojl.org/)
 
 ## Installation
 
@@ -30,17 +28,24 @@ Using Pkg
 Pkg.add("Spectra")
 ```
 
-Everything should install without trouble. Requirements in Spectra are extensive and will provide you all the packages needed by Spectra's functions and examples.
+Everything should install without trouble.
 
-[2] You can download the current version of Julia and follow the [installation instruction](http://julialang.org/downloads/). Then, type `]` in the Julia REPL shell. You should see `Pkg>` instead of `julia>` on the prompt. If yes, do
+[2] You can install the current version of Julia following the [installation instruction](http://julialang.org/downloads/). Then, type `]` in the Julia REPL shell. You should see `Pkg>` instead of `julia>` on the prompt. If yes, do
 
 ```julia-repl
 Pkg> add Spectra
 ```
+That's it!
 
-## Examples
+## Getting help
 
-Examples are available in the [examples folder of Spectra](https://github.com/charlesll/Spectra/tree/master/examples).
+If you wonder about one function, you can use the help mode in Julia's REPL. Just type`?` to enter help mode:
+```julia-repl
+julia> ?
+help?> function_you_want_to_know_about
+```
+
+You can also open an [issue on Github](https://github.com/charlesll/Spectra.jl) if you think something is broken, something is missing, an improvement could be made... Do not hesitate! If you do so, please provide details about your setup and if it is about an error, how we can replicate it!
 
 ## Contributing
 

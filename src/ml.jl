@@ -87,10 +87,13 @@ For neural nets, results from multiple neural nets (bagging technique) may also 
 it may be better to use the BaggingNeuralNet function.
 
 """
-function mlregressor(x::Array{Float64}, y::Array{Float64}; X_test::Array{Float64}=[0.0], y_test::Array{Float64}=[0.0])
-
-	return rampy.mlregressor(x, y, X_test=X_test, y_test=y_test)
-
+function mlregressor(
+    x::Array{Float64},
+    y::Array{Float64};
+    X_test::Array{Float64}=[0.0],
+    y_test::Array{Float64}=[0.0],
+)
+    return rampy.mlregressor(x, y; X_test=X_test, y_test=y_test)
 end
 
 """
@@ -145,7 +148,5 @@ Results for machine learning algorithms can vary from run to run. A way to solve
 
 """
 function mlexplorer(x::Array{Float64})
-
-	return rampy.mlexplorer(x)
-
+    return rampy.mlexplorer(x)
 end

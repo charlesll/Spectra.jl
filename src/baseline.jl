@@ -78,21 +78,25 @@ y_corrected, y_baseline = baseline(x, y, roi=roi, method="gcvspline", s=1.0)
 ```
 
 ## Using a vector or arrays of y values:
-```julia-repl
+```@example
 using Spectra, Plots
 
 # we create a fake signal with 2 peaks plus 2 backgrounds
 x = collect(0.:0.2:10.)
 
-# create the signals with gaussiennes
-_, ys = gaussiennes([10.,5.], [4.,6.], [0.6,0.4], x)
+# create the signals with create_peaks()
+peak_infos = [
+    Dict(:type => :gaussian, :amplitude => 10.0, :center => 4.0, :hwhm => 0.6),
+    Dict(:type => :gaussian, :amplitude => 5.0, :center => 6.0, :hwhm => 0.4),
+]
+ys, _ = create_peaks(x, peak_infos)
 
 # add backgrounds
 ys[:,1] = ys[:,1] .+ 0.1 * x
 ys[:,2] = ys[:,2] .+ 0.2 * x
 
 # fit the background on the first peak: provide as a vector
-y_corr, base_ = baseline(x, vec(ys[:,1]), method="als")
+y_corr, base_ = baseline(x, ys[:,1], method="als")
 p1 = plot(x, ys[:,1])
 plot!(x, base_)
 display(p1)
@@ -105,22 +109,25 @@ display(p2)
 ```
 """
 function baseline(
-    x_input::Vector{Float64}, 
-    y_input::Vector{Float64}; 
-    roi::Union{Matrix{Float64}, Nothing} = nothing,  # Default to `nothing`
-    method::String = "polynomial", 
-    kwargs...)
+    x_input::Vector{Float64},
+    y_input::Vector{Float64};
+    roi::Union{Matrix{Float64},Nothing}=nothing,  # Default to `nothing`
+    method::String="polynomial",
+    kwargs...,
+)
 
     # Signal standardization
-	X_scaler = StatsBase.fit(ZScoreTransform, x_input)
-	Y_scaler = StatsBase.fit(ZScoreTransform, y_input)
-	
+    X_scaler = StatsBase.fit(ZScoreTransform, x_input)
+    Y_scaler = StatsBase.fit(ZScoreTransform, y_input)
+
     # transform the original data
-	x = StatsBase.transform(X_scaler, x_input)
-	y = StatsBase.transform(Y_scaler, y_input)
+    x = StatsBase.transform(X_scaler, x_input)
+    y = StatsBase.transform(Y_scaler, y_input)
 
     # List of methods that require roi
-    methods_requiring_roi = ["polynomial", "poly", "Dspline", "gcvspline", "exp", "log", "whittaker"]
+    methods_requiring_roi = [
+        "polynomial", "poly", "Dspline", "gcvspline", "exp", "log", "whittaker"
+    ]
 
     if method in methods_requiring_roi
         # Raise an error if roi is not provided and the method requires it
@@ -129,7 +136,9 @@ function baseline(
         end
 
         # Get signals in the roi
-        interest_x_unscaled, interest_y_unscaled, interest_index = extract_signal(x_input, y_input, roi)
+        interest_x_unscaled, interest_y_unscaled, interest_index = extract_signal(
+            x_input, y_input, roi
+        )
 
         # transform the roi data
         interest_x = StatsBase.transform(X_scaler, interest_x_unscaled)
@@ -139,121 +148,141 @@ function baseline(
     if method == "polynomial" || method == "poly"
         # Optional parameters
         poly_order = get(kwargs, :polynomial_order, 1)
-        
+
         # Fit polynomial
         p = Polynomials.fit(interest_x, interest_y, poly_order)
         baseline_fitted = p.(x)
-        
+
     elseif method == "Dspline" || method == "unispline"
         # Optional parameters
         splinesmooth = get(kwargs, :s, 2.0)
-        
+
         # Fit spline using Dierckx
-		spl = Spline1D(interest_x, interest_y, k=3, bc="extrapolate", s=splinesmooth)
+        spl = Spline1D(interest_x, interest_y; k=3, bc="extrapolate", s=splinesmooth)
         baseline_fitted = evaluate(spl, x)
-        
+
     elseif method == "gcvspline"
         # Optional parameters
         splinesmooth = get(kwargs, :s, nothing)
         d_gcv = get(kwargs, :d_gcv, 3)
-        
+
         # Use GCVSPL.jl for spline fitting
         # weights = sqrt.(abs.(interest_y))
         # c, wk, ier = Gcvspl.gcv_spl(interest_x, interest_y, weights, splinesmooth)
-    
+
         # # Evaluate spline at x points
         # baseline_fitted = Gcvspl.spl_der(x, interest_x, c)
         if splinesmooth == nothing
-            A = RegularizationSmooth(interest_y, interest_x, d_gcv; alg =:gcv_svd, extrapolation = ExtrapolationType.Extension)
+            A = RegularizationSmooth(
+                interest_y,
+                interest_x,
+                d_gcv;
+                alg=:gcv_svd,
+                extrapolation=ExtrapolationType.Extension,
+            )
         else
-            A = RegularizationSmooth(interest_y, interest_x, d_gcv; λ = splinesmooth, alg =:fixed, extrapolation = ExtrapolationType.Extension)
+            A = RegularizationSmooth(
+                interest_y,
+                interest_x,
+                d_gcv;
+                λ=splinesmooth,
+                alg=:fixed,
+                extrapolation=ExtrapolationType.Extension,
+            )
         end
-        baseline_fitted =  A.(x)
+        baseline_fitted = A.(x)
 
     elseif method == "gaussian"
-    # Optional parameters
-        p0_gauss = get(kwargs, :p0_gaussian, [1., 1., 1.])
-        
+        # Optional parameters
+        p0_gauss = get(kwargs, :p0_gaussian, [1.0, 1.0, 1.0])
+
         # Fit Gaussian
-        result = optimize(p -> sum((gaussian(interest_x, p...) .- interest_y).^2), p0_gauss)
+        result = optimize(
+            p -> sum((gaussian(interest_x, p...) .- interest_y) .^ 2), p0_gauss
+        )
         coeffs = Optim.minimizer(result)
-        
+
         baseline_fitted = gaussian(x, coeffs...)
-        
+
     elseif method == "exp"
         # Optional parameters
-        p0_exp = get(kwargs, :p0_exp, [1., 1., 0.])
-        
+        p0_exp = get(kwargs, :p0_exp, [1.0, 1.0, 0.0])
+
         # Fit exponential
-        result = optimize(p -> sum((funexp(interest_x, p...) .- interest_y).^2), p0_exp)
+        result = optimize(p -> sum((funexp(interest_x, p...) .- interest_y) .^ 2), p0_exp)
         coeffs = Optim.minimizer(result)
-        
+
         baseline_fitted = funexp(x, coeffs...)
-        
+
     elseif method == "log"
         # Optional parameters
-        p0_log = get(kwargs, :p0_log, [1., 1., 1., 1.])
-        
+        p0_log = get(kwargs, :p0_log, [1.0, 1.0, 1.0, 1.0])
+
         # Fit logarithmic
-        result = optimize(p -> sum((funlog(interest_x, p...) .- interest_y).^2), p0_log)
+        result = optimize(p -> sum((funlog(interest_x, p...) .- interest_y) .^ 2), p0_log)
         coeffs = Optim.minimizer(result)
-        
+
         baseline_fitted = funlog(x, coeffs...)
-        
+
     elseif method == "rubberband"
-        baseline_fitted = rubberband_baseline(x, y, segment=get(kwargs, :segments, 1))
-        
-	elseif method == "whittaker"
+        baseline_fitted = rubberband_baseline(x, y; segment=get(kwargs, :segments, 1))
+
+    elseif method == "whittaker"
         lambda = get(kwargs, :lambda, 1.0e5)
 
-		w = zeros(size(y,1))
-		w[interest_index] .= 1.0
+        w = zeros(size(y, 1))
+        w[interest_index] .= 1.0
 
-		baseline_fitted = whittaker(x, y, w, lambda)
+        baseline_fitted = whittaker(x, y, w, lambda)
 
     elseif method == "als"
         # call ALS algorithm with optional parameters 
         baseline_fitted = als_baseline(
-            x, 
-            y, 
-            lambda = get(kwargs, :lambda, 1.0e5), 
-            p = get(kwargs, :p, 0.01), 
-            niter = get(kwargs, :niter, 10))
-    
+            x,
+            y;
+            lambda=get(kwargs, :lambda, 1.0e5),
+            p=get(kwargs, :p, 0.01),
+            niter=get(kwargs, :niter, 10),
+        )
+
     elseif method == "arPLS"
         # call arPLS algorithm with optional parameters
         baseline_fitted = arPLS_baseline(
-            x, 
-            y, 
-            lambda = get(kwargs, :lambda, 1.0e5), 
-            ratio = get(kwargs, :ratio, 0.01),
-            d=get(kwargs, :d, 2))
-        
+            x,
+            y;
+            lambda=get(kwargs, :lambda, 1.0e5),
+            ratio=get(kwargs, :ratio, 0.01),
+            d=get(kwargs, :d, 2),
+        )
+
     elseif method == "drPLS"
         baseline_fitted = drPLS_baseline(
-            x, y, 
-            lambda = get(kwargs, :lambda, 1.0e5),
-            niter = get(kwargs, :niter, 10),
-            eta = get(kwargs, :eta, 0.5),
-            ratio = get(kwargs, :ratio, 0.01),
-            d=get(kwargs, :d, 2))
-        
+            x,
+            y;
+            lambda=get(kwargs, :lambda, 1.0e5),
+            niter=get(kwargs, :niter, 10),
+            eta=get(kwargs, :eta, 0.5),
+            ratio=get(kwargs, :ratio, 0.01),
+            d=get(kwargs, :d, 2),
+        )
+
     else
         error("Method not found, check you entered the right name.")
     end
-    
+
     # Transform back to original scale
     baseline_transformed = vec(StatsBase.reconstruct(Y_scaler, baseline_fitted))
     corrected_signal = y_input .- baseline_transformed
-    
+
     return corrected_signal, baseline_transformed
 end
 function baseline(
-    x_input::Vector{Float64}, 
-    y_input::Matrix{Float64}; 
-    roi::Union{Matrix{Float64}, Nothing} = nothing,  # Default to `nothing`
-    method::String = "polynomial", 
-    kwargs...)
+    x_input::Vector{Float64},
+    y_input::Matrix{Float64};
+    roi::Union{Matrix{Float64},Nothing}=nothing,  # Default to `nothing`
+    method::String="polynomial",
+    kwargs...,
+)
 
     # Initialize an empty matrix for the smoothed output
     y_out = zeros(eltype(y_input), size(y_input))
@@ -261,7 +290,9 @@ function baseline(
 
     # Loop through each column of y and apply the smoothing function
     for i in 1:size(y_input, 2)
-        y_out[:, i], base_out[:, i] = baseline(x_input, vec(y_input[:, i]); roi=roi, method=method, kwargs...)
+        y_out[:, i], base_out[:, i] = baseline(
+            x_input, vec(y_input[:, i]); roi=roi, method=method, kwargs...
+        )
     end
     return y_out, base_out
 end
@@ -289,13 +320,14 @@ This method uses an iterative approach to minimize the asymmetric least squares 
 G. Eilers and H. Boelens, "Baseline correction with asymmetric least squares smoothing" 2005.
 """
 function als_baseline(
-    x::Vector{Float64}, 
-    y::Vector{Float64}; 
-    lambda::Float64 = 1.0e5, 
-    p::Float64 = 0.01, 
-    niter::Int = 50, 
-    d::Int=2)
-    
+    x::Vector{Float64},
+    y::Vector{Float64};
+    lambda::Float64=1.0e5,
+    p::Float64=0.01,
+    niter::Int=50,
+    d::Int=2,
+)
+
     # Check if x values are equally spaced
     differences = diff(x)
     is_equally_spaced = all(abs.(differences .- differences[1]) .< 1e-10)  # Tolerance for floating-point comparison
@@ -317,16 +349,16 @@ function als_baseline(
     end
 
     # Initialize z with y (baseline estimate)
-    z = copy(y)  
+    z = copy(y)
     for it in 1:niter
         # Update weights matrix W
-        W = spdiagm(0 => w) 
+        W = spdiagm(0 => w)
 
         # Solve the linear system for updated baseline z
-        z = (W + lambda * D'D) \ (w .* y) 
+        z = (W + lambda * D'D) \ (w .* y)
 
         # update weights
-        w .= p * (y .> z) .+ (1 - p) * (y .< z) 
+        w .= p * (y .> z) .+ (1 - p) * (y .< z)
     end
 
     return z # Return the estimated baseline
@@ -354,57 +386,54 @@ The arPLS algorithm iteratively adjusts weights based on residuals to improve ba
 Baek et al., "Baseline correction using adaptive iteratively reweighted penalized least squares," Analyst 140 (2015): 250–257.
 """
 function arPLS_baseline(
-    x::Vector{Float64}, 
-    y::Vector{Float64}; 
-    lambda::Float64 = 1.0e5, 
-    ratio::Float64 = 0.01,
-    d=2)
-    
-        # Check if x values are equally spaced
-        differences = diff(x)
-        is_equally_spaced = all(abs.(differences .- differences[1]) .< 1e-10)  # Tolerance for floating-point comparison
+    x::Vector{Float64}, y::Vector{Float64}; lambda::Float64=1.0e5, ratio::Float64=0.01, d=2
+)
 
-        m = length(y)
-        E = sparse(1.0I, m, m)  # Identity matrix as a sparse matrix
-		w = ones(m)  # Initialize weights to 1
-		
-		# Construct the difference matrix
-        if is_equally_spaced
-            # Compute higher-order differences manually for equally spaced x
-            D = E
-            for _ in 1:d
-                D = diff(D; dims=1)  # Apply diff iteratively to compute higher-order differences
-            end
-        else
-            # Use ddmat for arbitrary spacing
-            D = ddmat(x, d)
+    # Check if x values are equally spaced
+    differences = diff(x)
+    is_equally_spaced = all(abs.(differences .- differences[1]) .< 1e-10)  # Tolerance for floating-point comparison
+
+    m = length(y)
+    E = sparse(1.0I, m, m)  # Identity matrix as a sparse matrix
+    w = ones(m)  # Initialize weights to 1
+
+    # Construct the difference matrix
+    if is_equally_spaced
+        # Compute higher-order differences manually for equally spaced x
+        D = E
+        for _ in 1:d
+            D = diff(D; dims=1)  # Apply diff iteratively to compute higher-order differences
+        end
+    else
+        # Use ddmat for arbitrary spacing
+        D = ddmat(x, d)
+    end
+
+    z = copy(y)  # Initialize z with y (baseline estimate)
+
+    while true
+        # Update weights matrix W
+        W = spdiagm(0 => w)
+
+        # Solve the linear system for updated baseline z
+        z = (W + lambda * D'D) \ (w .* y)
+
+        # Calculate residuals and update weights
+        d_residuals = y - z
+        dn = d_residuals[d_residuals .< 0]
+        m_dn = mean(dn)
+        s_dn = std(dn)
+        wt = 1.0 ./ (1.0 .+ exp.(2 .* (d_residuals .- (2.0 .* s_dn .- m_dn)) ./ s_dn))
+
+        # check exit condition and backup
+        if norm(w-wt)/norm(w) .< ratio
+            break
         end
 
-        z = copy(y)  # Initialize z with y (baseline estimate)
+        # Update weights for the next iteration
+        w = wt
+    end
 
-		while true
-            # Update weights matrix W
-			W = spdiagm(0 => w) 
-
-            # Solve the linear system for updated baseline z
-			z = (W + lambda * D'D) \ (w .* y) 
-
-            # Calculate residuals and update weights
-			d_residuals = y - z
-			dn = d_residuals[d_residuals .< 0]
-			m_dn = mean(dn)
-			s_dn = std(dn)
-			wt = 1.0 ./ (1.0 .+ exp.( 2 .* (d_residuals.-(2.0 .* s_dn .- m_dn))./ s_dn ) )
-			
-            # check exit condition and backup
-			if norm(w-wt)/norm(w) .< ratio
-                break
-            end
-
-            # Update weights for the next iteration
-			w = wt
-		end
-		
     return z  # Return the estimated baseline
 end
 
@@ -432,20 +461,21 @@ The drPLS algorithm builds on arPLS by introducing an additional reweighting sch
 Xu et al., "Baseline correction method based on doubly reweighted penalized least squares," Applied Optics 58 (2019): 3913–3920.
 """
 function drPLS_baseline(
-        x::Vector{Float64}, 
-        y::Vector{Float64}; 
-        lambda::Float64 = 1.0e5, 
-        niter::Int = 50, 
-        eta::Float64 = 0.5, 
-        ratio::Float64 = 0.01,
-        d::Int = 2)
+    x::Vector{Float64},
+    y::Vector{Float64};
+    lambda::Float64=1.0e5,
+    niter::Int=50,
+    eta::Float64=0.5,
+    ratio::Float64=0.01,
+    d::Int=2,
+)
     # Check if x values are equally spaced
     differences = diff(x)
     is_equally_spaced = all(abs.(differences .- differences[1]) .< 1e-10)  # Tolerance for floating-point comparison
 
     m = length(y)
     E = sparse(1.0I, m, m)
-    
+
     # Create sparse identity matrix
     I_n = sparse(1.0I, m, m)
 
@@ -491,13 +521,25 @@ function drPLS_baseline(
         sigma_negative = std(d_negative)
         mean_negative = mean(d_negative)
 
-        w .= 0.5 * (1 .- exp.(jj * (d_residuals .- (-mean_negative + 2 * sigma_negative)) ./ sigma_negative) ./ 
-                    (1 .+ abs.(exp.(jj * (d_residuals .- (-mean_negative + 2 * sigma_negative)) ./ sigma_negative))))
+        w .=
+            0.5 * (
+                1 .-
+                exp.(
+                    jj * (d_residuals .- (-mean_negative + 2 * sigma_negative)) ./
+                    sigma_negative,
+                ) ./ (
+                    1 .+ abs.(
+                        exp.(
+                            jj * (d_residuals .- (-mean_negative + 2 * sigma_negative)) ./
+                            sigma_negative,
+                        ),
+                    )
+                )
+            )
     end
 
     return Z  # Return the fitted baseline
 end
-
 
 """
     rubberband_baseline(x::Vector{Float64}, y::Vector{Float64}; segments=1) -> Vector{Float64}
@@ -557,8 +599,8 @@ function rubberband_baseline(x::Vector{Float64}, y::Vector{Float64}; segments=1)
         # Step 1: Identify lower envelope points
         lower_indices = Int[]
         push!(lower_indices, 1)  # Always include first point
-        for j in 2:length(x_segment)-1
-            if y_segment[j] < y_segment[j-1] && y_segment[j] < y_segment[j+1]
+        for j in 2:(length(x_segment) - 1)
+            if y_segment[j] < y_segment[j - 1] && y_segment[j] < y_segment[j + 1]
                 push!(lower_indices, j)
             end
         end
@@ -572,11 +614,17 @@ function rubberband_baseline(x::Vector{Float64}, y::Vector{Float64}; segments=1)
         lower_hull_indices = lower_indices[vertices[sorted_indices]]
 
         if length(lower_hull_indices) < 2
-            error("Convex hull does not have enough lower points for interpolation in segment $i.")
+            error(
+                "Convex hull does not have enough lower points for interpolation in segment $i.",
+            )
         end
 
         # Step 3: Interpolation using lower hull points
-        itp = linear_interpolation(x_segment[lower_hull_indices], y_segment[lower_hull_indices], extrapolation_bc=Line())
+        itp = linear_interpolation(
+            x_segment[lower_hull_indices],
+            y_segment[lower_hull_indices];
+            extrapolation_bc=Line(),
+        )
         baseline_fitted[start_idx:end_idx] .= itp.(x_segment)
     end
 
