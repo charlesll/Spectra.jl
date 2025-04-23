@@ -193,7 +193,7 @@ function smooth(
 
     elseif method == "gcvspline"
         # from the DataInterpolations package
-        smoother = RegularizationSmooth(y, x, d_gcv; alg=:gcv_svd)
+        smoother = RegularizationSmooth(y, x, d_gcv; alg=:gcv_svd, extrapolation = ExtrapolationType.Constant)
         return smoother.(x)
 
     elseif method == "whittaker"

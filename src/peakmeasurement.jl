@@ -316,7 +316,7 @@ function find_peaks(
 end
 
 """
-    area_peaks(peak_type::Symbol; amplitude::Float64, hwhm::Float64, lorentzian_fraction=nothing, exponent=nothing)
+    area_peaks(peak_type::Symbol, amplitude::Float64, hwhm::Float64; lorentzian_fraction=nothing, exponent=nothing)
 
 Calculates the analytical area under a peak based on its type and parameters.
 
@@ -379,9 +379,40 @@ area_pearson7 = peak_area("pearson7", amplitude=A, hwhm=hwhm, exponent=exponent)
 - Throws an error if lorentzian_fraction is not comprised in the [0, 1] interval
 """
 function area_peaks(
-    peak_type::Symbol;
+    peak_type::Symbol,
     amplitude::Float64,
-    hwhm::Float64,
+    hwhm::Float64;
+    lorentzian_fraction=nothing,
+    exponent=nothing,
+)
+    if peak_type == :gaussian
+        return amplitude * hwhm * sqrt(π / log(2))
+    elseif peak_type == :lorentzian
+        return π * amplitude * hwhm
+    elseif peak_type == :pseudovoigt
+        lorentzian_fraction = if isnothing(lorentzian_fraction)
+            error("lorentzian_fraction required")
+        else
+            lorentzian_fraction
+        end
+        if lorentzian_fraction > 1 || lorentzian_fraction < 0
+            error("lorentzian_fraction must be in [0, 1]")
+        end
+        area_L = π * amplitude * hwhm
+        area_G = amplitude * hwhm * sqrt(π / log(2))
+        return lorentzian_fraction * area_L + (1 - lorentzian_fraction) * area_G
+    elseif peak_type == :pearson7
+        exponent = isnothing(exponent) ? error("exponent required") : exponent
+        k = 2^(1/exponent) - 1
+        return amplitude * hwhm * sqrt(π / k) * gamma(exponent - 0.5) / gamma(exponent)
+    else
+        error("Unsupported peak type")
+    end
+end
+function area_peaks(
+    peak_type::Symbol,
+    amplitude::Measurement{<:Real},
+    hwhm::Measurement{<:Real};
     lorentzian_fraction=nothing,
     exponent=nothing,
 )

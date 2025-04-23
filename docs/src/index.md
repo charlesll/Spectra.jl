@@ -17,6 +17,10 @@ To implement your code, you can modify .jl files in Visual Studio Code for insta
 
 Programming can also be done locally using your browser and the [IJulia Jupyter notebooks](https://github.com/JuliaLang/IJulia.jl), or the reactive [Pluto notebooks](https://plutojl.org/)
 
+!!! important
+
+	Spectra v2.0.0 API has evolved a lot since v1.0.0. There are breaking changes that may require to update your codes.
+
 ## Installation
 
 Two ways of using Spectra: [1] with using a cloud-computing approach and [2] with installing everything on your computer.

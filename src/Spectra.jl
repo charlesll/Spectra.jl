@@ -15,25 +15,27 @@ VERSION >= v"1.0.0" && __precompile__()
 
 module Spectra
 
+using DataInterpolations
 using Dierckx
+using Distributions
+using DSP
+using ForwardDiff
 using LinearAlgebra
 using LsqFit
+using Measurements
+using Optim
+using Peaks
+using Plots
 using Polynomials
 using PyCall
-using Random
-using SparseArrays
-using StatsBase
-using Statistics
-using Optim
 using QHull
-using RegularizationTools, DataInterpolations
-using DSP
+using Random
+using RegularizationTools
 using SavitzkyGolay
-using ForwardDiff
-using Plots
-using Peaks
+using SparseArrays
 using SpecialFunctions
-using Distributions
+using Statistics
+using StatsBase
 
 # For PyCall modules
 const rampy = PyNULL()
@@ -88,6 +90,7 @@ export peakmeas, centroid, find_peaks, area_peaks
 
 # From fitting
 export FitContext, 
+    FitResult,
     prepare_context, 
     fit_peaks, 
     print_params, 

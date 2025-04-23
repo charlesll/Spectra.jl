@@ -35,7 +35,7 @@ Corrects a spectrum for a p shift in X. Used in xshift_correction.
 
 """
 function xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
-    spl = Spline1D(original_x-p, original_y)
+    spl = Spline1D(original_x .- p, original_y)
     corrected_y = spl(original_x)
     return original_x, corrected_y, p
 end
@@ -78,7 +78,7 @@ function correct_xshift(x::Vector{Float64}, y::Vector{Float64}, shift::Float64)
     # method 1: y vector signal associated with x
     interp = AkimaInterpolation(
         y,
-        x-shift;
+        x .- shift;
         extrapolation_right=ExtrapolationType.Extension,
         extrapolation_left=ExtrapolationType.Extension,
     )

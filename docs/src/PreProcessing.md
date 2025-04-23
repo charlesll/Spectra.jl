@@ -1,4 +1,4 @@
-# Pre-Processing
+# Data Processing
 
 ## X axis correction and resampling
 
@@ -43,4 +43,41 @@ You may be interested in specific portions of your signal. Extract them using [`
 ```@docs
 normalise
 extract_signal
+```
+
+## Baseline subtraction
+
+Baseline subtraction can be made with using the baseline function, which is the main API using other dedicated baseline functions. The documentation of all those functions is available below.
+
+```@docs
+baseline
+```
+
+The `baseline` function actually calls more dedicated functions, in particular for the automatic baselines. 
+
+```@docs
+als_baseline
+arPLS_baseline
+drPLS_baseline
+```
+
+The `rubberband` method does not work well for now but here is its docstrings for reference:
+
+```@docs
+rubberband_baseline
+```
+## Smoothing
+
+Smoothing a signal or signals is achieved with the smooth function. Smoothing via the Whittaker, Savitsky-Golay and GCV cubic splines are available and provide good results: 
+
+- The Whittaker implementation is a personal implementation, a convertion of the Matlab code of Eiler (2003). It can take in input a signal with x values equally spaced or not.
+- The Savitsky-Golay implementation is from [SavitskyGolay.jl](https://github.com/lnacquaroli/SavitzkyGolay.jl) library. 
+- The GCV cubic spline smoother behaves well, it is from the [DataInterpolations.jl library](https://github.com/SciML/DataInterpolations.jl)
+- The Window-based smoother leverage the [DSP.jl library](https://github.com/JuliaDSP/DSP.jl).
+
+The [`whittaker`](@ref) function can also be be used directly to have a fine control over the smoothing function, for instance by passing the weights `w` or changing `d` (also possible in `smooth`).
+
+```@docs
+smooth
+whittaker
 ```

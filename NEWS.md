@@ -10,6 +10,8 @@ Licence MIT: see LICENCE.md
 
 # 2.0.0 (stable)
 
+1.0.0 was re-written in depth, with large changes in the API. We thus skip to 2.0.0 to indicate this.
+
 ## Improvements
 - baseline() was a wrapper of the rampy.baseline function. This created problems. This is now using only Julia code.
 - smooth() entirely re-written using Julia deps and code (leveraging in particular DSP.jl and StagedFilters.jl)
@@ -20,13 +22,14 @@ Licence MIT: see LICENCE.md
 - gaussian(), lorentzian(), pseudovoigt(): peak shapes
 - fit_peaks() : fit a signal with a sum of peaks.
 - FitContext : struct for the context of a fit
+- FitResult : struct for the results of a fit
 - prepare_context() : type to prepares the context of a fit  
 - print_params() : print parameters after a fit
 - plot_fit() : plot parameters after a fit
 - get_peak_results() : transform a vector of parameters in to a vector of Named Tuples describing each peak parameters
 - fit_qNewton() : quasi-Newton algorithm for the fit 
 - fit_Optim() : Fminxbox(LBFGS) fit with Optim.jl
-- bootstrap() : performs a bootstrapping analysis to get good uncertainty estimates on peak parameters.
+- bootstrap() : performs a bootstrapping analysis to get uncertainty estimates on peak parameters.
 - create_peaks(): generate peaks.
 - find_peaks(): detects peaks.
 - area_peaks(): measure peak areas, replace bandarea().

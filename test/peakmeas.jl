@@ -73,10 +73,10 @@ end
         append!(areas, trapz(x, peaks[:, i]))
     end
 
-    a_gauss = area_peaks(:gaussian, amplitude=1.0, hwhm=1.0)
-    a_lor = area_peaks(:lorentzian, amplitude=1.0, hwhm=1.0)
-    a_pv = area_peaks(:pseudovoigt, amplitude=1.0, hwhm=1.0, lorentzian_fraction=0.5)
-    a_pearson7 = area_peaks(:pearson7, amplitude=1.0, hwhm=1.0, exponent=1.0)
+    a_gauss = area_peaks(:gaussian, 1.0, 1.0)
+    a_lor = area_peaks(:lorentzian, 1.0, 1.0)
+    a_pv = area_peaks(:pseudovoigt, 1.0, 1.0, lorentzian_fraction=0.5)
+    a_pearson7 = area_peaks(:pearson7, 1.0, 1.0, exponent=1.0)
 
     @test isapprox(a_gauss, areas[1], atol=1e-3)
     @test isapprox(a_lor, areas[2], atol=1e-3)

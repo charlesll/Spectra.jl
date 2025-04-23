@@ -108,7 +108,7 @@ First, we need to create the Julia object that contains all the context of the f
 including the data, priors, peak informations...
 
 ````@example Peak_fitting
-ctx = prepare_context(x, peaks_info, estimated_error)
+ctx = prepare_context(x, y_obs, peaks_info, estimated_error)
 ````
 
 We launch the fit using the quasi-Newton algorithm implemented in Spectra.
@@ -123,25 +123,27 @@ In this case, increase relax to make smaller optimization steps, and also
 maxiter to allow more iterations for convergence.
 
 ````@example Peak_fitting
-result = fit_peaks(ctx, y_obs, backend=:qGN, relax=5)
+result = fit_peaks(ctx, backend=:qGN, relax=5)
 
 # we print the result using
-print_params(result.peak_results, digits=3)
+print_params(result.peak_results)
 
 # and we plot the fit
-plot_fit(ctx, result.fitted_params, y_obs; components=true)
+plot_fit(ctx, result.peak_results)
 savefig("fit_2.svg"); nothing #hide
 ````
 
 ![](fit_2.svg)
 
-You could also use the Optim backend, which, in addition to the  leverages the lower and upper boundaries
+You could also use the Optim backend, which uses a constrained L-BFGS-B search algorithm.
+Therefore, in addition to using the prior uncertainties,
+this backend leverages the lower and upper boundaries
 declared earlier in `peaks_info`:
 
 ````@example Peak_fitting
-result = fit_peaks(ctx, y_obs, backend=:Optim)
-print_params(result.peak_results, digits=3)
-plot_fit(ctx, result.fitted_params, y_obs; components=true)
+result = fit_peaks(ctx, backend=:Optim)
+print_params(result.peak_results)
+plot_fit(ctx, result.peak_results)
 savefig("fit_3.svg"); nothing #hide
 ````
 
@@ -150,30 +152,27 @@ savefig("fit_3.svg"); nothing #hide
 ## Checking errors with bootstrapping
 The errors provided above come from the Hessian matrix at the optimal point.
 Those may not always be the good ones, if the loss function cannot be linearized close to the minimum.
-In fact, in my experience, in most cases those are not realistic estimates of parameter uncertanties
-in peak fitting problems.
 
-To check for parameter errors, one option is to use bootstrapping.
+To check for parameter errors, one option is to use [bootstrapping](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)).
 `bootstrap` allows to bootstrap your spectrum and refit the model on data subsamples.
 The interface is easy, similar to that of `fit_peaks` but the context is defined internally so
 you don't even have to worry about that. Let's try it:
 
 ````@example Peak_fitting
-boot_params = bootstrap(x, y_obs, estimated_error, peaks_info, nb_boot = 10, backend=:qGN, relax=5., maxiter=100)
+boot_params, boot_results = bootstrap(x, y_obs, estimated_error, peaks_info, nb_boot = 50, backend=:qGN, relax=5., maxiter=20)
 ````
 
-We pass the array of bootstrapped parameters to the `get_peak_results` function that prepare
-a nice vector of peak results that we can use for plotting and printing:
-
-````@example Peak_fitting
-boot_results = get_peak_results(ctx, StatsBase.mean(boot_params, dims=2), StatsBase.std(boot_params, dims=2))
-````
+Here we only used 50 bootstraps for the sake of speed.
+In practice, you should use more bootstraps (e.g. 1000) to get a good estimate of the errors.
+The `bootstrap` function returns:
+  - a matrix of size (nb_params, nb_boot) with the fitted parameters (here `boot_params`);
+  - a peak_results Vector of Named Tuples (peak_type, parameters, areas), the values being tied to their errors thanks to Measurements.jl (here called `boot_results`).
 
 We can now print the bootstrapped results and compare the errors with those
 previously calculated from the Hessian:
 
 ````@example Peak_fitting
-print_params(boot_results, digits=3)
+print_params(boot_results)
 ````
 
 OK, actually for this example, we see that the errors from the boostrap analysis
@@ -183,7 +182,7 @@ Of course, a final quick visual inspection is always nice. This can be done by p
 median of the matrix of bootstrapped parameters to the plot_fit function
 
 ````@example Peak_fitting
-plot_fit(ctx, StatsBase.median(boot_params, dims=2), y_obs, components=true)
+plot_fit(ctx, boot_results)
 savefig("fit_4.svg"); nothing #hide
 ````
 

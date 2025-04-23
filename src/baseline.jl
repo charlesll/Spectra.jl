@@ -313,8 +313,9 @@ Estimate the baseline of a signal using the Asymmetric Least Squares (ALS) metho
 # Returns
 - `z::Vector{Float64}`: The estimated baseline.
 
-# Notes
-This method uses an iterative approach to minimize the asymmetric least squares error, making it suitable for signals with varying background intensity.
+!!! note
+
+    This method uses an iterative approach to minimize the asymmetric least squares error, making it suitable for signals with varying background intensity.
 
 # References
 G. Eilers and H. Boelens, "Baseline correction with asymmetric least squares smoothing" 2005.

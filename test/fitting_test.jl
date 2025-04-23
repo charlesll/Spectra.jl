@@ -17,9 +17,10 @@ using Test, Spectra
         [Inf, Inf, Inf],
     ),]
 
-    ctx = prepare_context(x_fit, peaks_info, noise)
-    result = fit_peaks(ctx, peak + noise, backend=:Optim)
-    @test isapprox(result.fit, peak, rtol=0.1)
+    y_fit = peak + noise
+    ctx = prepare_context(x_fit, y_fit, peaks_info, noise)
+    result = fit_peaks(ctx, backend=:Optim)
+    @test isapprox(result.y_calc, peak, rtol=0.1)
 
     # Lorentzian
     peak = lorentzian(x_fit, [10.5, 30.0, 3.0])
@@ -34,9 +35,10 @@ using Test, Spectra
     ),
     ]
 
-    ctx = prepare_context(x_fit, peaks_info, noise)
-    result = fit_peaks(ctx, peak + noise, backend=:Optim)
-    @test isapprox(result.fit, peak, rtol=0.1)
+    y_fit = peak + noise
+    ctx = prepare_context(x_fit, y_fit, peaks_info, noise)
+    result = fit_peaks(ctx, backend=:Optim)
+    @test isapprox(result.y_calc, peak, rtol=0.1)
 
     # pseudovoigt
     peak = pseudovoigt(x_fit, [10.0, 35.0, 10.0, 0.5])
@@ -51,9 +53,10 @@ using Test, Spectra
     ),
     ]
 
-    ctx = prepare_context(x_fit, peaks_info, noise)
-    result = fit_peaks(ctx, peak + noise, backend=:Optim)
-    @test isapprox(result.fit, peak, rtol=0.1)
+    y_fit = peak + noise
+    ctx = prepare_context(x_fit, y_fit, peaks_info, noise)
+    result = fit_peaks(ctx, backend=:Optim)
+    @test isapprox(result.y_calc, peak, rtol=0.1)
 end
 
 @testset "Optim, multiple peaks" begin
@@ -68,7 +71,7 @@ end
 
     peaks_info = [
         # (type, initial_params, uncertainties, lower_bounds, upper_bounds)
-        (:gaussian, [10.5, 30.0, 3.0], [5.0, 10.0, 5.0], [0.0, 0.0, 0.0], [Inf, Inf, 50.0]),
+        (:gaussian, [10.5, 30.0, 9.5], [5.0, 10.0, 5.0], [0.0, 0.0, 0.0], [Inf, Inf, 50.0]),
         (
             :lorentzian,
             [15.5, 55.0, 3.1],
@@ -85,10 +88,10 @@ end
         ),
     ]
 
-    ctx = prepare_context(x_fit, peaks_info, noise)
-    result = fit_peaks(ctx, y_fit, backend=:Optim)
+    ctx = prepare_context(x_fit, y_fit, peaks_info, 0.3*ones(size(x_fit,1)))
+    result = fit_peaks(ctx, backend=:Optim)
 
-    @test isapprox(result.fit, y_fit_perfect, rtol=0.1)
+    @test isapprox(result.y_calc, y_fit_perfect, rtol=0.1)
 end
 
 @testset "quasi Gauss Newton, multiple peaks" begin
@@ -103,7 +106,7 @@ end
 
     peaks_info = [
         # (type, initial_params, uncertainties, lower_bounds, upper_bounds)
-        (:gaussian, [10.5, 30.0, 3.0], [5.0, 10.0, 5.0], [0.0, 0.0, 0.0], [Inf, Inf, 50.0]),
+        (:gaussian, [10.5, 30.0, 9.5], [5.0, 10.0, 5.0], [0.0, 0.0, 0.0], [Inf, Inf, 50.0]),
         (
             :lorentzian,
             [20.5, 55.0, 3.0],
@@ -114,14 +117,14 @@ end
         (
             :pseudovoigt,
             [20.5, 44.0, 3.0, 0.4],
-            [5.0, 5.0, 5.0, 0.05],
+            [5.0, 5.0, 5.0, 0.01],
             [0.0, 0.0, 0.0, 0.0],
             [100.0, 100.0, 50.0, 1.0],
         ),
     ]
 
-    ctx = prepare_context(x_fit, peaks_info, noise)
-    result = fit_peaks(ctx, y_fit, backend=:qGN, relax=100, maxiter=1000)
+    ctx = prepare_context(x_fit, y_fit, peaks_info, 0.3*ones(size(x_fit,1)))
+    result = fit_peaks(ctx, backend=:qGN, relax=5, maxiter=100)
     
-    @test isapprox(result.fit, y_fit_perfect, rtol=0.1)
+    @test isapprox(result.y_calc, y_fit_perfect, rtol=0.1)
 end

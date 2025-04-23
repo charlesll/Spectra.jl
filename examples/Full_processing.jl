@@ -2,7 +2,7 @@
 #
 # In this notebook, we reproduce the typical steps here for processing spectra
 #    
-# For this example, we create two Gaussian signals randomly sampled along two different X axis, with backgrounds
+# For this example, we create two Gaussian signals randomly sampled along two different X axis, with noise and increasing backgrounds. One of them will also have a strong spike!
 #
 # ## Signal creation
 using Spectra, Plots
@@ -19,13 +19,18 @@ background_2 = 0.03 * x_2
 noise_1 = 0.5*randn(1000)
 noise_2 = 0.3*randn(1000)
 
+## the full toy signals
 y_1 = gaussian(x_1, 10.0, 40., 5.) .+ background_1 .+ noise_1
 y_2 = gaussian(x_2, 20.0, 60., 9.) .+ background_2 .+ noise_2
+
+## one of them will have a spike!
+y_1[600] = 250.0 
 
 ## make a plot of our two spectra
 scatter(x_1, y_1)
 scatter!(x_2, y_2)
 
+#
 # ## First possible steps
 # 
 # We can do the following steps (not necessarily in this order):
@@ -51,6 +56,19 @@ plot!(spectrum_2[:,1], spectrum_2[:, 2])
 savefig("fp_1.svg"); nothing #hide
 # ![](fp_1.svg)
 
+#
+# ## Remove spikes
+#
+# OK, the plot above reveals a strong spike in one of the signals. We will treat actually both signals with
+# [`despiking`](@ref) to remove possible spikes from the signals, using the default parameters.  
+# In summary, with the default settings, [`despiking`](@ref) checks if any points in a spectrum differ by more than 3 sigma from the mean value of the 4 neighboring points.  
+# You can change the default values to adjust the threshold (for more or less than 3-sigma), or to modify the number of neighboring points considered.
+#
+
+y_1 = despiking(x_1, y_1)
+y_2 = despiking(x_2, y_2)
+
+#
 # ## Resample to have everything on the same X axis
 #
 # Using [`resample`](@ref), we get everything on the same X axis. As we have two spectra with two different X axis, we simply provide them in a Vector like this:
@@ -73,7 +91,7 @@ savefig("fp_3.svg"); nothing #hide
 # Similarly to the other functions, you can pass x and y vectors or a x vectors and an array of y spectra. We will do that here:
 ys_corrected, ys_baselines = baseline(x_new, spectra_same_x, method="arPLS")
 p1 = plot(x_new, spectra_same_x)
-plot!(x_new, ys_baselines)
+plot!(x_new, ys_baselines, labels=["background 1" "background 2"])
 savefig("fp_4.svg"); nothing #hide
 # ![](fp_4.svg)
 
@@ -110,19 +128,20 @@ peaks_info = [
     ]
 
 # we declare the context and fit the signals
-ctx = prepare_context(x_new, peaks_info)
-result_1 = fit_peaks(ctx, ys_corrected[:,1], backend=:Optim)
-result_2 = fit_peaks(ctx, ys_corrected[:,2], backend=:Optim)
+ctx_1 = prepare_context(x_new, ys_corrected[:,1], peaks_info)
+ctx_2 = prepare_context(x_new, ys_corrected[:,2], peaks_info)
+result_1 = fit_peaks(ctx_1, backend=:Optim)
+result_2 = fit_peaks(ctx_2, backend=:Optim)
 
-println("Parameters and fit for the first peak:")
-print_params(result_1.peak_results, digits=3)
-plot_fit(ctx, result_1.fitted_params, ys_corrected[:,1]; components=true)
+println("Parameters and fit for the first signal:")
+print_params(result_1.peak_results)
+plot_fit(ctx_1, result_1.peak_results)
 savefig("fp_5.svg"); nothing #hide
 # ![](fp_5.svg)
 
-println("Parameters and fit for the second peak:")
-print_params(result_2.peak_results, digits=3)
-plot_fit(ctx, result_2.fitted_params, ys_corrected[:,2]; components=true)
+println("Parameters and fit for the second signal:")
+print_params(result_2.peak_results)
+plot_fit(ctx_2, result_2.peak_results)
 savefig("fp_6.svg"); nothing #hide
 # ![](fp_6.svg)
 

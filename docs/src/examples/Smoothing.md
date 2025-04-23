@@ -90,7 +90,8 @@ We can compare the performances of the different methods using a bar plot:
 
 ````@example Smoothing
 push!(methods_, methods_bis_...)
-p_bar = bar(ese_methods_, xticks=(1:8,methods_))
+p_bar = bar(ese_methods_, xticks=(1:8,methods_),
+xlabel="Smoothing method", ylabel="MSE between real and smoothed signal")
 savefig("smoothing_4.svg"); nothing #hide
 ````
 

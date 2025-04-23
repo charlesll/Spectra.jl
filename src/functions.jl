@@ -24,8 +24,7 @@ function normal_dist(x, amplitude::Float64, mean::Float64, sigma::Float64)
            exp.(- (x .- mean) .^ 2 ./ (2.0 .* sigma .^ 2.0))
 end
 function normal_dist(x, p::Vector{Float64})
-    return amplitude ./ (sigma .* sqrt(2.0 .* pi)) .*
-           exp.(- (x .- mean) .^ 2 ./ (2.0 .* sigma .^ 2.0))
+    return normal_dist(x, p[1], p[2], p[3]) # p = [amplitude, mean, sigma]
 end
 
 """
