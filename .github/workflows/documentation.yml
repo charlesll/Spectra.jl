@@ -27,9 +27,10 @@ jobs:
       - name: Install dependencies
         shell: julia --color=yes --project=docs {0}
         run: |
+          ENV["PYTHON"]=""
           using Pkg
+          Pkg.build("PyCall")
           Pkg.develop(PackageSpec(path=pwd()))
-          Pkg.instantiate()
           Pkg.build("Spectra")
           Pkg.instantiate()
       - name: Build and deploy
