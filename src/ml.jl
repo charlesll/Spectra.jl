@@ -14,63 +14,65 @@
 """
 	mlregressor(x::Array{Float64},y::Array{Float64};X_test::Array{Float64}=[0.0],y_test::Array{Float64}=[0.0],test_sz=0.3,scaler="MinMaxScaler",rand_state=42)
 
-Uses machine learning algorithms from scikit learn to perform regression between spectra and an observed variable.
+Use machine learning algorithms from scikit learn to perform regression between spectra and an observed variable.
+
 This calls the rampy.mlregressor function and creates a Python object. Any algorithm parameter can be modified in the model object.
 
-# Example
-	```julia-repl
-	julia> using Spectra
-	julia> model = mlregressor(X,y)
-	julia> model.algorithm = "SVM"
-    julia> model.user_kernel = "poly"
-    julia> model.fit()
-	julia> y_new = model.predict(X_new)
-	```
+# Examples
+
+```julia
+using Spectra
+model = mlregressor(X,y)
+model.algorithm = "SVM"
+model.user_kernel = "poly"
+model.fit()
+y_new = model.predict(X_new)
+```
 
 # Docstring from rampy.mlexporer
 
 Attributes
 ----------
 
-	x : {array-like, sparse matrix}, shape = (n_samples, n_features)
-		Spectra; n_features = n_frequencies.
-	y : array, shape = (n_samples,)
-		Returns predicted values.
-	X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
-		spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
-	y_test : array, shape = (n_samples,)
-		the target that you want to use as a testing dataset. Those targets should not be present in the y (training) dataset.
-	algorithm : String,
-		"KernelRidge", "SVM", "LinearRegression", "Lasso", "ElasticNet", "NeuralNet", "BaggingNeuralNet", default = "SVM"
-	scaling : Bool
-		True or False. If True, data will be scaled during fitting and prediction with the requested scaler (see below),
-	scaler : String
-		the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see [http://scikit-learn.org/stable/modules/preprocessing.html](http://scikit-learn.org/stable/modules/preprocessing.html) for details. Default = "MinMaxScaler".
-	test_size : float
-		the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
-	rand_state : Float64
-		the random seed that is used for reproductibility of the results. Default = 42.
-	param_kr : Dictionary
-		contain the values of the hyperparameters that should be provided to KernelRidge and GridSearch for the Kernel Ridge regression algorithm.
-	param_svm : Dictionary
-		containg the values of the hyperparameters that should be provided to SVM and GridSearch for the Support Vector regression algorithm.
-	param_neurons : Dictionary
-		contains the parameters for the Neural Network (MLPregressor model in sklearn).
-		Default= dict(hidden_layer_sizes=(3,),solver = 'lbfgs',activation='relu',early_stopping=True)
-	param_bagging : Dictionary
-		contains the parameters for the BaggingRegressor sklearn function that uses a MLPregressor base method.
-		Default= dict(n_estimators=100, max_samples=1.0, max_features=1.0, bootstrap=True,
-						bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=1, random_state=rand_state, verbose=0)
-	prediction_train : Array{Float64}
-		the predicted target values for the training y dataset.
-	prediction_test : Array{Float64}
-		the predicted target values for the testing y_test dataset.
-	model : Scikit learn model
-		A Scikit Learn object model, see scikit learn library documentation.
-	X_scaler :
-		A Scikit Learn scaler object for the x values.
-	Y_scaler :
-		A Scikit Learn scaler object for the y values.
+- x : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	Spectra; n_features = n_frequencies.
+- y : array, shape = (n_samples,)
+	Returns predicted values.
+- X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
+- y_test : array, shape = (n_samples,)
+	the target that you want to use as a testing dataset. Those targets should not be present in the y (training) dataset.
+- algorithm : String,
+	"KernelRidge", "SVM", "LinearRegression", "Lasso", "ElasticNet", "NeuralNet", "BaggingNeuralNet", default = "SVM"
+- scaling : Bool
+	True or False. If True, data will be scaled during fitting and prediction with the requested scaler (see below),
+- scaler : String
+	the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see [http://scikit-learn.org/stable/modules/preprocessing.html](http://scikit-learn.org/stable/modules/preprocessing.html) for details. Default = "MinMaxScaler".
+- test_size : float
+	the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
+- rand_state : Float64
+	the random seed that is used for reproductibility of the results. Default = 42.
+- param_kr : Dictionary
+	contain the values of the hyperparameters that should be provided to KernelRidge and GridSearch for the Kernel Ridge regression algorithm.
+- param_svm : Dictionary
+	containg the values of the hyperparameters that should be provided to SVM and GridSearch for the Support Vector regression algorithm.
+- param_neurons : Dictionary
+	contains the parameters for the Neural Network (MLPregressor model in sklearn).
+	Default= dict(hidden_layer_sizes=(3,),solver = 'lbfgs',activation='relu',early_stopping=True)
+- param_bagging : Dictionary
+	contains the parameters for the BaggingRegressor sklearn function that uses a MLPregressor base method.
+	Default= dict(n_estimators=100, max_samples=1.0, max_features=1.0, bootstrap=True,
+					bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=1, random_state=rand_state, verbose=0)
+- prediction_train : Array{Float64}
+	the predicted target values for the training y dataset.
+- prediction_test : Array{Float64}
+	the predicted target values for the testing y_test dataset.
+- model : Scikit learn model
+	A Scikit Learn object model, see scikit learn library documentation.
+- X_scaler :
+	A Scikit Learn scaler object for the x values.
+- Y_scaler :
+	A Scikit Learn scaler object for the y values.
 
 # Remarks
 
@@ -102,7 +104,7 @@ end
 
 Use machine learning algorithms from scikit learn to explore spectroscopic datasets. Performs automatic scaling and train/test split before NMF or PCA fit.
 
-# Example
+# Examples
 
 	```julia-repl
 	julia> explo = mlexplorer(X) # X is an array of signals built by mixing two partial components
@@ -121,22 +123,22 @@ Use machine learning algorithms from scikit learn to explore spectroscopic datas
 Attributes
 ----------
 
-	x : {array-like, sparse matrix}, shape = (n_samples, n_features)
-		Spectra; n_features = n_frequencies.
-	X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
-		spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
-	algorithm : String,
-		"PCA", "NMF", default = "PCA"
-	scaling : Bool
-		True or False. If True, data will be scaled prior to fitting (see below),
-	scaler : String
-		the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see [http://scikit-learn.org/stable/modules/preprocessing.html](http://scikit-learn.org/stable/modules/preprocessing.html) for details. Default = "MinMaxScaler".
-	test_size : float
-		the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
-	rand_state : Float64
-		the random seed that is used for reproductibility of the results. Default = 42.
-	model : Scikit learn model
-		A Scikit Learn object model, see scikit learn library documentation.
+- x : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	Spectra; n_features = n_frequencies.
+- X_test : {array-like, sparse matrix}, shape = (n_samples, n_features)
+	spectra organised in rows (1 row = one spectrum) that you want to use as a testing dataset. THose spectra should not be present in the x (training) dataset. The spectra should share a common X axis.
+- algorithm : String,
+	"PCA", "NMF", default = "PCA"
+- scaling : Bool
+	True or False. If True, data will be scaled prior to fitting (see below),
+- scaler : String
+	the type of scaling performed. Choose between MinMaxScaler or StandardScaler, see [http://scikit-learn.org/stable/modules/preprocessing.html](http://scikit-learn.org/stable/modules/preprocessing.html) for details. Default = "MinMaxScaler".
+- test_size : float
+	the fraction of the dataset to use as a testing dataset; only used if X_test and y_test are not provided.
+- rand_state : Float64
+	the random seed that is used for reproductibility of the results. Default = 42.
+- model : Scikit learn model
+	A Scikit Learn object model, see scikit learn library documentation.
 
 # Remarks
 

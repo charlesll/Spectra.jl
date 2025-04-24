@@ -14,7 +14,7 @@
 	normal_dist(x, amplitude, mean, sigma)
 	normal_dist(x, p)
 
-Normal distribution with parameters amplitude, mean, sigma or a vector p = [amplitude, mean, sigma]
+Normal distribution with parameters amplitude, mean, sigma or a vector p = [amplitude, mean, sigma].
 
 # Notes:
 - normal_dist(x, p) is a shorthand for normal_dist(x, p[1], p[2], p[3])
@@ -31,7 +31,7 @@ end
 	gaussian(x, amplitude, center, hwhm)
 	gaussian(x, p)
 
-Gaussian function with parameters amplitude, center, hwhm or a vector p = [amplitude, center, hwhm]
+Gaussian function with parameters amplitude, center, hwhm or a vector p = [amplitude, center, hwhm].
 
 # Notes:
 - the half-width at half maximum (hwhm) of the gaussian peak is related to the standard deviation sigma by: hwhm = sqrt(2*log(2)) * sigma
@@ -51,7 +51,7 @@ end
 	lorentzian(x, amplitude, center, hwhm)
 	lorentzian(x, p)
 
-Lorentzian function with parameters amplitude, center, hwhm or a vector p = [amplitude, center, hwhm]
+Lorentzian function with parameters amplitude, center, hwhm or a vector p = [amplitude, center, hwhm].
 
 # Notes:
 - hwhm: half-width at half maximum
@@ -72,14 +72,13 @@ end
 	pseudovoigt(x, amplitude, center, hwhm, lorentzian_fraction)
 	pseudovoigt(x, p)
 
-Pseudovoigt function with parameters amplitude, center, hwhm, lorentzian_fraction or a vector p = [amplitude, center, hwhm, lorentzian_fraction]
-
-Calculated as lorentzian_fraction*lorentzian + (1 - lorentzian_fraction)*gaussian
+Pseudovoigt function with parameters amplitude, center, hwhm, lorentzian_fraction or a vector p = [amplitude, center, hwhm, lorentzian_fraction].
 
 # Notes:
-- hwhm: half-width at half maximum
-- pseudovoigt(x, p) is a shorthand for lorentzian(x, p[1], p[2], p[3], p[4])
-- lorentzian_fraction is a value between 0 and 1 that controls the mixing between Gaussian and Lorentzian
+- hwhm: half-width at half maximum.
+- pseudovoigt(x, p) is a shorthand for lorentzian(x, p[1], p[2], p[3], p[4]).
+- calculated as lorentzian_fraction*lorentzian + (1 - lorentzian_fraction)*gaussian.
+- lorentzian_fraction is a value between 0 and 1 that controls the mixing between Gaussian and Lorentzian.
 """
 function pseudovoigt(x, amplitude, center, hwhm, lorentzian_fraction)
     g = gaussian(x, amplitude, center, hwhm)
@@ -95,12 +94,11 @@ end
 	pearson7(x, amplitude, center, hwhm, exponent)
 	pearson7(x, p)
 
-Pearson 7 function with parameters amplitude, center, hwhm, exponent or a vector p = [amplitude, center, hwhm, exponent]
-
-Equation is amplitude / (1 + ((x - center)/hwhm)^2 * (2^(1/exponent) - 1))^exponent
+Pearson 7 function with parameters amplitude, center, hwhm, exponent or a vector p = [amplitude, center, hwhm, exponent].
 
 # Notes:
-- pearson7(x, p) is a shorthand for pearson7(x, p[1], p[2], p[3], p[4])
+- Equation is amplitude / (1 + ((x - center)/hwhm)^2 * (2^(1/exponent) - 1))^exponent.
+- pearson7(x, p) is a shorthand for pearson7(x, p[1], p[2], p[3], p[4]).
 """
 function pearson7(x, amplitude, center, hwhm, exponent)
     return @. amplitude ./
@@ -112,7 +110,10 @@ function pearson7(x, p)
 end
 
 """
-Generates multiple peaks and their sum from a collection of peak descriptions.
+
+    create_peaks(x::Vector{Float64}, peak_infos::Vector{Dict{Symbol,Any}})
+
+Generate multiple peaks and their sum from a collection of peak descriptions.
 
 # Arguments
 - `x::Vector{Float64}`: X-axis values where peaks will be evaluated.
@@ -192,7 +193,7 @@ end
 """
 	poly(p::Vector{Float64},x::Vector{Float64})
 
-Builds a polynomial curve given parameters `p::Vector{Float64}` at the `x::Vector{Float64}` values.
+Build a polynomial curve given parameters `p::Vector{Float64}` at the `x::Vector{Float64}` values.
 
 For a linear curve, p = [1.0,1.0], for a second order polynomial, p = [1.0,1.0,1.0], etc.;
 

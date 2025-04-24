@@ -16,13 +16,15 @@
 
 """
 
-peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing::Bool = true, method::String = "savgol", window_length::Int=5, polyorder::Int=2, ese_y::Float64=1., y_smo_out::Bool=false)
+    peakmeas(x::Array{Float64,1}, y::Array{Float64,1}; smoothing::Bool = true, method::String = "savgol", window_length::Int=5, polyorder::Int=2, ese_y::Float64=1., y_smo_out::Bool=false)
 
-The peakmeas function allows performing measurements of the position, width, intensity and centroid of a dominant peak in a provided `x`-`y` signal.
+Perform measurements of the position, width, intensity and centroid of a dominant peak in a provided `x`-`y` signal.
 
-It smooths the signal with a Savitzky-Golay filter prior to measuring the peak position, width and intensity. It is advised to check that the M and N values of the Savitzky-Golay filter are adequate for your problem before trusting the results from peakmeas. For that, just use the y_smo_out option.
+It smooths the signal with a Savitzky-Golay filter prior to measuring the peak position, 
+width and intensity. It is advised to check that the M and N values of the Savitzky-Golay 
+filter are adequate for your problem before trusting the results from peakmeas. For that, set `y_smo_out=true`.
 
-half-width at half-maximum are calculated as the width of the peak at half its maximum intensity. This calculation is not affected by any asumption of peak symmetry (no fitting is done).
+Half-width at half-maximum are calculated as the width of the peak at half its maximum intensity. This calculation is not affected by any asumption of peak symmetry (no fitting is done).
 
 Centroïd is calculated as sum(y./sum(y).*x).
 
@@ -107,9 +109,9 @@ end
     centroid(x::Vector{Float64}, y::Matrix{Float64}; smoothing::Bool = false, kwargs...)
     centroid(spectra::Vector{<:Matrix}; smoothing::Bool = false, kwargs...)
 
-Calculates the centroid of a spectrum or a set of spectra.
+Calculate the centroid of a spectrum or a set of spectra.
 
-This function computes the centroid (center of mass) of spectral data, which is useful for analyzing the distribution of intensity values in relation to their corresponding x-axis values. The function supports optional smoothing and handles various input formats, including single spectra, matrices, and lists of spectra.
+The function supports optional smoothing and handles various input formats, including single spectra, matrices, and lists of spectra.
 
 # Methods
 1. `centroid(x::Vector{Float64}, y::Vector{Float64}; smoothing::Bool = false, kwargs...)`
@@ -201,7 +203,9 @@ end
     kwargs...
     )
 
-Detects peaks in a spectrum using the Peaks.jl package. This function identifies peaks in spectral data (`x`, `y`) based on specified criteria such as height, prominence, and width. It optionally applies smoothing to the signal before peak detection.
+Identify peaks in spectral data (`x`, `y`) based on specified criteria such as height, prominence, and width. 
+
+It optionally applies smoothing to the signal before peak detection.
 
 # Arguments
 - `x::Vector{Float64}`: The x-axis values (e.g., wavelengths or time points).
@@ -319,9 +323,7 @@ end
 """
     area_peaks(peak_type::Symbol, amplitude::Float64, hwhm::Float64; lorentzian_fraction=nothing, exponent=nothing)
 
-Calculates the analytical area under a peak based on its type and parameters.
-
-This function computes the area under Gaussian, Lorentzian, Pseudo-Voigt, or Pearson VII peaks using their respective analytical formulas. These formulas are derived from the integration of the peak expressions over all x values (from -∞ to ∞).
+Calculate the area under Gaussian, Lorentzian, Pseudo-Voigt, or Pearson VII peaks based on their parameters. Areas are calculated using analytical formulas.
 
 # Arguments
 - `peak_type::Symbol`: The type of peak. Supported types are:
@@ -372,7 +374,7 @@ area_pearson7 = peak_area("pearson7", amplitude=A, hwhm=hwhm, exponent=exponent)
 3. **Pseudo-Voigt Formula**:
     `` \\text{Area} = \\eta \\cdot (\\pi \\cdot A \\cdot \\text{hwhm}) + (1-\\eta) \\cdot (A \\cdot \\text{hwhm} \\cdot \\sqrt{\\frac{\\pi}{\\ln 2}}) ``
 4. **Pearson VII Formula**:
-    `` \\text{Area} = A \\cdot \\text{hwhm} \\cdot \\sqrt{\\frac{\\pi}{2^{1/exponent} - 1}} \\cdot \frac{\\Gamma(exponent - 0.5)}{\\Gamma(exponent)} ``
+    `` \\text{Area} = A \\cdot \\text{hwhm} \\cdot \\sqrt{\\frac{\\pi}{2^{1/exponent} - 1}} \\cdot \\frac{\\Gamma(exponent - 0.5)}{\\Gamma(exponent)} ``
 
 # Errors
 - Throws an error if an unsupported `peak_type` is provided.

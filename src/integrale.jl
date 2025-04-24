@@ -16,10 +16,8 @@
 """
 	trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
 
-	Calculates the area under a curve defined by `x` and `y` values using trapezoidal integration. 
+Calculate the area under a curve defined by `x` and `y` values using trapezoidal integration. 
 	
-It is particularly useful for applications such as spectrum normalization, area comparison, and other numerical integration tasks.
-
 # Arguments
 - `x::Vector{Tx}`: The x-axis values (e.g., time points or wavelengths), where `Tx <: Number`.
 - `y::Vector{Ty}`: The y-axis values (e.g., signal intensities), where `Ty <: Number`.
@@ -28,6 +26,7 @@ It is particularly useful for applications such as spectrum normalization, area 
 - `area::Tx + Ty`: The computed integral value using the trapezoidal rule.
 
 # Examples
+
 ## Example 1: Compute the area under a curve:
 ```julia
 x = [0.0, 1.0, 2.0, 3.0]
