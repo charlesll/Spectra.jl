@@ -18,11 +18,8 @@
     baseline(x_input::Vector{Float64}, y_input::Matrix{Float64}; roi::Union{Matrix{Float64}, Nothing} = nothing,  method::String = "polynomial", kwargs...)
     baseline(multiple_spectra::Vector{<:Matrix{Float64}}; roi::Union{Matrix{Float64}, Nothing} = nothing,  method::String = "polynomial", kwargs...)
 
-Subtracts a baseline from a spectrum or a set of spectra using specified methods.
-
-This function performs baseline correction on spectral data `y` sampled at `x` values.
-It supports various baseline fitting methods and allows optional constraints within
-regions of interest (`roi`).
+Subtract a baseline from a spectrum `y` sampled at `x` values, or a set of spectra, using specified methods 
+that can either fit regions of interests (roi) defined by the user, or use automatic algorithms.
 
 # Arguments
 - `x_input::Vector{Float64}`: The x-axis values (e.g., wavelengths or time points).

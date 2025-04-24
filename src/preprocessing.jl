@@ -13,7 +13,7 @@
 """
 	xshift_direct(original_x::Array{Float64}, original_y::Array{Float64}, p::Float64)
 
-Corrects a spectrum for a p shift in X. Used in xshift_correction.
+Correct a spectrum for a p shift in X. Used in xshift_correction.
 
 # Inputs
 
@@ -44,15 +44,18 @@ end
     correct_xshift(x::Vector{Float64}, y::Union{Vector{Float64}, Matrix{Float64}}, shift::Float64)
     correct_xshift(sps::Vector{<:Matrix}, shift::Float64)
 
-Returns the signal(s) corrected from a given linear `shift` at the same `x` location as the input.
+Return the signal(s) corrected from a given linear `shift` at the same `x` location as the input.
 
 Signals can be provided as y (vector or an array of ys values) for a given x vector, or as a list of [x y] arrays of signals.
 
-Depending on the arguments, it either returns a new vector or array of `y` at the position `x`, or a new list of corrected [x y] spectra.
+Depending on the arguments, it either returns a new vector or array of `y` at 
+the position `x`, or a new list of corrected [x y] spectra.
 
-This would be typically used to correct a linear shift in `x` on Raman spectra: for instance you measured the Si wafer peak at 522.1 cm-1 while you know it is at 520.7 cm-1. Therefore you will call this function to correct your spectra from this shift, without affecting the x values.
+This would be typically used to correct a linear shift in `x` on Raman spectra: 
+for instance you measured the Si wafer peak at 522.1 cm-1 while you know it is at 520.7 cm-1. 
+Therefore you will call this function to correct your spectra from this shift, without affecting the x values.
 
-# Example
+# Examples
 
 ```julia
 using Spectra
@@ -101,9 +104,9 @@ end
 
 	flipsp(spectra::Union{Matrix{Float64}, Vector{<:Matrix}})
 
-Returns the spectrum array or a list of spectra arrays sorted by their first column values (increasing x)
+Return the spectrum array or a list of spectra arrays sorted by their first column values (increasing x).
 
-# Example
+# Examples
 
 ```julia
 
@@ -296,7 +299,7 @@ Normalise the y signal(s) using one of several methods.
 - For `"area"` normalization, you must provide an x vector with the same length as each column of y.
 - If using `"intensity"` or `"minmax"`, no x vector is required.
 
-# Example
+# Examples
 
 ```julia
 using Spectra, Plots
@@ -576,10 +579,10 @@ end
 """
     invcm_to_nm(shift_inv_cm::Vector{Float64}; laser_nm=532.0)
 
-Converts Raman shifts in inverse centimeters (cm⁻¹) to absolute wavelengths in nanometers (nm), 
+Convert Raman shifts in inverse centimeters (cm⁻¹) to absolute wavelengths in nanometers (nm), 
 given `laser_nm`, the wavelength of the excitation laser in nanometers.
 
-# Example
+# Examples
 If using a 532 nm laser line, you will do:
 ```julia
 x_inv_cm = collect(557:1.0:560) # unit = cm^-1
@@ -596,10 +599,11 @@ end
 """
     nm_to_invcm(x::Vector{Float64}; laser_nm = 532.0)
 
-Converts absolute wavelengths in nanometers (nm) to Raman shifts in inverse centimeters (cm⁻¹), 
+Convert absolute wavelengths in nanometers (nm) to Raman shifts in inverse centimeters (cm⁻¹), 
 given `laser_nm`, the wavelength of the excitation laser in nanometers.
 
-# Example
+# Examples
+
 If using a 532 nm laser line, you will do:
 ```julia
 x_wavelength_nm = collect(557:1.0:560) # unit = nm
