@@ -22,31 +22,31 @@ y_1[600] = 250.0
 
 # make a plot of our two spectra
 scatter(x_1, y_1)
-scatter!(x_2, y_2)</code></pre><img src="Full_processing-0d91f720.svg" alt="Example block output"/><h2 id="First-possible-steps"><a class="docs-heading-anchor" href="#First-possible-steps">First possible steps</a><a id="First-possible-steps-1"></a><a class="docs-heading-anchor-permalink" href="#First-possible-steps" title="Permalink"></a></h2><p>We can do the following steps (not necessarily in this order):</p><ul><li>the X values are randomly sorted, we can solve that using <a href="../PreProcessing.html#Spectra.flipsp"><code>flipsp</code></a></li><li>We may like to get our spectra on the same X axis for convenience using <a href="../PreProcessing.html#Spectra.resample"><code>resample</code></a></li><li>Spikes are present: we can remove them using <a href="../PreProcessing.html#Spectra.despiking"><code>despiking</code></a></li><li>Backgrounds are present: we can remove them using <a href="../PreProcessing.html#Spectra.baseline"><code>baseline</code></a></li><li>Signals are noisy: we can smooth them using <a href="../PreProcessing.html#Spectra.smooth"><code>smooth</code></a></li><li>We can correct for temperature and laser wavelength using <a href="../PreProcessing.html#Spectra.tlcorrection"><code>tlcorrection</code></a></li><li>We can normalize the spectra using <a href="../PreProcessing.html#Spectra.normalise"><code>normalise</code></a></li><li>We can fit the peaks using <a href="../PeakFitting.html#Spectra.fit_peaks"><code>fit_peaks</code></a></li></ul><p>Let&#39;s do it!</p><h2 id="Sort-X-Axis"><a class="docs-heading-anchor" href="#Sort-X-Axis">Sort X Axis</a><a id="Sort-X-Axis-1"></a><a class="docs-heading-anchor-permalink" href="#Sort-X-Axis" title="Permalink"></a></h2><p>We can sort the data by passing an array of spectra. After that we should have not problem plotting things with lines for instance!</p><pre><code class="language-julia hljs">spectrum_1 = flipsp([x_1 y_1])
+scatter!(x_2, y_2)</code></pre><img src="Full_processing-d9f989ab.svg" alt="Example block output"/><h2 id="First-possible-steps"><a class="docs-heading-anchor" href="#First-possible-steps">First possible steps</a><a id="First-possible-steps-1"></a><a class="docs-heading-anchor-permalink" href="#First-possible-steps" title="Permalink"></a></h2><p>We can do the following steps (not necessarily in this order):</p><ul><li>the X values are randomly sorted, we can solve that using <a href="../PreProcessing.html#Spectra.flipsp"><code>flipsp</code></a></li><li>We may like to get our spectra on the same X axis for convenience using <a href="../PreProcessing.html#Spectra.resample"><code>resample</code></a></li><li>Spikes are present: we can remove them using <a href="../PreProcessing.html#Spectra.despiking"><code>despiking</code></a></li><li>Backgrounds are present: we can remove them using <a href="../PreProcessing.html#Spectra.baseline"><code>baseline</code></a></li><li>Signals are noisy: we can smooth them using <a href="../PreProcessing.html#Spectra.smooth"><code>smooth</code></a></li><li>We can correct for temperature and laser wavelength using <a href="../PreProcessing.html#Spectra.tlcorrection"><code>tlcorrection</code></a></li><li>We can normalize the spectra using <a href="../PreProcessing.html#Spectra.normalise"><code>normalise</code></a></li><li>We can fit the peaks using <a href="../PeakFitting.html#Spectra.fit_peaks"><code>fit_peaks</code></a></li></ul><p>Let&#39;s do it!</p><h2 id="Sort-X-Axis"><a class="docs-heading-anchor" href="#Sort-X-Axis">Sort X Axis</a><a id="Sort-X-Axis-1"></a><a class="docs-heading-anchor-permalink" href="#Sort-X-Axis" title="Permalink"></a></h2><p>We can sort the data by passing an array of spectra. After that we should have not problem plotting things with lines for instance!</p><pre><code class="language-julia hljs">spectrum_1 = flipsp([x_1 y_1])
 spectrum_2 = flipsp([x_2 y_2])
 plot(spectrum_1[:,1], spectrum_1[:, 2])
 plot!(spectrum_2[:,1], spectrum_2[:, 2])</code></pre><p><img src="fp_1.svg" alt/></p><h2 id="Remove-spikes"><a class="docs-heading-anchor" href="#Remove-spikes">Remove spikes</a><a id="Remove-spikes-1"></a><a class="docs-heading-anchor-permalink" href="#Remove-spikes" title="Permalink"></a></h2><p>OK, the plot above reveals a strong spike in one of the signals. We will treat actually both signals with <a href="../PreProcessing.html#Spectra.despiking"><code>despiking</code></a> to remove possible spikes from the signals, using the default parameters. In summary, with the default settings, <a href="../PreProcessing.html#Spectra.despiking"><code>despiking</code></a> checks if any points in a spectrum differ by more than 3 sigma from the mean value of the 4 neighboring points. You can change the default values to adjust the threshold (for more or less than 3-sigma), or to modify the number of neighboring points considered.</p><pre><code class="language-julia hljs">y_1 = despiking(x_1, y_1)
 y_2 = despiking(x_2, y_2)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">1000-element Vector{Float64}:
- 18.018921038164063
- 11.454336479437814
-  2.431658869315073
- -0.3501099479074422
-  0.5631828763337505
-  2.818775000829317
-  4.616314448816448
-  0.9755568205563865
- 21.633123607708445
-  0.8248627677760814
+  2.9932947144430866
+ 21.90216272846708
+  0.3487234320677146
+  3.3775965759804008
+  1.1270574881956736
+  7.7428634543046835
+ 20.342768141941463
+  2.515277028598546
+  1.1849124914488327
+  4.435722971177566
   ⋮
-  0.3039459437285702
- -0.0025898837508146477
- 15.3723126190591
- 21.190807667105187
-  0.5522622500112809
- 13.028052716863849
-  3.011106211425922
-  1.4126209734003146
-  2.9985581307969142</code></pre><h2 id="Resample-to-have-everything-on-the-same-X-axis"><a class="docs-heading-anchor" href="#Resample-to-have-everything-on-the-same-X-axis">Resample to have everything on the same X axis</a><a id="Resample-to-have-everything-on-the-same-X-axis-1"></a><a class="docs-heading-anchor-permalink" href="#Resample-to-have-everything-on-the-same-X-axis" title="Permalink"></a></h2><p>Using <a href="../PreProcessing.html#Spectra.resample"><code>resample</code></a>, we get everything on the same X axis. As we have two spectra with two different X axis, we simply provide them in a Vector like this:</p><pre><code class="language-julia hljs">x_new = collect(0.:0.5:100)
+  0.7368403215927448
+  0.5161295713047874
+  2.2513812738306447
+  3.296021812211939
+  8.760306111426187
+  2.752160982845749
+  1.0004756985230074
+  1.6332908781982165
+  2.4865097301622803</code></pre><h2 id="Resample-to-have-everything-on-the-same-X-axis"><a class="docs-heading-anchor" href="#Resample-to-have-everything-on-the-same-X-axis">Resample to have everything on the same X axis</a><a id="Resample-to-have-everything-on-the-same-X-axis-1"></a><a class="docs-heading-anchor-permalink" href="#Resample-to-have-everything-on-the-same-X-axis" title="Permalink"></a></h2><p>Using <a href="../PreProcessing.html#Spectra.resample"><code>resample</code></a>, we get everything on the same X axis. As we have two spectra with two different X axis, we simply provide them in a Vector like this:</p><pre><code class="language-julia hljs">x_new = collect(0.:0.5:100)
 spectra_ = [[x_1 y_1], [x_2 y_2]]
 spectra_same_x = resample(spectra_, x_new)
 plot(x_new, spectra_same_x)</code></pre><p><img src="fp_2.svg" alt/></p><p>We see tiny problems with the interpolation, we can solve them using another method from DataInterpolations.jl, such as Linear:</p><pre><code class="language-julia hljs">spectra_same_x = resample(spectra_, x_new, method=&quot;LinearInterpolation&quot;)
@@ -54,14 +54,14 @@ plot(x_new, spectra_same_x)</code></pre><p><img src="fp_3.svg" alt/></p><h2 id="
 p1 = plot(x_new, spectra_same_x)
 plot!(x_new, ys_baselines, labels=[&quot;background 1&quot; &quot;background 2&quot;])</code></pre><p><img src="fp_4.svg" alt/></p><h2 id="Measure-peak-parameters"><a class="docs-heading-anchor" href="#Measure-peak-parameters">Measure peak parameters</a><a id="Measure-peak-parameters-1"></a><a class="docs-heading-anchor-permalink" href="#Measure-peak-parameters" title="Permalink"></a></h2><p>We can now measure the parameters of each peak, for instance their centroid:</p><pre><code class="language-julia hljs">println(&quot;Centroids are:&quot;)
 println(centroid(x_new, ys_corrected))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Centroids are:
-[40.821053197064415, 60.014061465123085]</code></pre><p>The peakmeas function to get access to a bunch of parameters: intensity, position, hwhm, centroïd</p><pre><code class="language-julia hljs">println(&quot;intensity, position, hwhm, centroïd are:&quot;)
+[40.38602040671481, 59.97571107041233]</code></pre><p>The peakmeas function to get access to a bunch of parameters: intensity, position, hwhm, centroïd</p><pre><code class="language-julia hljs">println(&quot;intensity, position, hwhm, centroïd are:&quot;)
 println(peakmeas(x_new, ys_corrected[:,1]))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">intensity, position, hwhm, centroïd are:
-(9.91440439808276, 39.5, 5.25, 40.81937461564307)</code></pre><p>If multiple peaks with a background are present, the best is to use the find<em>peaks() function It can even make a nice plot. Beware that you may have to tweak the window</em>size, min<em>width, min</em>height to detect only the main peaks... See the documentation of <a href="../Measurements.html#Spectra.find_peaks"><code>find_peaks</code></a> for details. for more precise usage, also see the Peaks.jl package.</p><pre><code class="language-julia hljs">result = find_peaks(x_new, ys_corrected[:,1], window_size=1, min_width=2., min_height=2.0, smoothing=true)
+(9.892836604681209, 40.5, 5.0, 40.35011713833279)</code></pre><p>If multiple peaks with a background are present, the best is to use the find<em>peaks() function It can even make a nice plot. Beware that you may have to tweak the window</em>size, min<em>width, min</em>height to detect only the main peaks... See the documentation of <a href="../Measurements.html#Spectra.find_peaks"><code>find_peaks</code></a> for details. for more precise usage, also see the Peaks.jl package.</p><pre><code class="language-julia hljs">result = find_peaks(x_new, ys_corrected[:,1], window_size=1, min_width=2., min_height=2.0, smoothing=true)
 println(&quot;Peak positions: &quot;, result.peak_positions)
 println(&quot;Peak heights: &quot;, result.peak_heights)
 println(&quot;Peak HWHMs: &quot;, result.peak_hwhms)
 println(&quot;Peak centroids: &quot;, result.peak_centroids)
-result.plot_peaks</code></pre><img src="Full_processing-d2e55942.svg" alt="Example block output"/><h2 id="Peak-fitting!"><a class="docs-heading-anchor" href="#Peak-fitting!">Peak fitting!</a><a id="Peak-fitting!-1"></a><a class="docs-heading-anchor-permalink" href="#Peak-fitting!" title="Permalink"></a></h2><p>We can retrieve the parameters of the two peaks using peak fitting too! We do a quick fit with very loose prior uncertainties on the peak parameters, and unrestrictive lower<em>bounds and upper</em>bounds. Those informations are provided in a vector of tuples, one tuple per peak: (type, initial<em>params, prior uncertainties, lower</em>bounds, upper_bounds)</p><pre><code class="language-julia hljs">peaks_info = [
+result.plot_peaks</code></pre><img src="Full_processing-d44a28f2.svg" alt="Example block output"/><h2 id="Peak-fitting!"><a class="docs-heading-anchor" href="#Peak-fitting!">Peak fitting!</a><a id="Peak-fitting!-1"></a><a class="docs-heading-anchor-permalink" href="#Peak-fitting!" title="Permalink"></a></h2><p>We can retrieve the parameters of the two peaks using peak fitting too! We do a quick fit with very loose prior uncertainties on the peak parameters, and unrestrictive lower<em>bounds and upper</em>bounds. Those informations are provided in a vector of tuples, one tuple per peak: (type, initial<em>params, prior uncertainties, lower</em>bounds, upper_bounds)</p><pre><code class="language-julia hljs">peaks_info = [
         # (type, initial_params, prior uncertainties, lower_bounds, upper_bounds)
         (:gaussian, [10.5, 50.0, 5.0], [100.0, 100.0, 100.0], [0., 0., 0.], [Inf, Inf, Inf]),
     ]</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">1-element Vector{Tuple{Symbol, Vararg{Vector{Float64}, 4}}}:
@@ -74,14 +74,14 @@ println(&quot;Parameters and fit for the first signal:&quot;)
 print_params(result_1.peak_results)
 plot_fit(ctx_1, result_1.peak_results)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Parameters and fit for the first signal:
 Peak 1 (gaussian):
-  amplitude: 9.91 ± 0.31
-  center: 39.93 ± 0.16
-  width: 5.0 ± 0.18
-  area: 105.5 ± 3.3</code></pre><p><img src="fp_5.svg" alt/></p><pre><code class="language-julia hljs">println(&quot;Parameters and fit for the second signal:&quot;)
+  amplitude: 9.94 ± 0.32
+  center: 40.0 ± 0.15
+  width: 4.77 ± 0.18
+  area: 101.1 ± 3.3</code></pre><p><img src="fp_5.svg" alt/></p><pre><code class="language-julia hljs">println(&quot;Parameters and fit for the second signal:&quot;)
 print_params(result_2.peak_results)
 plot_fit(ctx_2, result_2.peak_results)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">Parameters and fit for the second signal:
 Peak 1 (gaussian):
-  amplitude: 19.95 ± 0.24
-  center: 60.0 ± 0.1
-  width: 8.86 ± 0.12
-  area: 376.1 ± 4.5</code></pre><p><img src="fp_6.svg" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="Baseline_examples.html">« Baseline examples</a><a class="docs-footer-nextpage" href="Raman_spectrum_fitting.html">Peak fitting the Raman spectrum of a glass »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Thursday 24 April 2025 21:14">Thursday 24 April 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  amplitude: 19.91 ± 0.24
+  center: 59.99 ± 0.1
+  width: 8.89 ± 0.12
+  area: 376.8 ± 4.5</code></pre><p><img src="fp_6.svg" alt/></p><hr/><p><em>This page was generated using <a href="https://github.com/fredrikekre/Literate.jl">Literate.jl</a>.</em></p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="Baseline_examples.html">« Baseline examples</a><a class="docs-footer-nextpage" href="Raman_spectrum_fitting.html">Peak fitting the Raman spectrum of a glass »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.10.1 on <span class="colophon-date" title="Thursday 24 April 2025 21:47">Thursday 24 April 2025</span>. Using Julia version 1.11.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
