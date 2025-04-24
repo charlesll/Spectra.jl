@@ -4,6 +4,7 @@ author = "Charles Le Losq <lelosq@ipgp.fr>"
 version = "2.0.0"
 
 [deps]
+Conda = "8f4d0f93-b110-5947-807f-2305c1781a2d"
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
 Dierckx = "39dd38d3-220a-591b-8e3c-4c3a8c710a94"
@@ -28,6 +29,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+Conda = "1.10.2"
 DSP = "0.8.3"
 DataInterpolations = "8.0.0"
 Dierckx = "0.5.3"
