@@ -34,7 +34,9 @@ Convergence between the two methods usually is similar, with the quasi-Newton me
 A short example probably is better than many worlds. We are going to fit a synthetic signal that we created ourselves with the following code:
 
 ```@example 1
-using Plots, Spectra, StatsBase
+using Plots
+using Spectra
+using Statistics
 
 ## The X axis
 x = collect(0:0.2:100)
