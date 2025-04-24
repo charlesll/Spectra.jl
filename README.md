@@ -32,7 +32,7 @@ julia> pip.main(["install","rampy"])
 
 # Examples
 
-See the examples notebooks in the ./examples/ folder for usage examples.
+See the documentation as well as examples notebooks in the ./examples/ folder for usage examples.
 
 # Licence
 
@@ -42,4 +42,4 @@ see LICENCE.md
 
 If you happen to use Spectra in your work, please cite as:
 
-LE LOSQ, Charles. (2016, June 1). Spectra.jl: a Julia package for processing spectroscopic data. Zenodo. http://doi.org/10.5281/zenodo.635346
+    LE LOSQ, Charles. (2016, June 1). Spectra.jl: a Julia package for processing spectroscopic data. Zenodo. http://doi.org/10.5281/zenodo.635346
