@@ -130,7 +130,7 @@ Generates multiple peaks and their sum from a collection of peak descriptions.
 
 # Examples
 
-```@example
+```julia
 x = collect(0:0.1:10)
 peak_infos = [
 Dict(:type => :gaussian, :amplitude => 1.0, :center => 5.0, :hwhm => 0.5),

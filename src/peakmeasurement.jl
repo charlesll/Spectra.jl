@@ -26,25 +26,26 @@ half-width at half-maximum are calculated as the width of the peak at half its m
 
 Centroïd is calculated as sum(y./sum(y).*x).
 
-# Inputs
+!!! warning
 
-	`x::Array{Float64}`: the x values
-	`y::Array{Float64}`: the y values
+    This function may not stay in future versions. Consider using `find_peaks` instead.
+
+# Inputs
+-`x::Array{Float64}`: the x values
+-`y::Array{Float64}`: the y values
 
 # Options
-
-    `smoothing::String`: triggers the smoothing of the spectrum if set to yes (default value);
-    `filter::Symbol`: the filter that will be used. See the smooth function documentation;
-    `M::Int`: M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation. Default = 5.
-    `N::Int`: N parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation. Default = 2. 
-    `y_smo_out::bool`: Outputs the smoothed signal.
+-`smoothing::String`: triggers the smoothing of the spectrum if set to yes (default value);
+-`filter::Symbol`: the filter that will be used. See the smooth function documentation;
+-`M::Int`: M parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation. Default = 5.
+-`N::Int`: N parameter for smoothing y with a Savitzky-Golay filter. See smooth function documentation. Default = 2. 
+-`y_smo_out::bool`: Outputs the smoothed signal.
 
 # Outputs
-
-	`intensity::Float64`: peak intensity
-	`position::Float64`: peak position
-	`hwhm: Float6:: peak` half-width at half-maximum
-	`centroïd::Float64`: peak centroid
+-`intensity::Float64`: peak intensity
+-`position::Float64`: peak position
+-`hwhm: Float6:: peak` half-width at half-maximum
+-`centroïd::Float64`: peak centroid
 """
 function peakmeas(
     x::Vector{Float64},
@@ -136,33 +137,33 @@ This function computes the centroid (center of mass) of spectral data, which is 
 
 # Examples
 ## Example 1: Centroid of a single spectrum
-```@example
+```julia
 x = collect(0.:1.:100.)
 y_peak = gaussian(x, 1., 50., 10.)
 centroid_peak = centroid(x, y_peak)
 ```
 
 ## Example 2: Centroid of a single spectrum with smoothing
-```@example
+```julia
 x = collect(0.:1.:100.)
 y_peak = gaussian(x, 1., 50., 10.)
 centroid_peak = centroid(x, y_peak, smoothing=true, method="gcvspline")
 ```
 
 ## Example 3: Centroid of a single spectrum as an array
-```@example
+```julia
 my_spectrum = [x y_peak]
 centroid_peak = centroid(my_spectrum)
 ```
 
 ## Example 4: Centroids of an array of y spectra
-```@example
+```julia
 ys = [y_peak y_peak y_peak y_peak]
 centroid_peaks = centroid(x, ys)
 ```
 
 ## Example 5: Centroids of a vector of x-y spectra
-```@example
+```julia
 vector_spectra = [[x y_peak], [x y_peak], [x y_peak]]
 centroid_peaks = centroid(vector_spectra)
 ```
@@ -228,7 +229,7 @@ A named tuple containing:
 # Examples
 
 ## Example 1: Basic peak detection
-```@example
+```julia
 x = collect(1:1.0:100)
 y = gaussian(x, 1.0, 30.0, 3.0) + lorentzian(x, 1.0, 60.0, 6.0) + 0.01*randn(length(x))
 
@@ -240,7 +241,7 @@ display(result.plot_peaks)
 ```
 
 ## Example 2: Peak detection with gcvspline smoothing
-```@example
+```julia
 x = collect(1:1.0:100)
 y = gaussian(x, 1.0, 30.0, 3.0) + lorentzian(x, 1.0, 60.0, 6.0) + 0.01*randn(length(x))
 
@@ -338,26 +339,26 @@ This function computes the area under Gaussian, Lorentzian, Pseudo-Voigt, or Pea
 
 # Examples
 ## Gaussian Peak
-```@example
+```julia
 A = 2.0
 hwhm = 0.5
 area_gaussian = peak_area("gaussian", amplitude=A, hwhm=hwhm)
 ```
 ## Lorentzian Peak
-```@example
+```julia
 A = 2.0
 hwhm = 0.5
 area_lorentzian = peak_area("lorentzian", amplitude=A, hwhm=hwhm)
 ```
 ## Pseudo-Voigt Peak
-```@example
+```julia
 A = 2.0
 hwhm = 0.5
 lorentzian_fraction = 0.5
 area_pseudovoigt = peak_area("pseudovoigt", amplitude=A, hwhm=hwhm, lorentzian_fraction=lorentzian_fraction)
 ```
 ## Pearson VII Peak
-```@example
+```julia
 A = 2.0
 hwhm = 0.5
 exponent = 2.0

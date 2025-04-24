@@ -140,8 +140,8 @@ function flipsp(spectra::Vector{<:Matrix})
 end
 
 """
-    resample(x::Vector{Float64}, y::Union{Vector{Float64}, Matrix{Float64}}, x_new::Vector{Float64}; method::String="AkimaInterpolation")
-    resample(multiple_spectra::Vector{<:Matrix{Float64}}, x_new::Vector{Float64}; method::String="AkimaInterpolation")
+    resample(x::Vector{Float64}, y::Union{Vector{Float64}, Matrix{Float64}}, x_new::Vector{Float64}; method::String="LinearInterpolation")
+    resample(multiple_spectra::Vector{<:Matrix{Float64}}, x_new::Vector{Float64}; method::String="LinearInterpolation")
 
 Resample a signal or signals onto a new set of x-coordinates using interpolation.
 
@@ -181,7 +181,7 @@ This function provides three methods to handle different input types:
 # Examples
 
 ## Example 1: resample a vector y or a matrix of ys (multiple spectra)
-```@example
+```julia
 using Spectra, Plots
 
 # signal creation
@@ -214,7 +214,7 @@ display(p2)
 
 ## Example 2: resampling a collection of spectra
 
-```@example
+```julia
 x = collect(0.:0.8:10.)
 y, ys = create_peaks(x, peak_infos)
 x2 = collect(0.:0.8:10.)
@@ -388,7 +388,7 @@ This function provides three methods to handle different input types:
 # Examples
 
 ## Example 1: Despiking a single signal
-```@example
+```julia
 x = collect(0:0.1:10)
 y = sin.(x) + 0.1*randn(length(x))
 y[30] = 5.0 # Add a spike
@@ -396,7 +396,7 @@ y_clean = despiking(x, y)
 ```
 ## Example 2: Despiking multiple signals with common x-axis
 
-```@example
+```julia
 x = collect(0:0.1:10)
 y1 = sin.(x) + 0.1randn(length(x))
 y2 = cos.(x) + 0.1randn(length(x))
@@ -407,7 +407,7 @@ y_clean_matrix = despiking(x, y_matrix)
 ```
 
 ## Example 3: Despiking a collection of spectra
-```@example
+```julia
 spectrum1 = hcat(collect(0:0.1:10), sin.(collect(0:0.1:10)) + 0.1randn(101))
 spectrum1[30, 2] = 5.0 # Add a spike
 spectrum2 = hcat(collect(0:0.1:8), cos.(collect(0:0.1:8)) + 0.1randn(81))
@@ -581,7 +581,7 @@ given `laser_nm`, the wavelength of the excitation laser in nanometers.
 
 # Example
 If using a 532 nm laser line, you will do:
-```@example
+```julia
 x_inv_cm = collect(557:1.0:560) # unit = cm^-1
 x_wavelength_nm = invcm_to_nm(x_inv_cm; laser_nm = 532.0)
 ```
@@ -601,7 +601,7 @@ given `laser_nm`, the wavelength of the excitation laser in nanometers.
 
 # Example
 If using a 532 nm laser line, you will do:
-```@example
+```julia
 x_wavelength_nm = collect(557:1.0:560) # unit = nm
 x_inv_cm = nm_to_invcm(x_wavelength_nm; laser_nm = 532.0)
 ```

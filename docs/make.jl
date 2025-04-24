@@ -42,16 +42,20 @@ makedocs(;
     authors="Charles Le Losq and contributors.",
     pages=[
         "index.md",
-        "Data Processing" => "PreProcessing.md",
-        "Measurements" => "Measurements.md",
-        "Peak Fitting" => "PeakFitting.md",
-        "Machine Learning" => "MachineLearning.md",
-        "Helper Functions" => "HelperFunctions.md",
+        "User manual" => ["PreProcessing.md", 
+                          "Measurements.md",
+                          "PeakFitting.md",
+                          "MachineLearning.md",
+                          "HelperFunctions.md",
+                          "Tips.md"],
         "Tutorials" => examples_nav,
-        "Tips" => "Tips.md",
         "References" => "References.md",
     ],
     format=Documenter.HTML(; prettyurls=false),
+)
+
+deploydocs(
+    repo = "github.com/charlesll/Spectra.jl.git",
 )
 
 #deploydocs(

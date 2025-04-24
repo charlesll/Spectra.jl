@@ -73,7 +73,7 @@ Create a precomputed context for peak fitting operations.
 - `FitContext`: Precomputed structure containing matrices, indices, and model function
 
 # Example
-'''@example
+'''julia
 peaks_info = [
 (:gaussian, [1.0, 0.0, 0.5], [0.1, 0.05, 0.1], [-Inf, -1.0, 0.1], [Inf, 1.0, 2.0]),
 (:lorentzian, [0.5, 0.2, 0.3], [0.1, 0.05, 0.1], [0.0, -0.5, 0.1], [2.0, 0.5, 1.0])
@@ -152,7 +152,7 @@ Perform peak fitting using specified optimization backend.
   - `residuals::Vector{Float64}`: Residuals
 
 # Example
-```@example
+```julia
 x = 1:1.0:100
 y = gaussian(x, 1., 50.0, 5.0) .+ 0.1 * randn(length(x))
 peaks_info = [

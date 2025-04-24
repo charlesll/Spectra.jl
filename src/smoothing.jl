@@ -146,7 +146,7 @@ Smooth a signal using various smoothing methods.
 
 # Example
 
-```@example
+```julia
 using Spectra, Plots
 
 x = collect(1:10)
