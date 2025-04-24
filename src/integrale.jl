@@ -1,5 +1,5 @@
 #############################################################################
-#Copyright (c) 2016-2019 Charles Le Losq
+#Copyright (c) 2016-2025 Charles Le Losq
 #
 #The MIT License (MIT)
 #
@@ -13,109 +13,53 @@
 #
 #
 #############################################################################
-
 """
-
 	trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
 
-Trapezoidal integration. This function is particularly helpful to calculate the area under a portion of a spectrum, and can be used for various purposes (normalisation, area comparison, etc.).
+	Calculates the area under a curve defined by `x` and `y` values using trapezoidal integration. 
+	
+It is particularly useful for applications such as spectrum normalization, area comparison, and other numerical integration tasks.
 
-Inputs
------
-	x: Vector{Float64}
-		x values
-	y: Vector{Float64}
-		y values.
+# Arguments
+- `x::Vector{Tx}`: The x-axis values (e.g., time points or wavelengths), where `Tx <: Number`.
+- `y::Vector{Ty}`: The y-axis values (e.g., signal intensities), where `Ty <: Number`.
 
-Outputs
--------
-	area: Vector{Float64}
-		trapezoidal integration value.
+# Returns
+- `area::Tx + Ty`: The computed integral value using the trapezoidal rule.
+
+# Examples
+## Example 1: Compute the area under a curve:
+```julia
+x = [0.0, 1.0, 2.0, 3.0]
+y = [0.0, 1.0, 4.0, 9.0]
+area = trapz(x, y)
+```
+
+## Example 2: Handle edge cases:
+```julia
+x = [1.0]
+y = [2.0]
+area = trapz(x, y) # Returns zero since integration requires at least two points.
+```
+
+# Notes
+- The input vectors `x` and `y` must have the same length; otherwise, an error is raised.
+- If the input contains only one point (`length(x) == 1`), the function returns zero as no integration can be performed.
 
 """
-function trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx <: Number, Ty <: Number}
+function trapz(x::Vector{Tx}, y::Vector{Ty}) where {Tx<:Number,Ty<:Number}
     # Trapezoidal integration rule
     local n = length(x)
     if (length(y) != n)
         error("Vectors 'x', 'y' must be of same length")
     end
     r = zero(zero(Tx) + zero(Ty))
-    if n == 1; return r; end
+    if n == 1
+        return r
+    end
     for i in 2:n
-        r += (x[i] - x[i-1]) * (y[i] + y[i-1])
+        r += (x[i] - x[i - 1]) * (y[i] + y[i - 1])
     end
     trapz_int = r/2
     return trapz_int
-end
-
-"""
-
-	bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
-
-This function allows calculating the area under a specific band, with different shapes. For now, only Gaussian bands are supported, but other band shapes will be added soon.
-
-Inputs
-------
-
-	Amplitude: Array{Float64}
-		peak amplitude
-	HWHM: Array{Float64}
-		peak half width at half maximum
-
-Options
--------
-
-	peak_shape: String
-		shape of the peak. Only "Gaussian" is supported for now
-	error_switch: String
-		should be "yes" or "no". If "yes", the arrays containing the errors affecting the band amplitude and widhts should be provided in eseAmplitude and eseHWHM (see below);
-	eseAmplitude: Array{Float64}
-		array containing the errors affecting Amplitude
-	eseHWHM: Array{Float64}
-		array containing the errors affecting HWHM;
-
-Outputs
--------
-	area: Array{Float64}
-		array containing peak areas
-
-	if error_switch is set to "yes", then a second output is provided:
-
-	esearea: Array{Float64}
-		array that contains the propagated errors affecting the areas calculations.
-"""
-function bandarea(Amplitude::Array{Float64},HWHM::Array{Float64}; peak_shape = "Gaussian", error_switch = "no", eseAmplitude::Array{Float64} = [0.0], eseHWHM::Array{Float64} = [0.0])
-
-	# first we check the desired peak shape, and apply the relevant calculation
-	if peak_shape == "Gaussian"
-    	area::Array{Float64} = sqrt(pi./log(2)).*Amplitude.*HWHM # Gaussian area, HWHM is the half-width at half-maximum
-		if error_switch == "yes" # if errors are desired, perform the error calculation
-			if size(eseAmplitude) != size(Amplitude) || size(eseHWHM) != size(HWHM) # error check
-				error("Please check that you entered good arrays for the errors on the amplitude and widths of the bands")
-			end
-	        esearea::Array{Float64} = sqrt((pi./log(2).*HWHM).^2 .* eseAmplitude.^2 + (pi./log(2).*Amplitude).^2 .* eseHWHM.^2)
-	    end
-	else
-		error("Not yet implemented.")
-	end
-
-	# Depending on the error switch, we output only the areas or also the errors
-    if error_switch == "no"
-		# a quick test to see if the output is an array or should be a Float64 number
-		if size(area) == (1,)
-        	return area[1] # we return a Float64 number
-		else
-			return area # we return an array
-		end
-	elseif error_switch =="yes"
-		# a quick test to see if the output is an array or should be 2 Float64 numbers
-		if size(area) == (1,)
-        	return area[1], esearea[1] # we return two Float64 numbers
-		else
-			return area, esearea # we return an array
-		end
-	else
-		error("error_switch should be equal to yes or no. Please select the appropriate value.")
-	end
-
 end

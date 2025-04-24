@@ -4,7 +4,7 @@ In this section are listed various tips for the use of Julia and Spectra:
 
 ## Installation
 
-If you see errors messages linked to PyCall, you may have a problem with your environment variable. To solve it, tyope the following commands in the Julia prompt:
+If you see errors messages linked to PyCall, you may have a problem with your environment variable. To solve it, type the following commands in the Julia prompt:
 
 	```julia-repl
 	julia> ENV["PYTHON"]=""

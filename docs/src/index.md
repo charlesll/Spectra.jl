@@ -3,43 +3,65 @@
 
 ## Introduction
 
-Spectra is a package aimed at helping spectroscopic (Raman, Infrared, Nuclear Magnetic Resonance, XAS...) data treatment written with the [Julia programming language](http://julialang.org/). It's aim is to provide the simplest way to perform actions like baseline fitting and removal or peak fitting for instance, while respecting the freedom offered by data treatment through coding. Therefore, Spectra is aimed to be used explicitly with other packages like [JuMP](http://www.juliaopt.org/) for building models. The key is to provide functions for simplifying the life of the spectroscopist, while still leaving him all the freedom offered by treating data with a performant computer language.
+Spectra.jl is a Julia package designed to simplify the treatment of spectroscopic data (Raman, Infrared, Nuclear Magnetic Resonance, XAS, etc.). It provides straightforward tools for common tasks such as smoothing, baseline fitting, and peak fitting, while preserving the flexibility and power of programmatic data analysis in Julia. Spectra.jl is particularly suited for large datasets and integrates well with other Julia packages, such as JuMP for model building.
 
-Spectra is particularly focused on large datasets because of the high speed of Julia's, e.g. for performing peak fitting along Infrared diffusion profiles. For peak fitting for instance, the JuMP interface offers a very flexible yet clear way to build models, that can be solve with solvers such as Ipopt or NLopt.
-
-Please consult this documentation to learn using Spectra, do not forget to check the Tips_ section if you have issues, and please report anything you want!
+Please consult this documentation to learn how to use Spectra.jl. Check the [Tips](@ref) section if you encounter issues, and feel free to report problems or suggest improvements!
 
 ## Starting Notes
 
-Using Julia and Spectra for processing your data is quite similar to Matlab, with the flexibility offered by the open-source and free character of Julia. Reading the docs is strongly recommended. A good start will be to read the [docs of Julia itself](http://docs.julialang.org/en/release-0.5/).
+- Reading the docs is strongly recommended! 
 
-Programming can be done locally using your browser and the [IJulia notebooks](https://github.com/JuliaLang/IJulia.jl), very similar to the IPython ones. For a Matlab-like interface, you can use [Atom with Juno](http://junolab.org/).
+- If you are new to Julia, start by reading the [official documentation of Julia](https://docs.julialang.org/en/v1/).
 
-For maintaining your packages up-to-date, something critical with the fast evolution of Julia packages, I suggest running each day of Julia use the update command:
+- You can develop your code in text editors such as Visual Studio Code, or use interactive environments such as [IJulia Jupyter notebooks](https://github.com/JuliaLang/IJulia.jl) or the reactive [Pluto notebooks](https://plutojl.org/).
 
-	Pkg.update()
+!!! important
 
-Installation of Spectra is easy:
+	Spectra v2.0.0 API has evolved a lot since v1.0.0. There are breaking changes that may require to update your codes.
 
-	Pkg.add("Spectra")
+## Installation
 
-See the Installation section for further details, in particular for Windows users.
+**Cloud (JuliaHub):**
+1. Launch a notebook on [JuliaHub](https://juliahub.com/).
+2. In your first cell, run:
+    ```
+    using Pkg
+    Pkg.add("Spectra")
+    ```
 
-Any help developing and maintaining this Spectra package is welcome. You can fork the project on GitHub, modify it and commit your modifications. You can also add requests and everything on Github. Please do not hesitate to do so! The functionalities available in Spectra are not exhaustive, and a little help to add new ones will be more that welcome.
+**Local:**
+1. Download Julia from the [official website](http://julialang.org/downloads/).
+2. Open the Julia REPL, press `]` to enter package mode (`Pkg>`), then run:
+    ```
+    Pkg> add Spectra
+    ```
 
-# Examples
+## Getting help
 
-Examples are available in the examples folder of Spectra (https://github.com/charlesll/Spectra/tree/master/examples).
+- The search bar on the top left of this website is useful to search the documentation, or also you can use the function index at the end of this page for instance.
+
+- You can also use the help mode in Julia's REPL by typing `?` in the REPL, then the function name:
+
+```julia-repl
+julia> ?
+help?> function_you_want_to_know_about
+```
+
+- If you encounter issues or have suggestions, open an [issue on GitHub](https://github.com/charlesll/Spectra.jl) with details about your setup and steps to reproduce any errors.
+
+## Contributing
+
+Contributions are welcome! You can fork the project, submit pull requests, or open issues for bugs and feature requests. The feature set is not exhaustive, and community help is appreciated.
 
 ## Citing Spectra
 
-You can cite Spectra as
+If you use Spectra.jl in your work, please cite:
 
 	LE LOSQ, C. (2016) Spectra: a Julia package for processing spectroscopic data. Zenodo. 10.5281/zenodo.53940
 
 ## Index
 
-The functions that are in Spectra are listed below. See the other part of the documentation for further information.
+The functions available in Spectra.jl are listed below. See the rest of the documentation for detailed usage.
 
 ```@index
 ```

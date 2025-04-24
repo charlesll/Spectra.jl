@@ -1,8 +1,10 @@
 using Spectra
 using Test
 
-include("peakmeas.jl")
 include("baseline.jl")
-include("tlcorrection.jl")
+include("peakmeas.jl")
 include("peaks.jl")
 include("smooth.jl")
+include("tlcorrection.jl")
+include("preprocessing.jl")
+include("fitting_test.jl")

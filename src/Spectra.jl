@@ -15,45 +15,69 @@ VERSION >= v"1.0.0" && __precompile__()
 
 module Spectra
 
+using DataInterpolations
 using Dierckx
+using Distributions
+using DSP
+using ForwardDiff
 using LinearAlgebra
 using LsqFit
+using Measurements
+using Optim
+using Peaks
+using Plots
 using Polynomials
 using PyCall
+using QHull
 using Random
+using RegularizationTools
+using SavitzkyGolay
 using SparseArrays
-using StatsBase
+using SpecialFunctions
 using Statistics
+using StatsBase
 
 # For PyCall modules
 const rampy = PyNULL()
 
 function __init__()
-	copy!(rampy, pyimport("rampy"))
+    copy!(rampy, pyimport("rampy"))
 end
 
 include("integrale.jl")
 include("functions.jl")
+include("preprocessing.jl")
 include("baseline.jl")
+include("smoothing.jl")
 include("bootstrap.jl")
 include("tlcorrection.jl")
 include("deprecated.jl")
 include("ml.jl")
 include("peakmeasurement.jl")
+include("fitting.jl")
 
 #From integrale.jl
-export trapz, bandarea
+export trapz
 
 #From functions.jl
-export poly, gaussiennes, lorentziennes, pseudovoigts, pearson7, normal_dist
-export xshift_inversion, xshift_direct,xshift_correction
-export smooth, flipsp, resample, centroid, normalise, despiking
+export poly, normal_dist
+export gaussian, lorentzian, pseudovoigt, pearson7, create_peaks
+export funexp, funlog
+export invcm_to_nm, nm_to_invcm
+
+# From preprocessing.jl
+export xshift_direct, correct_xshift
+export flipsp, resample, normalise, despiking, get_portion_interest, extract_signal
 
 #From baseline.jl
 export baseline
+export arPLS_baseline, drPLS_baseline, als_baseline, rubberband_baseline
+
+# From smoothing.jl
+export whittaker, ddmat, smooth
 
 #From bootstrap
-export bootsample, bootperf
+export bootsample
 
 #From tlcorrection
 export tlcorrection
@@ -62,6 +86,18 @@ export tlcorrection
 export mlregressor, mlexplorer
 
 # From peakmeasurement
-export peakmeas
+export peakmeas, centroid, find_peaks, area_peaks
+
+# From fitting
+export FitContext, 
+    FitResult,
+    prepare_context, 
+    fit_peaks, 
+    print_params, 
+    plot_fit, 
+    get_peak_results, 
+    fit_qNewton, 
+    fit_Optim,
+    bootstrap
 
 end # module
