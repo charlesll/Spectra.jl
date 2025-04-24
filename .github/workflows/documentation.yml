@@ -29,6 +29,7 @@ jobs:
         run: |
           using Pkg
           Pkg.develop(PackageSpec(path=pwd()))
+          Pkg.instantiate()
           Pkg.build("Spectra")
           Pkg.instantiate()
       - name: Build and deploy
