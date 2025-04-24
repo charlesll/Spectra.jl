@@ -1,5 +1,5 @@
 push!(LOAD_PATH, "../src/")
-using Documenter, DocumenterTools, Spectra, Literate, Plots#, Turing
+using Documenter, DocumenterTools, Spectra, Literate, Plots
 
 # Code for examples from https://github.com/oxfordcontrol/COSMO.jl/blob/master/docs/make.jl
 
