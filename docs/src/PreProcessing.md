@@ -7,29 +7,29 @@ Spectra allows you to perform several processing steps on x-y spectral data. Bel
 As a starting point and for the sack of example, we create two synthetic signals to play with. They will be Gaussian signals randomly sampled along two different X axis, with noise and increasing backgrounds. One of them will also have a strong spike!
 
 ```@example 1
-## Signal creation
+# Signal creation
 using Spectra, Plots
 
-## we create a fake signal with 
+# we create a fake signal with 
 x_1 = rand(1000)*100
 x_2 = rand(1000)*100
 
-## create a signal that is the combination of two gaussian peaks plus a background
+# create a signal that is the combination of two gaussian peaks plus a background
 background_1 = 0.08 * x_1
 background_2 = 0.03 * x_2
 
-## some noise
+# some noise
 noise_1 = 0.5*randn(1000)
 noise_2 = 0.3*randn(1000)
 
-## the full toy signals
+# the full toy signals
 y_1 = gaussian(x_1, 10.0, 40., 5.) .+ background_1 .+ noise_1
 y_2 = gaussian(x_2, 20.0, 60., 9.) .+ background_2 .+ noise_2
 
-## one of them will have a spike!
+# one of them will have a spike!
 y_1[600] = 250.0 
 
-## make a plot of our two spectra
+# make a plot of our two spectra
 scatter(x_1, y_1)
 scatter!(x_2, y_2)
 savefig("fp_1.svg"); nothing #hide

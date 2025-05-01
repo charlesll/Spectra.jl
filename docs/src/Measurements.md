@@ -17,13 +17,13 @@ We first generate a dummy signal to play with:
 ```@example 1
 using Plots, Spectra, Random
 
-## the x axis
+# the x axis
 x = collect(0:0.1:100)
 
-## a fake signal: perfect y
+# a fake signal: perfect y
 y_perfect = gaussian(x, 1.0, 50.0, 6.0)
 
-## we add noise: observed y
+# we add noise: observed y
 y = y_perfect + 0.05*randn(size(x,1))
 
 plot(x, y, label="Noisy observed signal", xlabel="X", ylabel="Y")
