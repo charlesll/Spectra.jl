@@ -8,7 +8,11 @@ email: lelosq@ipgp.fr
 
 Licence MIT: see LICENCE.md
 
-# 2.0.1 (stable)
+# 2.0.2 (stable)
+
+- pull request #37: Fix the use of ## and # in the documentation examples (thanks @garrekstemo!)
+
+# 2.0.1
 
 - Fix the documentation construction, as well as a few docstrings
 

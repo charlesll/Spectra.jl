@@ -156,7 +156,6 @@ Those informations are provided in a vector of tuples, one tuple per peak:
 
 ````@example Full_processing
 peaks_info = [
-        # (type, initial_params, prior uncertainties, lower_bounds, upper_bounds)
         (:gaussian, [10.5, 50.0, 5.0], [100.0, 100.0, 100.0], [0., 0., 0.], [Inf, Inf, Inf]),
     ]
 ````

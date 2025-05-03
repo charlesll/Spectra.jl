@@ -44,25 +44,23 @@ For further references for fitting Raman spectra of glasses, please see for inst
 First, we import the libraries for doing various things:
 
 ````@example Raman_spectrum_fitting
-using Spectra # our Spectra library
-using Statistics # to have access to core functions like mean() or std()
-using DelimitedFiles # to import the data
+using Spectra ## our Spectra library
+using Statistics ## to have access to core functions like mean() or std()
+using DelimitedFiles ## to import the data
 
 # Plotting libraries
-using Plots # to make plots
-gr() # Plots backend
-using LaTeXStrings # LaTeX for superscripts/subscripts in labels, captions...
+using Plots
+gr()
+# LaTeX for superscripts/subscripts in labels, captions...
+using LaTeXStrings
 ````
 
 ## Importing data
 
-For that, we use readdlm from DelimitedFiles.
+For that, we use readdlm from DelimitedFiles, and we skip the header and footer lines.
 
 ````@example Raman_spectrum_fitting
-# get the spectrum, with skipping header and footer comment lines from the spectrometer
 data = readdlm(joinpath(@__DIR__, "data/LS4.txt"), '\t', Float64)
-
-# To skip header and footer lines
 skip_header = 23
 skip_footer = 121
 inputsp = zeros(size(data)[1]-skip_header-skip_footer,2)
@@ -108,12 +106,11 @@ Other reasonnable solutions include a linear function, and a constant function. 
 but we will need to add another peak around 800 cm$^{-1}$. For now, the example is done with fitting the 870 cm$^{-1}$ portion of spectra,
 as this usually results in more robust final results.
 
-First, we define the regions of interest roi where we think the baseline is:
+First, we define the regions of interest roi where we think the baseline is.
+Then, we call the `baseline` function to define the baseline and subtract it from y.
 
 ````@example Raman_spectrum_fitting
 roi = [860.0 870.0; 1300.0 1400.0]
-
-# We now call the `baseline` function to define the baseline and subtract it from `y`:
 y_corr, y_bas = baseline(x, y, roi=roi, method="polynomial", polynomial_order=2)
 
 # To visualize this, we create a plot showing the baseline:
@@ -132,7 +129,7 @@ Now we will get the portion of the spectrum we want to fit using `extract_signal
 We will calculate the errors based on the comparison between the signal and its "smoothed version", provided by `smooth`.
 
 ````@example Raman_spectrum_fitting
-# First we extract the signal we want to fit
+# First we extract the signal we want to fit:
 x_fit, y_fit, _ = extract_signal(x, y_corr, [860. 1300.])
 
 # We normalise y_fit so that its area is 1
@@ -170,11 +167,19 @@ prior_main_peak_uncertainty = 0.01*prior_main_peak
 
 Let's implement that in a `peaks_info` vector of peak parameters, uncertainties and boundaries.
 
-Then we declare the context and have a look at the prior mode. If necessary we re-adjust it. Keep in mind that it should be fairly close to the solution, as the algorithms (here the quasi-Newton method) we use are local search algorithms.
+Then we declare the context and have a look at the prior mode. If necessary we re-adjust it.
+Keep in mind that it should be fairly close to the solution, as the algorithms (here the quasi-Newton method)
+we use are local search algorithms.
+
+The `peaks_info` vector is a list of tuples, each tuple containing the following information:
+- the type of peak (e.g. :gaussian, :lorentzian, :pseudovoigt)
+- the parameters of the peak (e.g. amplitude, position, width, shape)
+- the uncertainties on the parameters (e.g. amplitude, position, width, shape)
+- the lower bounds for the parameters (e.g. amplitude, position, width, shape)
+- the upper bounds for the parameters (e.g. amplitude, position, width, shape)
 
 ````@example Raman_spectrum_fitting
 peaks_info = [
-        # (type, initial_params, uncertainties, lower_bounds, upper_bounds)
         (:gaussian,    [0.002, 950, 27],       [0.0005, 5.0,3.0], [0.0, 0.0, 0.0], [Inf, Inf, 60.0]),
         (:gaussian,    [0.0044, 1044, 40],      [0.0005, 5.0, 3.0], [0.0, 0.0, 0.0], [Inf, Inf, 60.0]),
         (:pseudovoigt,   [prior_main_peak, 1086, 30., 0.8], [prior_main_peak_uncertainty, 5.0, 3.0, 0.02], [0.0, 0.0, 0.0, 0.0], [Inf, Inf, 60.0, 1.0]),
