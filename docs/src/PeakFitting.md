@@ -38,21 +38,22 @@ using Plots
 using Spectra
 using Statistics
 
-## The X axis
+# The X axis
 x = collect(0:0.2:100)
-## The "perfect" Y signal
+
+# The "perfect" Y signal
 y_perfect = (
     gaussian(x, [10.0, 35.0, 10.0]) +
     lorentzian(x, [15.0, 55.0, 3.0]) +
     pearson7(x, [20.0, 45.0, 2.0, 0.4])
 )
-## Of course, in real world we have noise, here it is Gaussian
+# Of course, in real world we have noise, here it is Gaussian
 noise = randn(length(x))*0.3
 
-## This is what we observe and want to fit
+# This is what we observe and want to fit
 y_obs = y_perfect + noise
 
-## Let's visualize it!
+# Let's visualize it!
 p1 = plot(x, [y_perfect, y_obs]; labels=["The true signal" "Observations"])
 savefig("fit_1.svg"); nothing #hide
 ```
@@ -61,27 +62,27 @@ savefig("fit_1.svg"); nothing #hide
 First, you define a vector containing named vectors of peak types, ``m_{prior}``, ``\sigma_{m_{prior}}``, and lower and upper boundaries. For instance, after a visual review of the signal above, you would declare a vector of peak informations like this:
 
 ```@example 1
+# (peak_type, m_prior, sigma_m_prior, lower_bounds, upper_bounds)
 peaks_info = [
-    ## (peak_type, m_prior, sigma_m_prior, lower_bounds, upper_bounds)
     (   
-        :gaussian, ## peak_type
-        [10.5, 30.0, 11.0], ## m_prior (intensity, position, hwhm)
-        [5.0, 5.0, 3.0], ## sigma_m_prior
-        [0.0, 0.0, 0.0], ## lower_bounds
-        [Inf, Inf, 50.0]), ## upper_bounds
+        :gaussian, # peak_type
+        [10.5, 30.0, 11.0], # m_prior (intensity, position, hwhm)
+        [5.0, 5.0, 3.0], # sigma_m_prior
+        [0.0, 0.0, 0.0], # lower_bounds
+        [Inf, Inf, 50.0]), # upper_bounds
     (
-        :lorentzian, ## peak_type
-        [17.5, 54.0, 3.1], ## m_prior (intensity, position, hwhm)
-        [5.0, 3.0, 1.0], ## sigma_m_prior
-        [0.0, 0.0, 0.0], ## lower_bounds
-        [Inf, Inf, Inf], ## upper_bounds
+        :lorentzian, # peak_type
+        [17.5, 54.0, 3.1], # m_prior (intensity, position, hwhm)
+        [5.0, 3.0, 1.0], # sigma_m_prior
+        [0.0, 0.0, 0.0], # lower_bounds
+        [Inf, Inf, Inf], # upper_bounds
     ),
     (
-        :pearson7, ## peak_type
-        [21.5, 44.0, 3.0, 0.4], ## m_prior (intensity, position, hwhm, shape exponent)
-        [3.0, 2.0, 5.0, 0.02], ## sigma_m_prior
-        [0.0, 0.0, 0.0, 0.0], ## lower_bounds
-        [100.0, 100.0, 50.0, Inf], ## upper_bounds
+        :pearson7, # peak_type
+        [21.5, 44.0, 3.0, 0.4], # m_prior (intensity, position, hwhm, shape exponent)
+        [3.0, 2.0, 5.0, 0.02], # sigma_m_prior
+        [0.0, 0.0, 0.0, 0.0], # lower_bounds
+        [100.0, 100.0, 50.0, Inf], # upper_bounds
     ),
 ]
 ```
@@ -231,34 +232,34 @@ Run it on your own computer! If you have suggestions, do not hesitate!
 ```julia
 using Turing
 
-## Define a Bayesian model with priors
+# Define a Bayesian model with priors
 @model function bayesian_peaks(x, y)
-    ## Define priors based on peak_types
+    # Define priors based on peak_types
 
-    ## PEAK 1
+    # PEAK 1
     amplitude ~ truncated(Normal(10.016, 0.5), 0.0, Inf)
     center ~ Normal(34.92, 0.5)
     width ~ truncated(Normal(10.0, 0.5), 0.0, Inf)
 
     μ = gaussian(x, [amplitude, center, width])
     
-    ## PEAK 2
+    # PEAK 2
     amplitude2 ~ truncated(Normal(14.9, 0.5), 0.0, Inf)
     center2 ~ Normal(55.0, 0.5)
     width2 ~ truncated(Normal(3.0, 0.5), 0.0, Inf)
     
     μ2 = lorentzian(x, [amplitude2, center2, width2])
     
-    ## PEAK 3
+    # PEAK 3
     amplitude3 ~ truncated(Normal(25.5, 0.5), 0.0, Inf)
     center3 ~ Normal(43.0, 10.0)
     width3 ~ truncated(Normal(2.0, 0.5), 0.0, Inf)
     lr ~ truncated(Normal(0.39, 0.03), 0.0, 1.0)
     
-    ## Calculate model prediction
+    # Calculate model prediction
     μ3 = pseudovoigt(x, [amplitude3, center3, width3, lr])
     
-    ## Likelihood
+    # Likelihood
     σ ~ truncated(Normal(0.2, 0.03), 0.001, Inf)
     y ~ MvNormal(μ + μ2 + μ3, σ^2 * I)
 end
