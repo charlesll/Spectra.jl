@@ -109,4 +109,22 @@ end
 
         @test low_lambda_error < high_lambda_error   # Low lambda retains more noise than high lambda
     end
+
+    # Test case 5: Automatic lamnda selection
+    @testset "Automatic Lambda Selection" begin
+        x = collect(1.0:0.1:10.0)
+        y = sin.(x) .+ 0.5 .* randn(length(x))  # Noisy sine wave
+
+        lambda_, knee_idx_, log_res_ = auto_lambda_whittaker(x, y)[1]
+        z_auto_lambda = whittaker(x, y, ones(length(x)), lambda_; d=2)
+
+        # Check that output has the same length as input
+        @test length(z_auto_lambda) == length(y)
+
+        # Check that smoothed values are closer to the true sine wave than the noisy input
+        true_y = sin.(x)
+        noisy_error = sqrt(mean((y .- true_y) .^ 2))
+        smoothed_error = sqrt(mean((z_auto_lambda .- true_y) .^ 2))
+        @test smoothed_error < noisy_error
+    end
 end

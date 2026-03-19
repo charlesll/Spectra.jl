@@ -74,7 +74,7 @@ export baseline
 export arPLS_baseline, drPLS_baseline, als_baseline, rubberband_baseline
 
 # From smoothing.jl
-export whittaker, ddmat, smooth
+export whittaker, ddmat, smooth, auto_lambda_whittaker
 
 #From bootstrap
 export bootsample

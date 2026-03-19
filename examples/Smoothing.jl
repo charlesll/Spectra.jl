@@ -46,9 +46,15 @@ savefig("smoothing_2.svg"); nothing #hide
 
 # We can also use Savitzky-Golay filter, Whittaker smoother, or GCVSpline.
 # Again, changing defaults e.g. for `savgol` or `whittaker` may improve (or not) 
-# your smoothed signals! You need to try tuning them. Here we are doing a lazy job and use defaults.
+# your smoothed signals! You need to try tuning them. Here we are doing a lazy job and use defaults for `savgol` and 
+# automatic lambda selection for `whittaker` (which is a good option to avoid tuning lambda by hand).
+#
 # The most automatic method should be `gcvspline` because it uses Generalized-Cross-Validation (GCV)
-# to find a good balance between signal smoothness and fitting.
+# to find a good balance between signal smoothness and fitting. However, in practice it can be slow.
+#
+# This is why we implemented the `auto_lambda` option for the `whittaker` method, which automatically 
+# determines the optimal lambda using the L-curve method. This can be a good alternative to `gcvspline` 
+# when you want an automatic method that is faster to compute. See the documentation of `smooth` for more details on how to use it.
 methods_bis_ = ["savgol", "whittaker", "gcvspline"]
 
 # redo another plot for having a clean graph
@@ -56,7 +62,7 @@ p2 = scatter(x, y; label="signal",
     xlabel="X", ylabel="Y", 
     legend=:topleft)
 for i in methods_bis_
-    y_smo = smooth(x, y, method=i, window_length=21, polyorder=2, lambda=1e2)
+    y_smo = smooth(x, y, method=i, window_length=21, polyorder=2, auto_lambda=true)
     plot!(x, y_smo, label=i)
     push!(ese_methods_, sum((y - y_smo).^2))
 end

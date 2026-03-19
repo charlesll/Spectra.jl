@@ -438,7 +438,7 @@ function despiking(x::Vector{Float64}, y::Vector{Float64}; neigh::Int=4, thresho
         throw(ArgumentError("threshold must be a positive integer"))
     end
     # smoothing
-    y_smo = smooth(x, y; method="gcvspline")
+    y_smo = smooth(x, y; method="whittaker", auto_lambda=true)
     rmse_local = sqrt.((y - y_smo) .^ 2)
     rmse_mean = sqrt(mean((y - y_smo) .^ 2))
 
