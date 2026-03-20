@@ -1,6 +1,5 @@
 using Conda
-Conda.pip_interop(true; env=Conda.ROOTENV)
-using PyCall
+Conda.pip_interop(true)
 
 println("Running build.jl for the Spectra package.")
 Conda.pip("install", "rampy")
