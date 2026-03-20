@@ -1,5 +1,5 @@
 using Conda
-Conda.pip_interop(true; [env::Environment=ROOTENV])
+Conda.pip_interop(true; env=Conda.ROOTENV)
 using PyCall
 
 println("Running build.jl for the Spectra package.")
