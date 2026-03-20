@@ -3,6 +3,7 @@
 *.jl.mem
 .ipynb_checkpoints
 .DS_STORE
+.CondaPkg
 gcvspl.o
 libgcvspl.so
 libgcvspl.dylib
