@@ -11,7 +11,7 @@ Licence MIT: see LICENCE.md
 # 2.1.0 (latest)
 
 ## Additions
-- auto_lambda_whittaker() allows one to automatically select a lambda value for Whittaker smoothing using the L-curve method (grid search).
+- auto_lambda_whittaker() => selects lambda value for Whittaker smoothing using L-curve method (grid search).
 
 ## Improvements
 - smooth() => now allow automatic selection of lambda for whittaker smoothing (experimental).
