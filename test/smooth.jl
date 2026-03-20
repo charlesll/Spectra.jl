@@ -115,7 +115,7 @@ end
         x = collect(1.0:0.1:10.0)
         y = sin.(x) .+ 0.5 .* randn(length(x))  # Noisy sine wave
 
-        lambda_, knee_idx_, log_res_ = auto_lambda_whittaker(x, y)[1]
+        lambda_, knee_idx_, log_res_ = auto_lambda_whittaker(x, y)
         z_auto_lambda = whittaker(x, y, ones(length(x)), lambda_; d=2)
 
         # Check that output has the same length as input

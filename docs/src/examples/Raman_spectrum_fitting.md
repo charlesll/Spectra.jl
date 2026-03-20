@@ -44,9 +44,12 @@ For further references for fitting Raman spectra of glasses, please see for inst
 First, we import the libraries for doing various things:
 
 ````@example Raman_spectrum_fitting
-using Spectra ## our Spectra library
-using Statistics ## to have access to core functions like mean() or std()
-using DelimitedFiles ## to import the data
+# our Spectra library
+using Spectra
+# to have access to core functions like mean() or std()
+using Statistics
+# to import the data
+using DelimitedFiles
 
 # Plotting libraries
 using Plots

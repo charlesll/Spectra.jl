@@ -102,7 +102,6 @@ true_y = sin.(x)
 y = true_y .+ 0.1 .* randn(length(x))  # Noisy sine wave
 change_point, knee_idx, log_res = auto_lambda_whittaker(x, y)
 ```
-
 """
 function auto_lambda_whittaker(x::Vector{Float64}, y::Vector{Float64}; lambda_min::Float64=-1.0, lambda_max::Float64=7.0, nb_val::Int=40)
     

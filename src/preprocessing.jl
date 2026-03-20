@@ -384,7 +384,7 @@ This function provides three methods to handle different input types:
 3. Collection of spectra: `despiking(multiple_spectra::Vector{<:Matrix{Float64}}; neigh::Int=4, threshold::Int=3)`
 
 # Notes
-- The function uses the `smooth()` function with the "gcvspline" method to create a reference smoothed signal.
+- The function uses the `smooth()` function with the "flat" method to create a reference smoothed signal with a window length of 2*neigh.
 - Spikes are identified as points where the residual error exceeds threshold*RMSE.
 - Spike values are replaced with the mean of neighboring non-spike points.
 
@@ -437,8 +437,11 @@ function despiking(x::Vector{Float64}, y::Vector{Float64}; neigh::Int=4, thresho
     if threshold < 0 || threshold != round(Int, threshold)
         throw(ArgumentError("threshold must be a positive integer"))
     end
-    # smoothing
-    y_smo = smooth(x, y; method="whittaker", auto_lambda=true)
+    # smoothing with a moving average window
+    # twice the size of the neighborhood (much faster than old behavior with gcvspline, 
+    # and gives similar results)
+    w_l = isodd(2*neigh) ? 2*neigh : 2*neigh + 1 # ensure it's odd
+    y_smo = smooth(x, y; method="flat", window_length=w_l)
     rmse_local = sqrt.((y - y_smo) .^ 2)
     rmse_mean = sqrt(mean((y - y_smo) .^ 2))
 
