@@ -564,93 +564,67 @@ function drPLS_baseline(
 end
 
 """
-    rubberband_baseline(x::Vector{Float64}, y::Vector{Float64}; segments=1) -> Vector{Float64}
+    rubberband_baseline(x::AbstractVector, y::AbstractVector) -> baseline::Vector
 
-Estimate a baseline using the rubberband method based on the lower convex hull.
-
-!!! warning 
-
-    This function is currently under development and may not behave as intended in all cases. !!
+Compute the baseline of a spectrum using the rubberband (convex hull) method.
 
 # Arguments
-- `x::Vector{Float64}`: The x-axis values of the data.
-- `y::Vector{Float64}`: The corresponding y-axis values.
-- `segments` (optional): Specifies how to segment the data:
-    - If an integer, splits the data into equally sized segments (default is 1).
-    - If a vector of integers, specifies exact indices where segmentation occurs.
+- `x::AbstractVector` : 1D array of the independent variable (e.g., wavenumber or wavelength). Can be unequally spaced but must be sorted or sortable.
+- `y::AbstractVector` : 1D array of the dependent variable (e.g., absorbance or intensity), same length as `x`.
 
 # Returns
-- `baseline_fitted::Vector{Float64}`: The estimated baseline as a lower envelope of the data.
+- `baseline::Vector` : The estimated baseline of `y`, obtained by constructing a convex hull underneath the spectrum and linearly interpolating between hull points.
 
-# Raises
-- Throws an error if `x` and `y` have different lengths.
-- Throws an error if a segment does not contain enough points for interpolation.
+# Description
+This function estimates the baseline of a spectrum by stretching a "rubberband" under the data points. It first identifies the lower convex hull of the `(x, y)` points, then performs linear interpolation between consecutive hull points to produce the baseline. Subtracting this baseline from the original spectrum can be used for baseline-corrected spectra.
 
-# Notes
-The rubberband method estimates a baseline by:
-1. Identifying local minima to approximate the lower envelope.
-2. Computing the convex hull of these points.
-3. Interpolating between convex hull points to generate a smooth baseline.
-
+# Example
+```julia
+x = 1:100
+y = 0.05 .* x .+ sin.(0.1 .* x) .+ 0.5 .* exp.(-0.01 .* (x .- 50).^2)
+baseline = rubberband_baseline(x, y)
+y_corrected = y .- baseline
+```
 """
-function rubberband_baseline(x::Vector{Float64}, y::Vector{Float64}; segments=1)
+function rubberband_baseline(x::AbstractVector, y::AbstractVector)
     if length(x) != length(y)
         error("x and y must have the same length.")
     end
-
-    # Determine segment boundaries
-    if isa(segments, Int)
-        n = length(x)
-        segment_indices = collect(1:div(n, segments):n)
-        if segment_indices[end] != n
-            push!(segment_indices, n)
-        end
-    elseif isa(segments, AbstractVector{Int})
-        segment_indices = [1; segments; length(x)]
-    else
-        error("Invalid type for 'segments'. Must be an Int or Vector{Int}.")
+    # Ensure x and y are sorted by x
+    if !issorted(x)
+        idx = sortperm(x)
+        x = x[idx]
+        y = y[idx]
     end
 
-    baseline_fitted = zeros(length(x))
+    n = length(x)
+    baseline = zeros(n)
 
-    for i in 1:(length(segment_indices) - 1)
-        start_idx = segment_indices[i]
-        end_idx = segment_indices[i + 1]
+    # Start convex hull from the first point
+    hull_indices = [1]
 
-        x_segment = x[start_idx:end_idx]
-        y_segment = y[start_idx:end_idx]
-
-        # Step 1: Identify lower envelope points
-        lower_indices = Int[]
-        push!(lower_indices, 1)  # Always include first point
-        for j in 2:(length(x_segment) - 1)
-            if y_segment[j] < y_segment[j - 1] && y_segment[j] < y_segment[j + 1]
-                push!(lower_indices, j)
+    for i in 2:n
+        push!(hull_indices, i)
+        while length(hull_indices) >= 3
+            j = length(hull_indices)
+            # Three points: (x1,y1),(x2,y2),(x3,y3)
+            x1, y1 = x[hull_indices[j-2]], y[hull_indices[j-2]]
+            x2, y2 = x[hull_indices[j-1]], y[hull_indices[j-1]]
+            x3, y3 = x[hull_indices[j]], y[hull_indices[j]]
+            # Compute cross product to check convexity
+            if (x2 - x1)*(y3 - y1) - (y2 - y1)*(x3 - x1) <= 0
+                deleteat!(hull_indices, j-1)  # remove middle point
+            else
+                break
             end
         end
-        push!(lower_indices, length(x_segment))  # Always include last point
-
-        # Step 2: Extract convex hull only from lower envelope points
-        points = hcat(x_segment[lower_indices], y_segment[lower_indices])
-        hull = chull(points)
-        vertices = hull.vertices
-        sorted_indices = sortperm(x_segment[lower_indices][vertices])
-        lower_hull_indices = lower_indices[vertices[sorted_indices]]
-
-        if length(lower_hull_indices) < 2
-            error(
-                "Convex hull does not have enough lower points for interpolation in segment $i.",
-            )
-        end
-
-        # Step 3: Interpolation using lower hull points
-        itp = linear_interpolation(
-            x_segment[lower_hull_indices],
-            y_segment[lower_hull_indices];
-            extrapolation_bc=Line(),
-        )
-        baseline_fitted[start_idx:end_idx] .= itp.(x_segment)
     end
 
-    return baseline_fitted
+    # Interpolate baseline along hull points
+    for i in 1:length(hull_indices)-1
+        i1, i2 = hull_indices[i], hull_indices[i+1]
+        baseline[i1:i2] .= y[i1] .+ (y[i2]-y[i1]) .* ((x[i1:i2] .- x[i1]) ./ (x[i2]-x[i1]))
+    end
+
+    return baseline
 end

@@ -11,11 +11,12 @@ Licence MIT: see LICENCE.md
 # 2.1.0 (latest)
 
 ## Additions
-- auto_lambda_whittaker() allows one to automatically select a lambda value for Whittaker smoothing using the L-curve method (grid search).
+- auto_lambda_whittaker() => selects lambda value for Whittaker smoothing using L-curve method (grid search).
 
 ## Improvements
-- smooth() has been modified to allow automatic selection of lambda when using whittaker smoothing.
-- despiking was very slow for spectra with lots of points using gcvspline. It now is using the "flat" smoothing method with automatic window selection (twice the size of the number of neighboor points for despiking).
+- smooth() => now allow automatic selection of lambda for whittaker smoothing (experimental).
+- despiking() => was very slow for spectra with lots of points using gcvspline. Now we use the "flat" smoothing method with automatic window selection (twice the size of the number of neighboor points for despiking).
+- rubberband_baseline() => new code, pure Julia, no Python dependencies.
 
 ## Updates
 - Tests have been updated to include auto_lambda_whittaker()

@@ -3,6 +3,7 @@
 *.jl.mem
 .ipynb_checkpoints
 .DS_STORE
+.CondaPkg
 gcvspl.o
 libgcvspl.so
 libgcvspl.dylib
@@ -11,3 +12,4 @@ docs/site/
 build.log
 deprecated_code/
 dev/
+src/*.py

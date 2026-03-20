@@ -15,6 +15,7 @@ VERSION >= v"1.0.0" && __precompile__()
 
 module Spectra
 
+using CondaPkg
 using DataInterpolations
 using Dierckx
 using Distributions
@@ -27,8 +28,7 @@ using Optim
 using Peaks
 using Plots
 using Polynomials
-using PyCall
-using QHull
+using PythonCall
 using Random
 using RegularizationTools
 using SavitzkyGolay
@@ -37,12 +37,22 @@ using SpecialFunctions
 using Statistics
 using StatsBase
 
-# For PyCall modules
-const rampy = PyNULL()
-
-function __init__()
-    copy!(rampy, pyimport("rampy"))
+function get_rampy()
+    try
+        return pyimport("rampy")
+    catch
+        println("Installing rampy...")
+        CondaPkg.add_pip("rampy")
+        return pyimport("rampy")
+    end
 end
+
+# Import rampy after precompilation
+rampy = get_rampy()
+
+# function __init__()
+#     copy!(rampy, pyimport("rampy"))
+# end
 
 include("integrale.jl")
 include("functions.jl")
