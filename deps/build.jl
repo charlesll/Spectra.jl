@@ -1,8 +1,8 @@
 using Conda
+Conda.pip_interop(true)
 using PyCall
 
 println("Running build.jl for the Spectra package.")
-Conda.pip_interop(true)
 Conda.pip("install", "rampy")
 
 #Change that to whatever packages you need.
