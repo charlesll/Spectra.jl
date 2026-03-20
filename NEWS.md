@@ -15,7 +15,7 @@ Licence MIT: see LICENCE.md
 
 ## Improvements
 - smooth() has been modified to allow automatic selection of lambda when using whittaker smoothing.
-- despiking was very slow for spectra with lots of points using gcvspline. It now is using whittaker smoothing with automatic lambda selection.
+- despiking was very slow for spectra with lots of points using gcvspline. It now is using the "flat" smoothing method with automatic window selection (twice the size of the number of neighboor points for despiking).
 
 ## Updates
 - Tests have been updated to include auto_lambda_whittaker()
