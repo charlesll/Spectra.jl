@@ -1406,9 +1406,9 @@ version = "2.5.1"
 
 [[deps.Spectra]]
 deps = ["Conda", "DSP", "DataInterpolations", "Dierckx", "Distributions", "ForwardDiff", "LinearAlgebra", "LsqFit", "Measurements", "Optim", "Peaks", "Plots", "Polynomials", "PyCall", "QHull", "Random", "RegularizationTools", "SavitzkyGolay", "SparseArrays", "SpecialFunctions", "Statistics", "StatsBase", "Test"]
-git-tree-sha1 = "eab4378eb87710e2a0bc28ecbbb70c09d5914abd"
+path = ".."
 uuid = "391af1a9-06f1-59d3-8d21-0be089654739"
-version = "2.0.0"
+version = "2.1.0"
 
 [[deps.StableRNGs]]
 deps = ["Random"]
@@ -1862,7 +1862,7 @@ uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
 version = "1.59.0+0"
 
 [[deps.oneTBB_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl"]
+deps = ["Artifacts", "JLLWrappers", "LazyArtifacts", "Libdl"]
 git-tree-sha1 = "d5a767a3bb77135a99e433afe0eb14cd7f6914c3"
 uuid = "1317d2d5-d96f-522e-a858-c73665f53c3e"
 version = "2022.0.0+0"

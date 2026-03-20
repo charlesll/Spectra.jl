@@ -11,8 +11,8 @@ As a starting point and for the sack of example, we create two synthetic signals
 using Spectra, Plots
 
 # we create a fake signal with 
-x_1 = rand(1000)*100
-x_2 = rand(1000)*100
+x_1 = sort!(rand(1000)*100)
+x_2 = sort!(rand(1000)*100)
 
 # create a signal that is the combination of two gaussian peaks plus a background
 background_1 = 0.08 * x_1

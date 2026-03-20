@@ -1,12 +1,24 @@
 # News
 
-Copyright (c) 2016-2025 Dr. Charles Le Losq
+Copyright (c) 2016-2026 Dr. Charles Le Losq
 
 email: lelosq@ipgp.fr
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.53940.svg)](http://dx.doi.org/10.5281/zenodo.53940)
 
 Licence MIT: see LICENCE.md
+
+# 2.1.0 (latest)
+
+## Additions
+- auto_lambda_whittaker() allows one to automatically select a lambda value for Whittaker smoothing using the L-curve method (grid search).
+
+## Improvements
+- smooth() has been modified to allow automatic selection of lambda when using whittaker smoothing.
+- despiking was very slow for spectra with lots of points using gcvspline. It now is using the "flat" smoothing method with automatic window selection (twice the size of the number of neighboor points for despiking).
+
+## Updates
+- Tests have been updated to include auto_lambda_whittaker()
 
 # 2.0.2 (stable)
 

@@ -14,9 +14,9 @@ For this example, we create two Gaussian signals randomly sampled along two diff
 ````@example Full_processing
 using Spectra, Plots
 
-# we create a fake signal with
-x_1 = rand(1000)*100
-x_2 = rand(1000)*100
+# we create a fake signal with randomly sampled and sorted X values
+x_1 = sort!(rand(1000)*100)
+x_2 = sort!(rand(1000)*100)
 
 # create a signal that is the combination of two gaussian peaks plus a background
 background_1 = 0.08 * x_1

@@ -78,6 +78,56 @@ function whittaker(
 end
 
 """
+    auto_lambda_whittaker(x::Vector{Float64}, y::Vector{Float64}, lambda_min::Float64=-1.0, lambda_max::Float64=7.0, nb_val::Int=20)
+
+Detect the optimal lambda for Whittaker smoothing using the L-curve knee method. It computes the sum of squared differences between the original signal and the smoothed signal for a range of lambda values, then identifies the "knee" in the resulting curve to suggest an optimal lambda.
+
+# Arguments
+- `x::Vector{Float64}`: The x-values of the signal (e.g., Raman shift).
+- `y::Vector{Float64}`: The y-values of the signal (e.g., intensity).
+- `lambda_min::Float64`: The minimum exponent for lambda (default: -1.0, corresponding to lambda = 10^-1).
+- `lambda_max::Float64`: The maximum exponent for lambda (default: 7.0, corresponding to lambda = 10^7).
+- `nb_val::Int`: The number of lambda values to test (default: 20).
+
+# Returns
+- `change_point::Float64`: The optimal lambda value corresponding to the knee of the curve.
+- `knee_idx::Int`: The index of the knee in the array of lambda values.
+- `log_res::Vector{Float64}`: The log10 of the sum of squared differences for each lambda, useful for plotting the L-curve.
+
+# Example
+
+```julia
+x = sort(rand(50) .* 10)                 # Randomly spaced x values in [0, 10]
+true_y = sin.(x)
+y = true_y .+ 0.1 .* randn(length(x))  # Noisy sine wave
+change_point, knee_idx, log_res = auto_lambda_whittaker(x, y)
+```
+"""
+function auto_lambda_whittaker(x::Vector{Float64}, y::Vector{Float64}; lambda_min::Float64=-1.0, lambda_max::Float64=7.0, nb_val::Int=40)
+    
+
+    x_ = collect(range(lambda_min, lambda_max, length=nb_val))
+
+    res_ = []
+    for i in x_
+        y_ = smooth(x, y, method="whittaker", lambda=10.0^i)
+        push!(res_, sum((y_-y).^2))
+    end
+
+    log_res = log10.(Float64.(res_))
+
+    # First and second discrete differences
+    d1 = diff(log_res)
+    d2 = diff(d1)
+
+    # The knee is where the curvature (second derivative) is maximum
+    knee_idx = argmax(d2) + 1  # +1 to account for offset from double diff
+
+    change_point = 10.0^x_[knee_idx]
+    return change_point, knee_idx, log_res
+end
+
+"""
 
     ddmat(x::Vector{Float64}, d::Int)
 
@@ -109,13 +159,16 @@ end
 
 """
     smooth(x::Vector{Float64}, y::Union{Vector{Float64}, Matrix{Float64}}; 
-           method::String = "gcvspline", 
-           window_length::Int = 5, 
-           polyorder::Int = 2, 
-           lambda::Float64 = 10.0^5, 
-           d::Int = 2, 
-           w = nothing, 
-           d_gcv::Int = 3)
+           method::String="whittaker",
+           window_length::Int=5,
+           polyorder::Int=2,
+           lambda::Float64=10.0^5,
+           auto_lambda::Bool=false,
+           auto_lambda_range::Tuple{Float64, Float64}=(-1.0, 7.0),
+           auto_lambda_nb_val::Int=40,
+           d::Int=2,
+           w=nothing,
+           d_gcv::Int=3,)
 
 Smooth a signal using various smoothing methods.
 
@@ -128,12 +181,15 @@ Smooth a signal using various smoothing methods.
     - `"flat"`: Moving average.
     - `"hanning"`, `"hamming"`, `"bartlett"`, `"blackman"`: Window-based smoothing methods (requires `DSP.jl`).
     - `"savgol"`: Savitzky-Golay filter.
-- `window_length::Int`: The length of the smoothing window (used in window-based and Savitzky-Golay methods). Must be a positive odd integer
-- `polyorder::Int`: The polynomial order for the Savitzky-Golay filter. Must be less than `window_length`
-- `lambda::Float64`: Smoothing parameter for the Whittaker smoother. Higher values result in smoother fits
-- `d::Int`: Order of differences for the Whittaker smoother. Default is 2.
+- `window_length::Int`: The length of the smoothing window (used in window-based and Savitzky-Golay methods). Must be a positive odd integer.
+- `polyorder::Int`: The polynomial order for the Savitzky-Golay filter. Must be less than `window_length`.
+- `lambda::Float64`: Smoothing parameter for the Whittaker smoother. Higher values result in smoother fits.
+- `auto_lambda::Bool`: If true, automatically determine the optimal lambda for Whittaker smoothing using the L-curve method (default = false).
+- `auto_lambda_range::Tuple{Float64, Float64}`: The range of lambda values (in log10 scale) to test when `auto_lambda` is true. Default is (-1.0, 7.0), corresponding to lambda values from 10^-1 to 10^7.
+- `auto_lambda_nb_val::Int`: The number of lambda values to test when `auto_lambda` is true (default = 40).
+- `d::Int`: Order of differences for the Whittaker smoother (default = 2).
 - `w`: Weights for the Whittaker smoother. size(w) should be equal to size(y). If not provided (`nothing`), uniform weights are used by default.
-- `d_gcv::Int`: Order of differences for the GCV spline algorithm (used in `"gcvspline"`)
+- `d_gcv::Int`: Order of differences for the GCV spline algorithm (used in `"gcvspline"`) (default = 3).
 
 # Returns
 - A smoothed vector or matrix of signals (`Vector{Float64}` or `Matrix{Float64}`).
@@ -173,10 +229,13 @@ display(p1)
 function smooth(
     x::Vector{Float64},
     y::Vector{Float64};
-    method::String="gcvspline",
+    method::String="whittaker",
     window_length::Int=5,
     polyorder::Int=2,
     lambda::Float64=10.0^5,
+    auto_lambda::Bool=false,
+    auto_lambda_range::Tuple{Float64, Float64}=(-1.0, 7.0),
+    auto_lambda_nb_val::Int=40,
     d::Int=2,
     w=nothing,
     d_gcv::Int=3,
@@ -199,6 +258,9 @@ function smooth(
     elseif method == "whittaker"
         if w == nothing
             w = ones(size(y))
+        end
+        if auto_lambda
+            lambda, _, _ = auto_lambda_whittaker(x, y, lambda_min=auto_lambda_range[1], lambda_max=auto_lambda_range[2], nb_val=auto_lambda_nb_val)
         end
         return whittaker(x, y, w, lambda; d=d)
 
@@ -246,6 +308,7 @@ function smooth(
     window_length::Int=5,
     polyorder::Int=2,
     lambda::Float64=10.0^5,
+    auto_lambda::Bool=false,
     d::Int=2,
     w=nothing,
     d_gcv::Int=3,
@@ -279,6 +342,7 @@ function smooth(
             d=d,
             w=w,
             d_gcv=d_gcv,
+            auto_lambda=auto_lambda,
         )
     end
     return smoothed
