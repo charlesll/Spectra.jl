@@ -62,7 +62,7 @@ p2 = scatter(x, y; label="signal",
     xlabel="X", ylabel="Y", 
     legend=:topleft)
 for i in methods_bis_
-    y_smo = smooth(x, y, method=i, window_length=21, polyorder=2, auto_lambda=true)
+    y_smo = smooth(x, y, method=i, window_length=21, polyorder=2, lambda=10e2)
     plot!(x, y_smo, label=i)
     push!(ese_methods_, sum((y - y_smo).^2))
 end
