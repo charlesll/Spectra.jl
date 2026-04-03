@@ -8,7 +8,12 @@ email: lelosq@ipgp.fr
 
 Licence MIT: see LICENCE.md
 
-# 2.1.0 (latest)
+# 2.1.1 (latest)
+
+- fix rubberband_baseline call in baseline() and add a test
+- compat: lower version for CondaPkg
+
+# 2.1.0 (stable)
 
 ## Additions
 - auto_lambda_whittaker() => selects lambda value for Whittaker smoothing using L-curve method (grid search).
