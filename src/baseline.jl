@@ -239,7 +239,7 @@ function baseline(
         baseline_fitted = funlog(x, coeffs...)
 
     elseif method == "rubberband"
-        baseline_fitted = rubberband_baseline(x, y; segment=get(kwargs, :segments, 1))
+        baseline_fitted = rubberband_baseline(x, y)
 
     elseif method == "whittaker"
         lambda = get(kwargs, :lambda, 1.0e5)

@@ -48,6 +48,10 @@ using Test
     y_fit, bas_ = baseline(x, y_peak, method="drPLS", lambda=1.0e5, ratio=0.1)
     @test isapprox(y_peak, y_fit .+ bas_, atol=1e-4)
 
+    # rubberband baseline
+    y_fit, bas_ = baseline(x, y_peak, method="rubberband")
+    @test isapprox(y_peak, y_fit .+ bas_, atol=1e-4)
+
     # Testing if this works for a collection of spectra
     out = baseline([[x y], [x y]], roi=roi, method="polynomial", polynomial_order=2)
     for (y_fit, bas_) in out
